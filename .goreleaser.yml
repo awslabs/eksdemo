@@ -13,7 +13,7 @@ builds:
       - amd64
       - arm64
     ldflags:
-      - -s -w -X eksdemo/cmd.version={{ .Version }} -X eksdemo/cmd.commit={{ .ShortCommit }} -X eksdemo/cmd.date={{ .Date }}
+      - -s -w -X github.com/awslabs/eksdemo/cmd.version={{ .Version }} -X github.com/awslabs/eksdemo/cmd.commit={{ .ShortCommit }} -X github.com/awslabs/eksdemo/cmd.date={{ .Date }}
 archives:
   - name_template: >-
       {{ .ProjectName }}_
