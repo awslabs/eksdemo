@@ -35,7 +35,7 @@ func NewUninstallKubecostCmd() *cobra.Command {
 	// Don't show flag errors for `uninstall kubecost` without a subcommand
 	cmd.DisableFlagParsing = true
 
-	for _, a := range fluxApps {
+	for _, a := range kubecostApps {
 		cmd.AddCommand(a().NewUninstallCmd())
 	}
 
