@@ -31,7 +31,7 @@ The easy button for learning, testing, and demoing Amazon EKS:
     * [Install Kube Prometheus Stack using Amazon Managed Prometheus](/docs/install-kube-prometheus.md)
 
 ## Why `eksdemo`?
-While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog that can installed (including dependencies) with a single command.
+While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog. An application can be installed (including dependencies) with a single command.
 
 For example, the command: **`eksdemo install autoscaling-karpenter -c <cluster-name>`** will:
 1. Create the EC2 Spot Service Linked Role (if it doesn't already exist)
@@ -221,11 +221,34 @@ Used to get up and running quickly | Used to drive drive standards and communica
 
 ## Install `eksdemo`
 
-`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. 
+`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. There are two ways you can install:
+
+* [Homebrew](#install-using-homebrew) — This is the easiest method for Mac and Linux users.
+* [Manually](#install-manually) — This method is required for Windows users.
+
+### Install using Homebrew
+
+[Homebrew](https://brew.sh/) installation method is supported for Mac and Linux. Using the Terminal, enter the following commands:
+
+```
+brew tap aws/tap
+brew install eksdemo
+```
+
+### Troubleshoot Homebrew Install
+
+Note: Depending on how you originally installed `eksctl`, you may receive the error: `eksctl is already installed from homebrew/core!`  This is because `eksdemo` uses the official Weaveworks tap `weaveworks/tap` as a dependency.
+
+If you receive the error above, run the following commands:
+
+```
+brew uninstall eksctl
+brew install eksdemo
+```
 
 ### Install Manually
 
-Open https://github.com/awslabs/eksdemo/releases/latest in your browser, look under Assets and locate the binary that matches your operation system and platform. Download the file, uncompress and copy to a location of your choice that is in your path. A common location on Mac and Linux is `/usr/local/bin`. Note that `eksctl` is required and [must be installed](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) as well.
+Navigate to [Releases](https://github.com/awslabs/eksdemo/releases/latest), look under Assets and locate the binary that matches your operation system and platform. Download the file, uncompress and copy to a location of your choice that is in your path. A common location on Mac and Linux is `/usr/local/bin`. Note that `eksctl` is required and [must be installed](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) as well.
 
 ### Set the AWS Region
 
