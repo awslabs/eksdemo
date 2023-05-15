@@ -1,4 +1,7 @@
 # `eksdemo` - kubectl-like CLI for Amazon EKS
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/awslabs/eksdemo)](https://goreportcard.com/report/github.com/awslabs/eksdemo)
+
 The easy button for learning, testing, and demoing Amazon EKS:
 * Install complex applications and dependencies with a single command
 * Extensive application catalog (over 50 CNCF, open source and related projects)
