@@ -46,8 +46,9 @@ Usage:
 
 Flags:
   -A, --ami-family string        provisioner ami family (default "AL2")
-      --chart-version string     chart version (default "v0.22.1")
+      --chart-version string     chart version (default "v0.27.5")
   -c, --cluster string           cluster to install application (required)
+      --disable-drift            disables the drift deprovisioner
       --dry-run                  don't install, just print out all installation steps
   -h, --help                     help for karpenter
   -n, --namespace string         namespace to install (default "karpenter")
@@ -55,12 +56,13 @@ Flags:
       --service-account string   service account name (default "karpenter")
       --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
   -T, --ttl-after-empty int      provisioner ttl seconds after empty (disables consolidation)
-      --use-previous             use previous working chart/app versions ("v0.21.1"/"v0.21.1")
-  -v, --version string           application version (default "v0.22.1")
+      --use-previous             use previous working chart/app versions ("v0.26.1"/"v0.26.1")
+  -v, --version string           application version (default "v0.27.5")
 ```
 
 The Karpenter specific flags are:
 * `--ami-family` -- This sets the AMI Family on the default `AWSNodeTemplate`. Options include AL2, Bottlerocket and Ubuntu.
+* `--disable-drift` -- `eksdemo` enables the [Drift](https://karpenter.sh/docs/concepts/deprovisioning/#drift) feature which will deprovision nodes that have been marked as drifted with the annotation `karpenter.sh/voluntary-disruption: "drifted"`. Karpenter will automatically cordon, drain, and terminate nodes, while respecting any PDBs or do-not-evict pods that are configured. Karpenter will automatically mark nodes as drifted if the AMI that is used on the instance does not match the AMI set by the AWSNodeTemplate. This flag disables this feature.
 * `--replicas` -- `eksdemo` defaults to only 1 replica for easier log viewing in a demo environment. You can use this flag to increase to the default Karpenter Helm chart value of 2 replicas for high availability.
 * `--ttl-after-empty` -- `eksdemo` enables [Consolidation](https://karpenter.sh/docs/concepts/#consolidation) on the default `Provisioner` and this option disables consolidation and sets a Time To Live (TTL) instead.
 
@@ -123,7 +125,7 @@ Now, install Karpenter.
 » eksdemo install autoscaling-karpenter -c <cluster-name>
 Creating 5 dependencies for autoscaling-karpenter
 <snip>
-Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:v0.22.1
+Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:v0.27.5
 Helm installing...
 2023/01/23 15:24:01 creating 1 resource(s)
 2023/01/23 15:24:01 CRD awsnodetemplates.karpenter.k8s.aws is already present. Skipping.
@@ -132,7 +134,7 @@ Helm installing...
 2023/01/23 15:24:08 creating 1 resource(s)
 2023/01/23 15:24:09 creating 21 resource(s)
 2023/01/23 15:24:10 beginning wait for 21 resources with timeout of 5m0s
-Using chart version "v0.22.1", installed "autoscaling-karpenter" version "v0.22.1" in namespace "karpenter"
+Using chart version "v0.27.5", installed "autoscaling-karpenter" version "v0.27.5" in namespace "karpenter"
 Creating 1 post-install resources for karpenter
 Creating post-install resource: karpenter-default-provisioner
 Creating Provisioner "default"
@@ -189,7 +191,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: inflate
-          image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.7
           resources:
             requests:
               cpu: 1

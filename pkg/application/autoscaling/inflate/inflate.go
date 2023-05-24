@@ -7,7 +7,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-// Manifest: https://karpenter.sh/v0.8.2/getting-started/getting-started-with-eksctl/#automatic-node-provisioning
+// Manifest: https://karpenter.sh/v0.27.5/getting-started/getting-started-with-karpenter/#scale-up-deployment
 // Repo:     https://public.ecr.aws/eks-distro/kubernetes/pause
 
 func NewApp() *application.Application {
