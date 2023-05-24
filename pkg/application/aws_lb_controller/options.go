@@ -1,14 +1,20 @@
 package aws_lb_controller
 
 import (
+	"strings"
+
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
+	"github.com/spf13/cobra"
 )
 
 type AWSLBControllerOptions struct {
 	application.ApplicationOptions
 
-	Default bool
+	DefaultIngressClass bool
+	DefaultTargetType   string
+	DisableWebhook      bool
+	Replicas            int
 }
 
 func newOptions() (options *AWSLBControllerOptions, flags cmd.Flags) {
@@ -17,22 +23,49 @@ func newOptions() (options *AWSLBControllerOptions, flags cmd.Flags) {
 			Namespace:      "awslb",
 			ServiceAccount: "aws-load-balancer-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.4.8",
-				Latest:        "v2.4.7",
-				PreviousChart: "1.4.7",
-				Previous:      "v2.4.6",
+				LatestChart:   "1.5.3",
+				Latest:        "v2.5.2",
+				PreviousChart: "1.4.8",
+				Previous:      "v2.4.7",
 			},
 		},
-		Default: false,
+		DefaultTargetType: "instance",
+		Replicas:          1,
 	}
 
 	flags = cmd.Flags{
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "default",
-				Description: "set as the default IngressClass for the cluster",
+				Name:        "default-ingress-class",
+				Description: "set the alb IngressClass as the default for the cluster",
 			},
-			Option: &options.Default,
+			Option: &options.DefaultIngressClass,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "default-target-type",
+				Description: "set the default target type for target groups",
+				Validate: func(cmd *cobra.Command, args []string) error {
+					options.DefaultTargetType = strings.ToLower(options.DefaultTargetType)
+					return nil
+				},
+			},
+			Option:  &options.DefaultTargetType,
+			Choices: []string{"instance", "ip"},
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "disable-webhook",
+				Description: "disable the webhook so the in-tree controller can provision CLBs",
+			},
+			Option: &options.DisableWebhook,
+		},
+		&cmd.IntFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "replicas",
+				Description: "number of replicas for the controller deployment",
+			},
+			Option: &options.Replicas,
 		},
 	}
 
