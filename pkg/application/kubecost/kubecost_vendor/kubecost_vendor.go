@@ -10,8 +10,7 @@ import (
 // Docs:    https://guide.kubecost.com/
 // Helm:    https://github.com/kubecost/cost-analyzer-helm-chart/tree/develop/cost-analyzer
 // Repo:    gcr.io/kubecost1/cost-model
-// Version: Latest is Chart/App 1.100.0 (as of 2/9/23)
-// TODO:    remove podSecurityPolicy from values.yaml next update
+// Version: Latest is Chart/App 1.103.3 (as of 5/24/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -26,10 +25,10 @@ func NewApp() *application.Application {
 			Namespace:                    "kubecost",
 			ServiceAccount:               "kubecost-cost-analyzer",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.100.0",
-				Latest:        "1.100.0",
-				PreviousChart: "1.98.0",
-				Previous:      "1.98.0",
+				LatestChart:   "1.103.3",
+				Latest:        "1.103.3",
+				PreviousChart: "1.100.0",
+				Previous:      "1.100.0",
 			},
 		},
 
@@ -68,8 +67,6 @@ ingress:
     secretName: cost-analyzer-tls
   {{- end }}
 {{- end }}
-podSecurityPolicy:
-  enabled: false
 service:
   type: {{ .ServiceType }}
   annotations: 
@@ -86,8 +83,6 @@ prometheus:
         cluster_id: {{ .ClusterName }} # Each cluster should have a unique ID
 grafana:
   fullnameOverride: kubecost-grafana
-  rbac:
-    pspEnabled: false
 serviceAccount:
   name: {{ .ServiceAccount }}
 kubecostProductConfigs:
