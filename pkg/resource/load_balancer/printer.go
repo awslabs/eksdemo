@@ -43,11 +43,16 @@ func (p *LoadBalancerPrinter) PrintTable(writer io.Writer) error {
 		})
 	}
 
-	for _, elb := range p.V2 {
-		age := durafmt.ParseShort(time.Since(aws.ToTime(elb.CreatedTime)))
+	for _, lb := range p.V2 {
+		age := durafmt.ParseShort(time.Since(aws.ToTime(lb.CreatedTime)))
+
+		name := aws.ToString(lb.LoadBalancerName)
+		if string(lb.Scheme) == "internal" {
+			name = "*" + name
+		}
 
 		elbType := "unknown"
-		switch string(elb.Type) {
+		switch string(lb.Type) {
 		case "application":
 			elbType = "ALB"
 		case "network":
@@ -58,12 +63,12 @@ func (p *LoadBalancerPrinter) PrintTable(writer io.Writer) error {
 
 		table.AppendRow([]string{
 			age.String(),
-			string(elb.State.Code),
-			aws.ToString(elb.LoadBalancerName),
+			string(lb.State.Code),
+			name,
 			elbType,
-			string(elb.IpAddressType),
-			strconv.Itoa(len(elb.AvailabilityZones)),
-			strconv.Itoa(len(elb.SecurityGroups)),
+			string(lb.IpAddressType),
+			strconv.Itoa(len(lb.AvailabilityZones)),
+			strconv.Itoa(len(lb.SecurityGroups)),
 		})
 	}
 
