@@ -4,7 +4,11 @@ The [Amazon Elastic Block Store (EBS) CSI Driver](https://github.com/kubernetes-
 
 EKS versions 1.23 and higher enable the Kubernetes in-tree to container storage interface (CSI) volume migration feature. This means the EBS CSI Driver is required to dynamically provision EBS volumes in response to a `PersistentVolumeClaim`.
 
-The `eksdemo` install of the EBS CSI Driver includes a gp3 `StorageClass` and the `--default-gp3` flag will set it as the default `StorageClass`.
+The `eksdemo` install of the EBS CSI Driver includes a gp3 `StorageClass` and will set it as the default.  List of Storage Classes created:
+* `gp3` (default)
+* `gp3-encrypted`
+
+You can disable this with the `--no-storageclasses` flag.
 
 1. [Prerequisites](#prerequisites)
 2. [Install EBS CSI Driver](#install-ebs-csi-driver-1)
@@ -38,20 +42,22 @@ Aliases:
   storage-ebs-csi, storage-ebscsi, storage-ebs
 
 Flags:
-      --chart-version string     chart version (default "2.16.0")
+      --chart-version string     chart version (default "2.19.0")
   -c, --cluster string           cluster to install application (required)
-      --default-gp3              set gp3 StorageClass as default
       --dry-run                  don't install, just print out all installation steps
   -h, --help                     help for storage-ebs-csi
   -n, --namespace string         namespace to install (default "kube-system")
+      --no-storageclasses        don't create the gp3 StorageClasses
+      --replicas int             number of replicas for the controller deployment (default 1)
       --service-account string   service account name (default "ebs-csi-controller-sa")
       --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
-      --use-previous             use previous working chart/app versions ("2.12.1"/"v1.12.0")
-  -v, --version string           application version (default "v1.15.0")
+      --use-previous             use previous working chart/app versions ("2.17.1"/"v1.16.1")
+  -v, --version string           application version (default "v1.19.0")
 ```
 
-The EBS CSI Driver specific flag is:
-* `--default-gp3` — This boolean flag sets the gp3 `StorageClass` as default.
+The EBS CSI Driver specific flags are:
+* `--no-storageclasses` — This boolean flag disables the creation of the gp3 Storage Classes.
+* `--replicas` — `eksdemo` defaults to only 1 replica for easier log viewing in a demo environment. You can use this flag to increase to the default EBS CSI Driver Helm chart value of 2 replicas for high availability.
 
 Next, let's review the dry run output with the `--dry-run` flag. The syntax for the command is: **`eksdemo install storage-ebs-csi -c <cluster-name> --dry-run`**. Replace `<cluster-name>` with the name of your EKS cluster.
 
@@ -83,10 +89,13 @@ iam:
     - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
 
 
+PreInstall Dry Run:
+Mark the current default StorageClass as non-default
+
 Helm Installer Dry Run:
 +---------------------+------------------------------------------------------+
-| Application Version | v1.15.0                                              |
-| Chart Version       | 2.16.0                                               |
+| Application Version | v1.19.0                                              |
+| Chart Version       | 2.19.0                                               |
 | Chart Repository    | https://kubernetes-sigs.github.io/aws-ebs-csi-driver |
 | Chart Name          | aws-ebs-csi-driver                                   |
 | Release Name        | storage-ebs-csi                                      |
@@ -97,7 +106,7 @@ Set Values: []
 Values File:
 ---
 image:
-  tag: v1.15.0
+  tag: v1.19.0
 controller:
   region: us-west-2
   replicaCount: 1
@@ -107,35 +116,41 @@ controller:
       eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/eksdemo.blue.kube-system.ebs-csi-controller-sa
 storageClasses:
 - name: gp3
+  allowVolumeExpansion: true
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
   parameters:
     csi.storage.k8s.io/fstype: ext4
     type: gp3
   volumeBindingMode: WaitForFirstConsumer
+- name: gp3-encrypted
+  allowVolumeExpansion: true
+  parameters:
+    csi.storage.k8s.io/fstype: ext4
+    encrypted: "true"
+    type: gp3
+  volumeBindingMode: WaitForFirstConsumer
 ```
 
-From the `--dry-run` output above, you can see there the gp3 `StorageClass` is created by using the Helm chart values under the `storageClasses` key.
+From the `--dry-run` output above, you can see there are two gp3 Storage Classes created using the Helm chart values under the `storageClasses` key.
 
-Let's proceed with installing the EBS CSI Driver. If you would like gp3 to be your default `StorageClass` add the `--default-gp3` flag to the command. Replace `<cluster-name>` with the name of your EKS cluster.
+Let's proceed with installing the EBS CSI Driver. If you don't want gp3 to be your default `StorageClass` add the `--no-storageclasses` flag to the command. Replace `<cluster-name>` with the name of your EKS cluster.
 
 ```
 » eksdemo install storage-ebs-csi -c <cluster-name>
-Creating 1 dependencies for storage-ebs-csi
-
+Creating 1 dependencies for ebs-csi
 Creating dependency: ebs-csi-irsa
-2023-02-08 15:30:38 [ℹ]  5 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,cert-manager/cert-manager,external-dns/external-dns,karpenter/karpenter,kube-system/cluster-autoscaler) will be excluded
-2023-02-08 15:30:38 [ℹ]  1 iamserviceaccount (kube-system/ebs-csi-controller-sa) was included (based on the include/exclude rules)
-2023-02-08 15:30:38 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-02-08 15:30:38 [ℹ]  1 task: { create IAM role for serviceaccount "kube-system/ebs-csi-controller-sa" }
-2023-02-08 15:30:39 [ℹ]  building iamserviceaccount stack "eksctl-blue-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
-2023-02-08 15:30:39 [ℹ]  deploying stack "eksctl-blue-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
-2023-02-08 15:30:39 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
-2023-02-08 15:31:09 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
-2023-02-08 15:32:08 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
-Downloading Chart: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/releases/download/helm-chart-aws-ebs-csi-driver-2.16.0/aws-ebs-csi-driver-2.16.0.tgz
+2023-05-28 09:42:31 [ℹ]  4 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,external-dns/external-dns,karpenter/karpenter,kube-system/ebs-csi-controller-sa) will be excluded
+2023-05-28 09:42:31 [ℹ]  1 iamserviceaccount (kube-system/ebs-csi-controller-sa) was excluded (based on the include/exclude rules)
+2023-05-28 09:42:31 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2023-05-28 09:42:31 [ℹ]  no tasks
+Checking for default StorageClass
+Marking StorageClass "gp2" as non-default...done
+Downloading Chart: https://github.com/kubernetes-sigs/aws-ebs-csi-driver/releases/download/helm-chart-aws-ebs-csi-driver-2.19.0/aws-ebs-csi-driver-2.19.0.tgz
 Helm installing...
-2023/02/08 15:32:16 creating 1 resource(s)
-2023/02/08 15:32:17 creating 17 resource(s)
-Using chart version "2.16.0", installed "storage-ebs-csi" version "v1.15.0" in namespace "kube-system"
+2023/05/28 09:42:34 creating 1 resource(s)
+2023/05/28 09:42:34 creating 18 resource(s)
+Using chart version "2.19.0", installed "storage-ebs-csi" version "v1.19.0" in namespace "kube-system"
 NOTES:
 To verify that aws-ebs-csi-driver has started, run:
 
