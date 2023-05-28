@@ -203,11 +203,11 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 
 ## `eksdemo` vs EKS Blueprints
 
-Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/) automate the creation of EKS clusters and install commonly used applications. Why would you use `eksdemo` for testing, learning and demoing EKS?
+Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/) automate the creation of EKS clusters and install commonly used applications. Why would you use `eksdemo` for learning, testing, and demoing EKS?
 
 | `eksdemo` | EKS Blueprints |
 ------------|-----------------
-Use cases: testing, learning, demoing EKS | Use cases: customers deploying to prod and non-prod environments
+Use cases: learning, testing, and demoing EKS | Use cases: customers deploying to prod and non-prod environments
 Kubectl-like CLI installs apps with single command | Infrastructure as Code (IaC) built on Terraform or CDK
 Imperative tooling is great for iterative testing | Declarative IaC tooling is not designed for iterative testing
 Used to get up and running quickly | Used to drive drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
@@ -270,12 +270,12 @@ To validate the AWS region is set, you can run **`eksdemo get cluster`** which w
 
 ```
 » eksdemo get cluster
-+------------+--------+---------+---------+----------+----------+---------+
-|    Age     | Status | Cluster | Version | Platform | Endpoint | Logging |
-+------------+--------+---------+---------+----------+----------+---------+
-| 3 weeks    | ACTIVE | green   |    1.24 | eks.5    | Public   | true    |
-| 20 minutes | ACTIVE | *blue   |    1.26 | eks.1    | Public   | true    |
-+------------+--------+---------+---------+----------+----------+---------+
++------------+--------+---------+---------+----------+----------+
+|    Age     | Status | Cluster | Version | Platform | Endpoint |
++------------+--------+---------+---------+----------+----------+
+| 3 weeks    | ACTIVE | green   |    1.24 | eks.5    | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.27 | eks.1    | Public   |
++------------+--------+---------+---------+----------+----------+
 * Indicates current context in local kubeconfig
 ```
 
