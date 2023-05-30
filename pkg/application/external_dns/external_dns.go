@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/external-dns
 // Helm:    https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns
 // Repo:    registry.k8s.io/external-dns/external-dns
-// Version: Latest is Chart 1.12.1, App v0.13.2 (as of 2/7/23)
+// Version: Latest is Chart 1.12.2, App v0.13.4 (as of 5/29/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -39,10 +39,10 @@ func NewApp() *application.Application {
 			Namespace:      "external-dns",
 			ServiceAccount: "external-dns",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.12.1",
-				Latest:        "v0.13.2",
-				PreviousChart: "1.12.0",
-				Previous:      "v0.13.1",
+				LatestChart:   "1.12.2",
+				Latest:        "v0.13.4",
+				PreviousChart: "1.12.1",
+				Previous:      "v0.13.2",
 			},
 		},
 
@@ -58,6 +58,7 @@ func NewApp() *application.Application {
 	return app
 }
 
+// https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy
 const policyDocument = `
 Version: '2012-10-17'
 Statement:
