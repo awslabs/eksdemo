@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/aws-load-balancer-controller
 // Helm:    https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller
 // Repo:    https://gallery.ecr.aws/eks/aws-load-balancer-controller
-// Version: Latest is v2.4.7 (as of 3/1/23)
+// Version: Latest is v2.5.2 (as of 5/29/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -222,7 +222,7 @@ Statement:
 `
 
 const valuesTemplate = `---
-replicaCount: 1
+replicaCount: {{ .Replicas }}
 image:
   tag: {{ .Version }}
 fullnameOverride: aws-load-balancer-controller
@@ -233,8 +233,10 @@ serviceAccount:
   name: {{ .ServiceAccount }}
 region: {{ .Region }}
 vpcId: {{ .Cluster.ResourcesVpcConfig.VpcId }}
-{{- if .Default }}
+defaultTargetType: {{ .DefaultTargetType }}
+{{- if .DefaultIngressClass }}
 ingressClassConfig:
   default: true
 {{- end }}
+enableServiceMutatorWebhook: {{ not .DisableWebhook }}
 `

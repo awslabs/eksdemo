@@ -168,9 +168,9 @@ nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 
 const serviceAnnotationsTemplate = `
 service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 {{- if .NLB }}
 service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: {{ .TargetType }}
-service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 service.beta.kubernetes.io/aws-load-balancer-type: external
 {{- end -}}
 `

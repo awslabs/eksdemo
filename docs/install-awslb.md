@@ -34,19 +34,28 @@ Aliases:
   aws-lb-controller, aws-lb, awslb
 
 Flags:
-      --chart-version string     chart version (default "1.4.7")
-  -c, --cluster string           cluster to install application (required)
-      --default                  set as the default IngressClass for the cluster
-      --dry-run                  don't install, just print out all installation steps
-  -h, --help                     help for aws-lb-controller
-  -n, --namespace string         namespace to install (default "awslb")
-      --service-account string   service account name (default "aws-load-balancer-controller")
-      --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
-      --use-previous             use previous working chart/app versions ("1.4.6"/"v2.4.5")
-  -v, --version string           application version (default "v2.4.6")
+      --chart-version string         chart version (default "1.5.3")
+  -c, --cluster string               cluster to install application (required)
+      --default-ingress-class        set the alb IngressClass as the default for the cluster
+      --default-target-type string   set the default target type for target groups (default "instance")
+      --disable-webhook              disable the webhook so the in-tree controller can provision CLBs
+      --dry-run                      don't install, just print out all installation steps
+  -h, --help                         help for aws-lb-controller
+  -n, --namespace string             namespace to install (default "awslb")
+      --replicas int                 number of replicas for the controller deployment (default 1)
+      --service-account string       service account name (default "aws-load-balancer-controller")
+      --set strings                  set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
+      --use-previous                 use previous working chart/app versions ("1.4.8"/"v2.4.7")
+  -v, --version string               application version (default "v2.5.2")
 ```
 
-The help content provides a lot of valuable information at a glance. The default chart and application versions, namespace and service account names are included along with optional flags to modify the defaults if desired.
+The help content provides a lot of valuable information at a glance. The default chart version, application version, namespace, and service account name are included along with optional flags to modify the defaults if desired.
+
+The AWS Load Balancer Controller specific flags are:
+* `--default-ingress-class` -- This flag sets the provided `alb` IngressClass as [default IngressClass](https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class) in cluster.
+* `-default-target-type` -- You can set the default target type for the load balancer target groups. Options include `instance` and `ip`.
+* `--disable-webhook` -- With the v2.5.0 release, the AWS Load Balancer Controller added a mutating webhook to default a Service of type `LoadBalancer` to a Network Load Balancer (NLB) from a Classic Load Balancer (CLB). You can disable the webhook using this flag. You will no longer be able to provision a Classic Load Balancer (CLB) from your Kubernetes Service unless you use this flag.
+* `--replicas` -- `eksdemo` defaults to only 1 replica for easier log viewing in a demo environment. You can use this flag to increase to the default AWS Load Balancer Controller Helm chart value of 2 replicas for high availability.
 
 A very powerful optional flag is the `--dry-run` flag. This will print out details about any dependencies and exactly how the application install will take place so there is no mystery about the steps `eksdemo` is taking to install your application. Let’s use the the `--dry-run` flag to understand how the AWS Load Balancer Controller will be installed. Replace `<cluster-name>` with the name of your EKS cluster.
 
@@ -78,8 +87,8 @@ iam:
 
 Helm Installer Dry Run:
 +---------------------+----------------------------------+
-| Application Version | v2.4.6                           |
-| Chart Version       | 1.4.7                            |
+| Application Version | v2.5.2                           |
+| Chart Version       | 1.5.3                            |
 | Chart Repository    | https://aws.github.io/eks-charts |
 | Chart Name          | aws-load-balancer-controller     |
 | Release Name        | aws-lb-controller                |
@@ -91,7 +100,7 @@ Values File:
 ---
 replicaCount: 1
 image:
-  tag: v2.4.6
+  tag: v2.5.2
 fullnameOverride: aws-load-balancer-controller
 clusterName: blue
 serviceAccount:
@@ -100,6 +109,8 @@ serviceAccount:
   name: aws-load-balancer-controller
 region: us-west-2
 vpcId: vpc-08a68dc8b440fec75
+defaultTargetType: instance
+enableServiceMutatorWebhook: true
 ```
 
 From the `--dry-run` output above, you can see that there is one dependency — an IAM Role. This role is associated with the AWS Load Balancer Controller’s service account. This is security best practices feature for EKS called [IAM Roles for Service Accounts (IRSA)](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html). `eksdemo` uses `eksctl` to create the IAM Role and the dry run output includes the exact configuration that will be used.
@@ -122,14 +133,14 @@ Creating dependency: aws-lb-controller-irsa
 2023-01-30 21:49:52 [ℹ]  1 iamserviceaccount (awslb/aws-load-balancer-controller) was excluded (based on the include/exclude rules)
 2023-01-30 21:49:52 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
 2023-01-30 21:49:52 [ℹ]  no tasks
-Downloading Chart: https://aws.github.io/eks-charts/aws-load-balancer-controller-1.4.7.tgz
+Downloading Chart: https://aws.github.io/eks-charts/aws-load-balancer-controller-1.5.3.tgz
 Helm installing...
 2023/01/30 21:49:54 creating 2 resource(s)
 2023/01/30 21:49:54 Clearing discovery cache
 2023/01/30 21:49:54 beginning wait for 2 resources with timeout of 1m0s
 2023/01/30 21:50:02 creating 1 resource(s)
 2023/01/30 21:50:03 creating 12 resource(s)
-Using chart version "1.4.7", installed "aws-lb-controller" version "v2.4.6" in namespace "awslb"
+Using chart version "1.5.3", installed "aws-lb-controller" version "v2.5.2" in namespace "awslb"
 NOTES:
 AWS Load Balancer controller installed!
 ```
