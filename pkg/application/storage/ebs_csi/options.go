@@ -13,7 +13,8 @@ import (
 type EbsCsiOptions struct {
 	application.ApplicationOptions
 
-	DefaultGp3 bool
+	NoStorageClasses bool
+	Replicas         int
 }
 
 const IsDefaultStorageClassAnnotation = "storageclass.kubernetes.io/is-default-class"
@@ -24,29 +25,37 @@ func newOptions() (options *EbsCsiOptions, flags cmd.Flags) {
 			Namespace:      "kube-system",
 			ServiceAccount: "ebs-csi-controller-sa",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "2.17.1",
-				Latest:        "v1.16.1",
-				PreviousChart: "2.16.0",
-				Previous:      "v1.15.0",
+				LatestChart:   "2.19.0",
+				Latest:        "v1.19.0",
+				PreviousChart: "2.17.1",
+				Previous:      "v1.16.1",
 			},
 		},
-		DefaultGp3: false,
+		NoStorageClasses: false,
+		Replicas:         1,
 	}
 
 	flags = cmd.Flags{
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "default-gp3",
-				Description: "set gp3 StorageClass as default",
+				Name:        "no-storageclasses",
+				Description: "don't create the gp3 Storage Classes",
 			},
-			Option: &options.DefaultGp3,
+			Option: &options.NoStorageClasses,
+		},
+		&cmd.IntFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "replicas",
+				Description: "number of replicas for the controller deployment",
+			},
+			Option: &options.Replicas,
 		},
 	}
 	return
 }
 
 func (o *EbsCsiOptions) PreInstall() error {
-	if !o.DefaultGp3 {
+	if o.NoStorageClasses {
 		return nil
 	}
 
