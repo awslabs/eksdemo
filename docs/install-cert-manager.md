@@ -30,7 +30,6 @@ Let's explore the dry run output with the `--dry-run` flag. The syntax for the c
 ```
 » eksdemo install cert-manager -c <cluster-name> --dry-run
 Creating 1 dependencies for cert-manager
-
 Creating dependency: cert-manager-irsa
 
 Eksctl Resource Manager Dry Run:
@@ -71,8 +70,8 @@ iam:
 
 Helm Installer Dry Run:
 +---------------------+----------------------------+
-| Application Version | v1.11.0                    |
-| Chart Version       | 1.11.0                     |
+| Application Version | v1.12.1                    |
+| Chart Version       | 1.12.1                     |
 | Chart Repository    | https://charts.jetstack.io |
 | Chart Name          | cert-manager               |
 | Release Name        | cert-manager               |
@@ -89,7 +88,7 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/eksdemo.blue.cert-manager.cert-manager
 image:
-  tag: v1.11.0
+  tag: v1.12.1
 
 Creating 1 post-install resources for cert-manager
 Creating post-install resource: cert-manager-cluster-issuer
@@ -121,50 +120,49 @@ The cert-manager install will be ready to immediately create certificates using 
 ```
 » eksdemo install cert-manager -c <cluster-name>
 Creating 1 dependencies for cert-manager
-
 Creating dependency: cert-manager-irsa
-2023-02-08 12:36:41 [ℹ]  4 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,external-dns/external-dns,karpenter/karpenter,kube-system/cluster-autoscaler) will be excluded
-2023-02-08 12:36:41 [ℹ]  1 iamserviceaccount (cert-manager/cert-manager) was included (based on the include/exclude rules)
-2023-02-08 12:36:41 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-02-08 12:36:41 [ℹ]  1 task: { create IAM role for serviceaccount "cert-manager/cert-manager" }
-2023-02-08 12:36:41 [ℹ]  building iamserviceaccount stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
-2023-02-08 12:36:41 [ℹ]  deploying stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
-2023-02-08 12:36:42 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
-2023-02-08 12:37:12 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
-2023-02-08 12:37:44 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
-Downloading Chart: https://charts.jetstack.io/charts/cert-manager-v1.11.0.tgz
+2023-05-30 16:39:59 [ℹ]  4 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,external-dns/external-dns,karpenter/karpenter,kube-system/ebs-csi-controller-sa) will be excluded
+2023-05-30 16:39:59 [ℹ]  1 iamserviceaccount (cert-manager/cert-manager) was included (based on the include/exclude rules)
+2023-05-30 16:39:59 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2023-05-30 16:39:59 [ℹ]  1 task: { create IAM role for serviceaccount "cert-manager/cert-manager" }
+2023-05-30 16:39:59 [ℹ]  building iamserviceaccount stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
+2023-05-30 16:40:00 [ℹ]  deploying stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
+2023-05-30 16:40:00 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
+2023-05-30 16:40:30 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
+2023-05-30 16:41:18 [ℹ]  waiting for CloudFormation stack "eksctl-blue-addon-iamserviceaccount-cert-manager-cert-manager"
+Downloading Chart: https://charts.jetstack.io/charts/cert-manager-v1.12.1.tgz
 Helm installing...
-2023/02/08 12:37:59 creating 1 resource(s)
-2023/02/08 12:38:00 creating 45 resource(s)
-2023/02/08 12:38:01 Starting delete for "cert-manager-startupapicheck" ServiceAccount
-2023/02/08 12:38:02 serviceaccounts "cert-manager-startupapicheck" not found
-2023/02/08 12:38:02 creating 1 resource(s)
-2023/02/08 12:38:02 Starting delete for "cert-manager-startupapicheck:create-cert" Role
-2023/02/08 12:38:03 roles.rbac.authorization.k8s.io "cert-manager-startupapicheck:create-cert" not found
-2023/02/08 12:38:03 creating 1 resource(s)
-2023/02/08 12:38:03 Starting delete for "cert-manager-startupapicheck:create-cert" RoleBinding
-2023/02/08 12:38:04 rolebindings.rbac.authorization.k8s.io "cert-manager-startupapicheck:create-cert" not found
-2023/02/08 12:38:04 creating 1 resource(s)
-2023/02/08 12:38:04 Starting delete for "cert-manager-startupapicheck" Job
-2023/02/08 12:38:04 jobs.batch "cert-manager-startupapicheck" not found
-2023/02/08 12:38:05 creating 1 resource(s)
-2023/02/08 12:38:05 Watching for changes to Job cert-manager-startupapicheck with timeout of 5m0s
-2023/02/08 12:38:05 Add/Modify event for cert-manager-startupapicheck: ADDED
-2023/02/08 12:38:05 cert-manager-startupapicheck: Jobs active: 0, jobs failed: 0, jobs succeeded: 0
-2023/02/08 12:38:05 Add/Modify event for cert-manager-startupapicheck: MODIFIED
-2023/02/08 12:38:05 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/08 12:38:10 Add/Modify event for cert-manager-startupapicheck: MODIFIED
-2023/02/08 12:38:10 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/08 12:38:16 Add/Modify event for cert-manager-startupapicheck: MODIFIED
-2023/02/08 12:38:16 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/08 12:38:18 Add/Modify event for cert-manager-startupapicheck: MODIFIED
-2023/02/08 12:38:18 Starting delete for "cert-manager-startupapicheck" ServiceAccount
-2023/02/08 12:38:18 Starting delete for "cert-manager-startupapicheck:create-cert" Role
-2023/02/08 12:38:18 Starting delete for "cert-manager-startupapicheck:create-cert" RoleBinding
-2023/02/08 12:38:19 Starting delete for "cert-manager-startupapicheck" Job
-Using chart version "v1.11.0", installed "cert-manager" version "v1.11.0" in namespace "cert-manager"
+2023/05/30 16:41:23 creating 1 resource(s)
+2023/05/30 16:41:23 creating 45 resource(s)
+2023/05/30 16:41:25 Starting delete for "cert-manager-startupapicheck" ServiceAccount
+2023/05/30 16:41:25 Ignoring delete failure for "cert-manager-startupapicheck" /v1, Kind=ServiceAccount: serviceaccounts "cert-manager-startupapicheck" not found
+2023/05/30 16:41:25 creating 1 resource(s)
+2023/05/30 16:41:25 Starting delete for "cert-manager-startupapicheck:create-cert" Role
+2023/05/30 16:41:25 Ignoring delete failure for "cert-manager-startupapicheck:create-cert" rbac.authorization.k8s.io/v1, Kind=Role: roles.rbac.authorization.k8s.io "cert-manager-startupapicheck:create-cert" not found
+2023/05/30 16:41:26 creating 1 resource(s)
+2023/05/30 16:41:26 Starting delete for "cert-manager-startupapicheck:create-cert" RoleBinding
+2023/05/30 16:41:26 Ignoring delete failure for "cert-manager-startupapicheck:create-cert" rbac.authorization.k8s.io/v1, Kind=RoleBinding: rolebindings.rbac.authorization.k8s.io "cert-manager-startupapicheck:create-cert" not found
+2023/05/30 16:41:26 creating 1 resource(s)
+2023/05/30 16:41:26 Starting delete for "cert-manager-startupapicheck" Job
+2023/05/30 16:41:26 Ignoring delete failure for "cert-manager-startupapicheck" batch/v1, Kind=Job: jobs.batch "cert-manager-startupapicheck" not found
+2023/05/30 16:41:27 creating 1 resource(s)
+2023/05/30 16:41:27 Watching for changes to Job cert-manager-startupapicheck with timeout of 5m0s
+2023/05/30 16:41:27 Add/Modify event for cert-manager-startupapicheck: ADDED
+2023/05/30 16:41:27 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/30 16:41:32 Add/Modify event for cert-manager-startupapicheck: MODIFIED
+2023/05/30 16:41:32 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/30 16:41:37 Add/Modify event for cert-manager-startupapicheck: MODIFIED
+2023/05/30 16:41:37 cert-manager-startupapicheck: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/30 16:41:38 Add/Modify event for cert-manager-startupapicheck: MODIFIED
+2023/05/30 16:41:38 cert-manager-startupapicheck: Jobs active: 0, jobs failed: 0, jobs succeeded: 0
+2023/05/30 16:41:38 Add/Modify event for cert-manager-startupapicheck: MODIFIED
+2023/05/30 16:41:38 Starting delete for "cert-manager-startupapicheck" ServiceAccount
+2023/05/30 16:41:38 Starting delete for "cert-manager-startupapicheck:create-cert" Role
+2023/05/30 16:41:38 Starting delete for "cert-manager-startupapicheck:create-cert" RoleBinding
+2023/05/30 16:41:38 Starting delete for "cert-manager-startupapicheck" Job
+Using chart version "v1.12.1", installed "cert-manager" version "v1.12.1" in namespace "cert-manager"
 NOTES:
-cert-manager v1.11.0 has been deployed successfully!
+cert-manager v1.12.1 has been deployed successfully!
 
 In order to begin issuing certificates, you will need to set up a ClusterIssuer
 or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
