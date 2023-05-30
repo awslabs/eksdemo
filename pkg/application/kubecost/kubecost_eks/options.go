@@ -18,10 +18,10 @@ func newOptions() (options *KubecostEksOptions, flags cmd.Flags) {
 			Namespace:                    "kubecost",
 			ServiceAccount:               "kubecost-cost-analyzer",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.100.0",
-				Latest:        "1.100.0",
-				PreviousChart: "1.97.0",
-				Previous:      "1.97.0",
+				LatestChart:   "1.103.3",
+				Latest:        "1.103.3",
+				PreviousChart: "1.100.0",
+				Previous:      "1.100.0",
 			},
 		},
 	}
