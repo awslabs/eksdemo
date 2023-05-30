@@ -29,7 +29,6 @@ Let's explore the dry run output with the `--dry-run` flag. The syntax for the c
 ```
 » eksdemo install external-dns -c <cluster-name> --dry-run
 Creating 1 dependencies for external-dns
-
 Creating dependency: external-dns-irsa
 
 Eksctl Resource Manager Dry Run:
@@ -65,10 +64,11 @@ iam:
         Resource:
         - "*"
 
+
 Helm Installer Dry Run:
 +---------------------+------------------------------------------------+
-| Application Version | v0.13.1                                        |
-| Chart Version       | 1.12.0                                         |
+| Application Version | v0.13.4                                        |
+| Chart Version       | 1.12.2                                         |
 | Chart Repository    | https://kubernetes-sigs.github.io/external-dns |
 | Chart Name          | external-dns                                   |
 | Release Name        | external-dns                                   |
@@ -79,12 +79,12 @@ Set Values: []
 Values File:
 ---
 image:
-  tag: v0.13.1
+  tag: v0.13.4
 provider: aws
 registry: txt
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::445558993477:role/eksdemo.blue.external-dns.external-dns
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/eksdemo.blue.external-dns.external-dns
   name: external-dns
 txtOwnerId: blue
 ```
@@ -99,24 +99,23 @@ When you are ready to continue, proceed with installing ExternalDNS. Replace `<c
 ```
 » eksdemo install external-dns -c <cluster-name>
 Creating 1 dependencies for external-dns
-
 Creating dependency: external-dns-irsa
-2023-02-01 08:49:18 [ℹ]  4 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,external-dns/external-dns,karpenter/karpenter,kube-system/cluster-autoscaler) will be excluded
-2023-02-01 08:49:18 [ℹ]  1 iamserviceaccount (external-dns/external-dns) was excluded (based on the include/exclude rules)
-2023-02-01 08:49:18 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
-2023-02-01 08:49:18 [ℹ]  no tasks
-Downloading Chart: https://github.com/kubernetes-sigs/external-dns/releases/download/external-dns-helm-chart-1.12.0/external-dns-1.12.0.tgz
+2023-05-29 19:29:31 [ℹ]  4 existing iamserviceaccount(s) (awslb/aws-load-balancer-controller,external-dns/external-dns,karpenter/karpenter,kube-system/ebs-csi-controller-sa) will be excluded
+2023-05-29 19:29:31 [ℹ]  1 iamserviceaccount (external-dns/external-dns) was excluded (based on the include/exclude rules)
+2023-05-29 19:29:31 [!]  serviceaccounts that exist in Kubernetes will be excluded, use --override-existing-serviceaccounts to override
+2023-05-29 19:29:31 [ℹ]  no tasks
+Downloading Chart: https://github.com/kubernetes-sigs/external-dns/releases/download/external-dns-helm-chart-1.12.2/external-dns-1.12.2.tgz
 Helm installing...
-2023/02/01 08:49:23 creating 1 resource(s)
-2023/02/01 08:49:24 creating 5 resource(s)
-Using chart version "1.12.0", installed "external-dns" version "v0.13.1" in namespace "external-dns"
+2023/05/29 19:29:33 creating 1 resource(s)
+2023/05/29 19:29:34 creating 5 resource(s)
+Using chart version "1.12.2", installed "external-dns" version "v0.13.4" in namespace "external-dns"
 NOTES:
 ***********************************************************************
 * External DNS                                                        *
 ***********************************************************************
-  Chart version: 1.12.0
-  App version:   v0.13.1
-  Image tag:     registry.k8s.io/external-dns/external-dns:v0.13.1
+  Chart version: 1.12.2
+  App version:   v0.13.4
+  Image tag:     registry.k8s.io/external-dns/external-dns:v0.13.4
 ***********************************************************************
 ```
 
@@ -127,8 +126,8 @@ Let’s verify that the applications were installed properly with the **`eksdemo
 +-------------------+--------------+---------+----------+--------+
 |       Name        |  Namespace   | Version |  Status  | Chart  |
 +-------------------+--------------+---------+----------+--------+
-| aws-lb-controller | awslb        | v2.4.4  | deployed | 1.4.5  |
-| external-dns      | external-dns | v0.12.2 | deployed | 1.11.0 |
+| aws-lb-controller | awslb        | v2.5.2  | deployed | 1.5.3  |
+| external-dns      | external-dns | v0.13.4 | deployed | 1.12.2 |
 +-------------------+--------------+---------+----------+--------+
 ```
 
