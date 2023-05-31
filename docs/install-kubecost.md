@@ -48,7 +48,7 @@ Usage:
   eksdemo install kubecost-eks-amp [flags]
 
 Flags:
-      --chart-version string     chart version (default "1.100.0")
+      --chart-version string     chart version (default "1.103.3")
   -c, --cluster string           cluster to install application (required)
       --dry-run                  don't install, just print out all installation steps
   -h, --help                     help for kubecost-eks-amp
@@ -62,8 +62,8 @@ Flags:
       --service-account string   service account name (default "kubecost-cost-analyzer")
       --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
       --target-type string       target type when deploying NLB or ALB Ingress (default "ip")
-      --use-previous             use previous working chart/app versions ("1.97.0"/"1.97.0")
-  -v, --version string           application version (default "1.100.0")
+      --use-previous             use previous working chart/app versions ("1.100.0"/"1.100.0")
+  -v, --version string           application version (default "1.103.3")
 ```
 
 The Kubecost specific flags are:
@@ -89,7 +89,6 @@ Please be sure to:
 ```
 » eksdemo install kubecost-eks-amp -c <cluster-name> --node-exporter --ingress-host kubecost.<example.com> --ingress-class=nginx --nginx-pass <your-password> --dry-run
 Creating 3 dependencies for kubecost-eks-amp
-
 Creating dependency: kubecost-cost-analyzer-irsa
 
 Eksctl Resource Manager Dry Run:
@@ -113,7 +112,6 @@ iam:
     attachPolicyARNs:
     - arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess
     - arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess
-
 
 Creating dependency: kubecost-prometheus-server-irsa
 
@@ -139,7 +137,6 @@ iam:
     - arn:aws:iam::aws:policy/AmazonPrometheusQueryAccess
     - arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess
 
-
 Creating dependency: kubecost-amazon-managed-prometheus
 
 AMP Resource Manager Dry Run:
@@ -148,8 +145,8 @@ alias: "blue-kubecost"
 
 Helm Installer Dry Run:
 +---------------------+---------------------------------------------+
-| Application Version | 1.100.0                                     |
-| Chart Version       | 1.100.0                                     |
+| Application Version | 1.103.3                                     |
+| Chart Version       | 1.103.3                                     |
 | Chart Repository    | oci://public.ecr.aws/kubecost/cost-analyzer |
 | Chart Name          | cost-analyzer                               |
 | Release Name        | kubecost-eks-amp                            |
@@ -177,9 +174,7 @@ global:
 sigV4Proxy:
   region: us-west-2
   host: aps-workspaces.us-west-2.amazonaws.com
-podSecurityPolicy:
-  enabled: false
-imageVersion: prod-1.100.0
+imageVersion: prod-1.103.3
 kubecostFrontend:
   image: public.ecr.aws/kubecost/frontend
 kubecostModel:
@@ -282,9 +277,9 @@ Creating AMP Workspace Alias: blue-kubecost...done
 Created AMP Workspace Id: ws-1c43b388-1ff6-4fdd-8ba9-2493fe287dad
 Downloading Chart: oci://public.ecr.aws/kubecost/cost-analyzer:1.100.0
 Helm installing...
-2023/02/11 19:42:13 creating 1 resource(s)
-2023/02/11 19:42:14 creating 40 resource(s)
-Using chart version "1.100.0", installed "kubecost-eks-amp" version "1.100.0" in namespace "kubecost"
+2023/05/30 19:42:13 creating 1 resource(s)
+2023/05/30 19:42:14 creating 40 resource(s)
+Using chart version "1.103.3", installed "kubecost-eks-amp" version "1.103.3" in namespace "kubecost"
 NOTES:
 --------------------------------------------------Kubecost has been successfully installed.
 
@@ -453,7 +448,7 @@ To view the raw output of the AWS API response use the `-o yaml` output option. 
 - Workspace:
     Alias: blue-kubecost
     Arn: arn:aws:aps:us-west-2:123456789012:workspace/ws-1c43b388-1ff6-4fdd-8ba9-2493fe287dad
-    CreatedAt: "2023-02-12T02:41:53.561Z"
+    CreatedAt: "2023-05-30T02:41:53.561Z"
     PrometheusEndpoint: https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-1c43b388-1ff6-4fdd-8ba9-2493fe287dad/
     Status:
       StatusCode: ACTIVE
