@@ -52,5 +52,5 @@ const EksctlTemplate = `
     attachPolicyARNs:
   {{- range .Policy }}
     - {{ . }}
-  {{ end }}
+  {{- end }}
 {{- end }}`
