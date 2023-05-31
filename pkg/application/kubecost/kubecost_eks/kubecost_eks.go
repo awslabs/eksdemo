@@ -16,7 +16,7 @@ import (
 // Repo:    https://gallery.ecr.aws/kubecost/frontend
 // Repo:    https://gallery.ecr.aws/kubecost/prometheus
 // Repo:    https://gallery.ecr.aws/bitnami/configmap-reload
-// Version: Latest is Chart/App 1.100.0 (as of 2/9/23)
+// Version: Latest is Chart/App 1.103.3 (as of 5/24/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
