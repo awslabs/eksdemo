@@ -11,7 +11,7 @@ import (
 // GitHub:  https://github.com/kubernetes/ingress-nginx
 // Helm:    https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx
 // Repo:    registry.k8s.io/ingress-nginx/controller
-// Version: Latest is Chart 4.4.2 and App v1.5.1 (as of 2/5/23)
+// Version: Latest is Chart 4.7.0 and App v1.8.0 (as of 5/30/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -35,6 +35,9 @@ func NewApp() *application.Application {
 	return app
 }
 
+// Service annoations from: https://kubernetes.github.io/ingress-nginx/deploy/#aws
+// Added `service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing` annotation
+// Because the new AWS LB Controller webhook will default to an internal load balancer
 const valuesTemplate = `---
 controller:
   image:
@@ -44,6 +47,7 @@ controller:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
     externalTrafficPolicy: Local
 serviceAccount:

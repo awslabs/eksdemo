@@ -31,8 +31,8 @@ Let's explore the dry run output with the `--dry-run` flag. The syntax for the c
 
 Helm Installer Dry Run:
 +---------------------+--------------------------------------------+
-| Application Version | v1.5.1                                     |
-| Chart Version       | 4.4.2                                      |
+| Application Version | v1.8.0                                     |
+| Chart Version       | 4.7.0                                      |
 | Chart Repository    | https://kubernetes.github.io/ingress-nginx |
 | Chart Name          | ingress-nginx                              |
 | Release Name        | ingress-nginx                              |
@@ -44,45 +44,49 @@ Values File:
 ---
 controller:
   image:
-    tag: v1.5.1
+    tag: v1.8.0
   replicaCount: 1
   service:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
     externalTrafficPolicy: Local
 serviceAccount:
   name: ingress-nginx
 ```
 
-From the `--dry-run` output above, you can see three annotations on the service and the `externalTrafficPolicy` set to local. This follows the [AWS deployment instructions](https://kubernetes.github.io/ingress-nginx/deploy/#aws) in the Ingress NGINX install guide.
+From the `--dry-run` output above, you can see four annotations on the service and the `externalTrafficPolicy` set to local. This follows the [AWS deployment instructions](https://kubernetes.github.io/ingress-nginx/deploy/#aws) in the Ingress NGINX install guide.
 
+The `service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing` annotation is added to make sure the load balancer is Internet facing in case you are running the AWS Load Balancer Controller v2.5.0 with it's default webhook that would make the load balancer internal.
 
 When you are ready to continue, proceed with installing Ingress NGINX. Replace `<cluster-name>` with the name of your EKS cluster.
 
 ```
 » eksdemo install ingress-nginx -c <cluster-name>
-Downloading Chart: https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-4.4.2/ingress-nginx-4.4.2.tgz
+Downloading Chart: https://github.com/kubernetes/ingress-nginx/releases/download/helm-chart-4.7.0/ingress-nginx-4.7.0.tgz
 Helm installing...
-2023/02/05 16:57:03 creating 1 resource(s)
-2023/02/05 16:57:04 Starting delete for "ingress-nginx-admission" ServiceAccount
+2023/05/31 19:48:55 creating 1 resource(s)
+2023/05/31 19:48:56 Starting delete for "ingress-nginx-admission" ServiceAccount
 <snip>
-2023/02/05 16:57:26 Watching for changes to Job ingress-nginx-admission-patch with timeout of 5m0s
-2023/02/05 16:57:26 Add/Modify event for ingress-nginx-admission-patch: ADDED
-2023/02/05 16:57:26 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/05 16:57:28 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
-2023/02/05 16:57:28 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/05 16:57:28 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
-2023/02/05 16:57:28 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
-2023/02/05 16:57:31 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
-2023/02/05 16:57:31 Starting delete for "ingress-nginx-admission" ServiceAccount
-2023/02/05 16:57:32 Starting delete for "ingress-nginx-admission" ClusterRole
-2023/02/05 16:57:32 Starting delete for "ingress-nginx-admission" ClusterRoleBinding
-2023/02/05 16:57:32 Starting delete for "ingress-nginx-admission" Role
-2023/02/05 16:57:32 Starting delete for "ingress-nginx-admission" RoleBinding
-2023/02/05 16:57:32 Starting delete for "ingress-nginx-admission-patch" Job
-Using chart version "4.4.2", installed "ingress-nginx" version "v1.5.1" in namespace "ingress-nginx"
+2023/05/31 19:49:17 Watching for changes to Job ingress-nginx-admission-patch with timeout of 5m0s
+2023/05/31 19:49:17 Add/Modify event for ingress-nginx-admission-patch: ADDED
+2023/05/31 19:49:17 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/31 19:49:19 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
+2023/05/31 19:49:19 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/31 19:49:19 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
+2023/05/31 19:49:19 ingress-nginx-admission-patch: Jobs active: 1, jobs failed: 0, jobs succeeded: 0
+2023/05/31 19:49:21 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
+2023/05/31 19:49:21 ingress-nginx-admission-patch: Jobs active: 0, jobs failed: 0, jobs succeeded: 0
+2023/05/31 19:49:21 Add/Modify event for ingress-nginx-admission-patch: MODIFIED
+2023/05/31 19:49:21 Starting delete for "ingress-nginx-admission" ServiceAccount
+2023/05/31 19:49:21 Starting delete for "ingress-nginx-admission" ClusterRole
+2023/05/31 19:49:21 Starting delete for "ingress-nginx-admission" ClusterRoleBinding
+2023/05/31 19:49:22 Starting delete for "ingress-nginx-admission" Role
+2023/05/31 19:49:22 Starting delete for "ingress-nginx-admission" RoleBinding
+2023/05/31 19:49:22 Starting delete for "ingress-nginx-admission-patch" Job
+Using chart version "4.7.0", installed "ingress-nginx" version "v1.8.0" in namespace "ingress-nginx"
 NOTES:
 The ingress-nginx controller has been installed.
 It may take a few minutes for the LoadBalancer IP to be available.
@@ -106,10 +110,10 @@ The install of Ingress NGINX includes a Kubernetes Service of type `LoadBalancer
 * Indicates internal load balancer
 ```
 
-To view the listener configuration use the `eksdemo get listenter -L <load-balancer-name>` command. Replace `a932c2d30be6840c999e3db32f5a1a8c` with the name of your load balancer.
+To view the listener configuration use the `eksdemo get listenter -L <load-balancer-name>` command. Replace `<load-balancer-name>` with the name of your load balancer.
 
 ```
-» eksdemo get listener -L a932c2d30be6840c999e3db32f5a1a8c                        1 ↵
+» eksdemo get listener -L <load-balancer-name>
 +------------------+-----------+------------------------+----------------------------------+
 |        Id        | Prot:Port | Default Certificate Id |          Default Action          |
 +------------------+-----------+------------------------+----------------------------------+
@@ -134,5 +138,3 @@ The load balancer is configured to listen on both port 80 and port 443. Each por
 ```
 
 The install of Ingress NGINX configures the NLB to use the `Instance` target type. The Kubernetes service sets up a NodePort on each worker node. From the output above we can see that port 80 on the NLB forwards to port 31976 on the EC2 instance. And port 443 on the NLB forwards to port 30970 on the instance.
-
-
