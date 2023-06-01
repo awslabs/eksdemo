@@ -17,10 +17,13 @@ func newOptions() (options *NginxOptions, flags cmd.Flags) {
 			Namespace:      "ingress-nginx",
 			ServiceAccount: "ingress-nginx",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "4.4.2",
-				Latest:        "v1.5.1",
-				PreviousChart: "4.3.0",
-				Previous:      "v1.4.0",
+				// https://github.com/kubernetes/ingress-nginx#supported-versions-table
+				// v1.8.0 supports k8s 1.27, 1.26, 1.25, 1.24
+				LatestChart: "4.7.0",
+				Latest:      "v1.8.0",
+				// v1.6.x supports k8s 1.23
+				PreviousChart: "4.5.2",
+				Previous:      "v1.6.4",
 			},
 		},
 		Replicas: 1,
@@ -30,7 +33,7 @@ func newOptions() (options *NginxOptions, flags cmd.Flags) {
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "replicas",
-				Description: "number of replicas for the deployment",
+				Description: "number of replicas for the controller deployment",
 			},
 			Option: &options.Replicas,
 		},
