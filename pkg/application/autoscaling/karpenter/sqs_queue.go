@@ -32,6 +32,7 @@ Resources:
     Properties:
       QueueName: karpenter-{{ .ClusterName }}
       MessageRetentionPeriod: 300
+      SqsManagedSseEnabled: true
   KarpenterInterruptionQueuePolicy:
     Type: AWS::SQS::QueuePolicy
     Properties:
