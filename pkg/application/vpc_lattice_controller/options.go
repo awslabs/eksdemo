@@ -1,4 +1,4 @@
-package gateway_api_controller
+package vpc_lattice_controller
 
 import (
 	"fmt"
@@ -13,6 +13,7 @@ import (
 type GatwayApiControllerOptions struct {
 	application.ApplicationOptions
 
+	Replicas               int
 	VpcLatticePrefixListId string
 }
 
@@ -22,13 +23,25 @@ func newOptions() (options *GatwayApiControllerOptions, flags cmd.Flags) {
 			Namespace:      "vpc-lattice",
 			ServiceAccount: "gateway-api-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.0.10",
-				Latest:        "v0.0.10",
+				LatestChart:   "v0.0.12",
+				Latest:        "v0.0.12",
 				PreviousChart: "v0.0.10",
 				Previous:      "v0.0.10",
 			},
 		},
+		Replicas: 1,
 	}
+
+	flags = cmd.Flags{
+		&cmd.IntFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "replicas",
+				Description: "number of replicas for the controller deployment",
+			},
+			Option: &options.Replicas,
+		},
+	}
+
 	return
 }
 

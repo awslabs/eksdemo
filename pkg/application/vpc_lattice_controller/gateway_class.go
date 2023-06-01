@@ -1,4 +1,4 @@
-package gateway_api_controller
+package vpc_lattice_controller
 
 import (
 	"github.com/awslabs/eksdemo/pkg/manifest"
