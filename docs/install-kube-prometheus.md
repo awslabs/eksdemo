@@ -55,7 +55,7 @@ Aliases:
   kube-prometheus-stack-amp, kube-prometheus-amp
 
 Flags:
-      --chart-version string   chart version (default "45.1.1")
+      --chart-version string   chart version (default "46.6.0")
   -c, --cluster string         cluster to install application (required)
       --dry-run                don't install, just print out all installation steps
   -P, --grafana-pass string    grafana admin password (required)
@@ -68,7 +68,7 @@ Flags:
       --set strings            set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
       --target-type string     target type when deploying NLB or ALB Ingress (default "ip")
       --use-previous           use previous working chart/app versions ("34.10.0"/"v0.55.0")
-  -v, --version string         application version (default "v0.63.0")
+  -v, --version string         application version (default "v0.65.1")
 ```
 
 The Kube Prometheus Stack specific flag is:
@@ -155,8 +155,8 @@ alias: "blue-kube-prometheus"
 
 Helm Installer Dry Run:
 +---------------------+----------------------------------------------------+
-| Application Version | v0.63.0                                            |
-| Chart Version       | 45.1.1                                             |
+| Application Version | v0.65.1                                            |
+| Chart Version       | 46.6.0                                             |
 | Chart Repository    | https://prometheus-community.github.io/helm-charts |
 | Chart Name          | kube-prometheus-stack                              |
 | Release Name        | kube-prometheus-stack-amp                          |
@@ -230,7 +230,7 @@ prometheus-node-exporter:
   fullnameOverride: node-exporter
 prometheusOperator:
   image:
-    tag: v0.63.0
+    tag: v0.65.1
 prometheus:
   serviceAccount:
     name: prometheus-prometheus
@@ -285,10 +285,10 @@ Creating dependency: grafana-amp-irsa
 Creating dependency: amazon-managed-prometheus-workspace
 Creating AMP Workspace Alias: blue-kube-prometheus...done
 Created AMP Workspace Id: ws-a29b716d-7f17-4689-a0b4-26073c6790a0
-Downloading Chart: https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-45.1.1/kube-prometheus-stack-45.1.1.tgz
+Downloading Chart: https://github.com/prometheus-community/helm-charts/releases/download/kube-prometheus-stack-46.6.0/kube-prometheus-stack-46.6.0.tgz
 Helm installing...
 <snip>
-Using chart version "45.1.1", installed "kube-prometheus-stack-amp" version "v0.63.0" in namespace "monitoring"
+Using chart version "46.6.0", installed "kube-prometheus-stack-amp" version "v0.65.1" in namespace "monitoring"
 NOTES:
 kube-prometheus-stack has been installed. Check its status by running:
   kubectl --namespace monitoring get pods -l "release=kube-prometheus-stack-amp"
@@ -379,7 +379,7 @@ To view the raw output of the AWS API response use the `-o yaml` output option. 
 » eksdemo get amp-workspace <cluster-name>-kube-prometheus -o yaml
 - Workspace:
     Alias: blue-kube-prometheus
-    Arn: arn:aws:aps:us-west-2:445558993477:workspace/ws-a29b716d-7f17-4689-a0b4-26073c6790a0
+    Arn: arn:aws:aps:us-west-2:123456789012:workspace/ws-a29b716d-7f17-4689-a0b4-26073c6790a0
     CreatedAt: "2023-03-06T02:32:37.164Z"
     PrometheusEndpoint: https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-a29b716d-7f17-4689-a0b4-26073c6790a0/
     Status:
