@@ -266,7 +266,7 @@ To validate installation you can run the **`eksdemo version`** command and confi
 
 ```
 » eksdemo version
-eksdemo version info: cmd.Version{Version:"0.6.0", Date:"2023-03-06T04:54:42Z", Commit:"b93e91e"}
+eksdemo version info: cmd.Version{Version:"0.8.0", Date:"2023-06-03T17:45:05Z", Commit:"bac7ddb"}
 ```
 
 To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`

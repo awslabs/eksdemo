@@ -27,7 +27,7 @@ See the [Create Cluster documentation](/docs/create-cluster.md) for configuratio
 
 ## Install EBS CSI Driver
 
-This section walks through the process of installing cert-manager. The command for performing the installation is:
+This section walks through the process of installing the EBS CSI Driver. The command for performing the installation is:
 **`eksdemo install storage-ebs-csi -c <cluster-name>`**.
 
 Let’s expore the command and it’s options by using the -h help shorthand flag.
