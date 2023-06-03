@@ -13,7 +13,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
-	"github.com/awslabs/eksdemo/pkg/application/gateway_api_controller"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
@@ -21,6 +20,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/prometheus_node_exporter"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/application/velero"
+	"github.com/awslabs/eksdemo/pkg/application/vpc_lattice_controller"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +58,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(falco.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallFluxCmd())
 	cmd.AddCommand(NewInstallAliasCmds(fluxApps, "flux-")...)
-	cmd.AddCommand(gateway_api_controller.NewApp().NewInstallCmd())
+	cmd.AddCommand(vpc_lattice_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallIngressCmd())
 	cmd.AddCommand(NewInstallAliasCmds(ingressControllers, "ingress-")...)

@@ -1,4 +1,4 @@
-package gateway_api_controller
+package vpc_lattice_controller
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -13,22 +13,22 @@ import (
 // GitHub:  https://github.com/aws/aws-application-networking-k8s
 // Helm:    https://github.com/aws/aws-application-networking-k8s/tree/main/helm
 // Repo:    https://gallery.ecr.aws/aws-application-networking-k8s/aws-gateway-controller
-// Version: Latest is v0.0.10 (as of 4/23/23)
+// Version: Latest is v0.0.12 (as of 6/1/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
 	app := &application.Application{
 		Command: cmd.Command{
-			Name:        "gateway-api-controller",
-			Description: "AWS Gateway API Controller",
-			Aliases:     []string{"vpc-lattice", "vpclattice", "lattice"},
+			Name:        "vpc-lattice-controller",
+			Description: "Amazon VPC Lattice (Gateway API) Controller",
+			Aliases:     []string{"gateway-api-controller", "vpc-lattice", "lattice"},
 		},
 
 		Dependencies: []*resource.Resource{
 			irsa.NewResourceWithOptions(&irsa.IrsaOptions{
 				CommonOptions: resource.CommonOptions{
-					Name: "gateway-api-controller-irsa",
+					Name: "vpc-lattice-controller-irsa",
 				},
 				PolicyType: irsa.PolicyDocument,
 				PolicyDocTemplate: &template.TextTemplate{
@@ -39,7 +39,7 @@ func NewApp() *application.Application {
 		},
 
 		Installer: &installer.HelmInstaller{
-			ReleaseName:   "gateway-api-controller",
+			ReleaseName:   "vpc-lattice-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart",
 			ValuesTemplate: &template.TextTemplate{
 				Template: valuesTemplate,
@@ -73,6 +73,8 @@ const valuesTemplate = `---
 fullnameOverride: gateway-api-controller
 image:
   tag: {{ .Version }}
+deployment:
+  replicas: {{ .Replicas}}
 serviceAccount:
   annotations:
     {{ .IrsaAnnotation }}

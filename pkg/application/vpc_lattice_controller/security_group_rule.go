@@ -1,4 +1,4 @@
-package gateway_api_controller
+package vpc_lattice_controller
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
