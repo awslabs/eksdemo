@@ -30,6 +30,7 @@ func NewAckCmd() *cobra.Command {
 
 func init() {
 	ack = []func() *resource.Resource{
+		amp.NewLoggingConfigurationResource,
 		amp.NewWorkspaceResource,
 		ec2.NewSecurityGroupResource,
 		ec2.NewSubnetResource,
