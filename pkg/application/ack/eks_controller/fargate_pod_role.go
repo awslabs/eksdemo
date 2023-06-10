@@ -1,11 +1,10 @@
 package eks_controller
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 	"github.com/awslabs/eksdemo/pkg/cloudformation"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/template"
-
-	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
 )
 
 func fargatePodExecutionRole() *resource.Resource {
