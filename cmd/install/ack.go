@@ -6,6 +6,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/ack/ec2_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/ecr_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/eks_controller"
+	"github.com/awslabs/eksdemo/pkg/application/ack/iam_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/prometheusservice_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/s3_controller"
 	"github.com/spf13/cobra"
@@ -51,6 +52,7 @@ func init() {
 		ec2_controller.NewApp,
 		ecr_controller.NewApp,
 		eks_controller.NewApp,
+		iam_controller.NewApp,
 		prometheusservice_controller.NewApp,
 		s3_controller.NewApp,
 	}
