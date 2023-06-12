@@ -5,6 +5,8 @@ import (
 	"net"
 	"strings"
 
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
@@ -17,8 +19,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/irsa"
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/template"
-
-	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +27,7 @@ type ClusterOptions struct {
 	*nodegroup.NodegroupOptions
 
 	Fargate          bool
+	HostnameType     string
 	IPv6             bool
 	NoRoles          bool
 	PrefixAssignment bool
@@ -47,6 +48,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 			KubernetesVersion:   "1.27",
 		},
 
+		HostnameType:     string(types.HostnameTypeIpName),
 		NodegroupOptions: ngOptions,
 		NoRoles:          false,
 		VpcCidr:          "192.168.0.0/16",
@@ -84,6 +86,15 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				Description: "create a Fargate profile",
 			},
 			Option: &options.Fargate,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "hostname-type",
+				Description: "type of hostname to use for EC2 instances",
+				Shorthand:   "H",
+			},
+			Choices: []string{string(types.HostnameTypeIpName), string(types.HostnameTypeResourceName)},
+			Option:  &options.HostnameType,
 		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{

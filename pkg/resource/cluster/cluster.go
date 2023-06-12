@@ -73,4 +73,5 @@ privateCluster:
 
 vpc:
   cidr: {{ .VpcCidr }}
+  hostnameType: {{ .HostnameType }}
 `
