@@ -13,26 +13,28 @@ import (
 // Docs:    https://aws-controllers-k8s.github.io/community/reference/
 // GitHub:  https://github.com/aws-controllers-k8s/prometheusservice-controller
 // Helm:    https://github.com/aws-controllers-k8s/prometheusservice-controller/tree/main/helm
-// Repo:    public.ecr.aws/aws-controllers-k8s/prometheusservice-controller
-// Version: Latest is v0.1.1 (as of 10/24/22)
+// Chart:   https://gallery.ecr.aws/aws-controllers-k8s/prometheusservice-chart
+// Repo:    https://gallery.ecr.aws/aws-controllers-k8s/prometheusservice-controller
+// Version: Latest is v1.2.3 (as of 6/11/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "prometheusservice-controller",
-			Description: "ACK Amazon Managed Prometheus Controller",
+			Description: "ACK Prometheus Service Controller",
 			Aliases:     []string{"prometheus", "prom", "amp"},
 		},
 
 		Dependencies: []*resource.Resource{
 			irsa.NewResourceWithOptions(&irsa.IrsaOptions{
 				CommonOptions: resource.CommonOptions{
-					Name: "ack-s3-controller-irsa",
+					Name: "ack-prometheusservice-controller-irsa",
 				},
-				// https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/iam/recommended-policy-arn
-				PolicyType: irsa.PolicyARNs,
-				Policy:     []string{"arn:aws:iam::aws:policy/AmazonPrometheusConsoleFullAccess"},
+				PolicyType: irsa.PolicyDocument,
+				PolicyDocTemplate: &template.TextTemplate{
+					Template: policyDocTemplate,
+				},
 			}),
 		},
 
@@ -40,8 +42,8 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-prometheusservice-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.1.1",
-				Latest:        "v0.1.1",
+				LatestChart:   "1.2.3",
+				Latest:        "1.2.3",
 				PreviousChart: "v0.1.1",
 				Previous:      "v0.1.1",
 			},
@@ -57,6 +59,17 @@ func NewApp() *application.Application {
 	}
 	return app
 }
+
+// https://github.com/aws-controllers-k8s/community/issues/1822
+const policyDocTemplate = `
+Version: '2012-10-17'
+Statement:
+- Effect: Allow
+  Action:
+  - aps:*
+  - logs:CreateLogDelivery
+  Resource: "*"
+`
 
 const valuesTemplate = `---
 image:
