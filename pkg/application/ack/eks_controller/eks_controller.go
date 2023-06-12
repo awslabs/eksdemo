@@ -15,7 +15,7 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/eks-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/eks-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/eks-controller
-// Version: Latest is v0.1.7 (as of 10/24/22)
+// Version: Latest is v1.0.2 (as of 6/11/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -44,10 +44,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-eks-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.1.7",
-				Latest:        "v0.1.7",
-				PreviousChart: "v0.1.2",
-				Previous:      "v0.1.2",
+				LatestChart:   "1.0.2",
+				Latest:        "1.0.2",
+				PreviousChart: "v0.1.7",
+				Previous:      "v0.1.7",
 			},
 		},
 
@@ -72,15 +72,12 @@ Statement:
 - Effect: Allow
   Action:
   - iam:GetRole
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:role/aws-service-role/eks-fargate.amazonaws.com/AWSServiceRoleForAmazonEKSForFargate
+- Effect: Allow
+  Action:
   - iam:PassRole
-  Resource: "*"
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:role/eksdemo.{{ .ClusterName }}.fargate-pod-execution-role
 `
-
-// TODO: Can iam:PassRole be restricted? Something like below...
-// Resource: arn:aws:iam::{{ .Account }}:role/eksdemo.{{ .ClusterName }}.fargate-pod-execution-role
-// Condition:
-//   StringLike:
-//     "iam:PassedToService": eks-fargate-pods.amazonaws.com
 
 const valuesTemplate = `---
 image:
