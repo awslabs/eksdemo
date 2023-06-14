@@ -6,6 +6,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/ack/ec2"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/ecr"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/eks"
+	"github.com/awslabs/eksdemo/pkg/resource/ack/iam"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/s3"
 	"github.com/spf13/cobra"
 )
@@ -36,6 +37,7 @@ func init() {
 		ec2.NewSubnetResource,
 		ec2.NewVpcResource,
 		ecr.NewResource,
+		iam.NewRoleResource,
 		eks.NewFargateProfileResource,
 		s3.NewResource,
 	}
