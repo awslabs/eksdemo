@@ -145,6 +145,7 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 * `acm-certificate` — ACM Cerificate
 * `addon` — EKS Managed Addon
 * `addon-versions` — EKS Managed Addon Versions
+* `alarm` — CloudWatch Alarm
 * `amg-workspace` — Amazon Managed Grafana Workspace
 * `amp-rule` — Amazon Managed Prometheus Rule Namespace
 * `amp-workspace` — Amazon Managed Prometheus Workspace
