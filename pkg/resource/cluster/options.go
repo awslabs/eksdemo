@@ -3,6 +3,7 @@ package cluster
 import (
 	"fmt"
 	"net"
+	"os"
 	"strings"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
@@ -20,6 +21,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/template"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type ClusterOptions struct {
@@ -29,6 +31,7 @@ type ClusterOptions struct {
 	Fargate          bool
 	HostnameType     string
 	IPv6             bool
+	Kubeconfig       string
 	NoRoles          bool
 	PrefixAssignment bool
 	Private          bool
@@ -70,6 +73,13 @@ func addOptions(res *resource.Resource) *resource.Resource {
 
 	res.Options = options
 
+	// To keep in sync with ekctl, using logic from from DefaultPath() in eksctl/pkg/utils/kubeconfig
+	if env := os.Getenv(clientcmd.RecommendedConfigPathEnvVar); len(env) > 0 {
+		options.Kubeconfig = env
+	} else {
+		options.Kubeconfig = clientcmd.RecommendedHomeFile
+	}
+
 	flags := cmd.Flags{
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
@@ -102,6 +112,18 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				Description: "use IPv6 networking",
 			},
 			Option: &options.IPv6,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "kubeconfig",
+				Description: "path to write kubeconfig",
+				Validate: func(cmd *cobra.Command, args []string) error {
+					// Set the KUBECONFIG environment variable to configure eksctl
+					_ = os.Setenv("KUBECONFIG", options.Kubeconfig)
+					return nil
+				},
+			},
+			Option: &options.Kubeconfig,
 		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
