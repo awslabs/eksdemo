@@ -70,7 +70,8 @@ The application catalog includes:
     * `ec2-controller` — ACK EC2 Controller
     * `ecr-controller` — ACK ECR Controller
     * `eks-controller` — ACK EKS Controller
-    * `prometheusservice-controller` -- ACK Amazon Managed Prometheus Controller
+    * `iam-controller` — ACK IAM Controller
+    * `prometheusservice-controller` — ACK Prometheus Service Controller
     * `s3-controller` — ACK S3 Controller
 * `adot-operator` — AWS Distro for OpenTelemetry Operator
 * `appmesh-controller` — AWS App Mesh Controller
