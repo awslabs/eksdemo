@@ -9,7 +9,7 @@ import (
 
 type VpcOptions struct {
 	resource.CommonOptions
-	CidrBlock string
+	CidrBlocks []string
 }
 
 func NewVpcResource() *resource.Resource {
@@ -34,16 +34,16 @@ func NewVpcResource() *resource.Resource {
 			Namespace:     "default",
 			NamespaceFlag: true,
 		},
+		CidrBlocks: []string{"10.0.0.0/16"},
 	}
 
 	flags := cmd.Flags{
-		&cmd.StringFlag{
+		&cmd.StringSliceFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "cidr",
-				Description: "ipv4 network range for the VPC, in CIDR notation",
-				Required:    true,
+				Name:        "cidrs",
+				Description: "list of IPv4 CIDR blocks for your VPC",
 			},
-			Option: &options.CidrBlock,
+			Option: &options.CidrBlocks,
 		},
 	}
 
@@ -60,10 +60,13 @@ metadata:
   name: {{ .Name }}
   namespace: {{ .Namespace }}
 spec:
-  cidrBlock: {{ .CidrBlock }}
-  tagSpecifications:
-  - resourceType: vpc
-    tags:
-    - key: Name
-      value: {{ .Name }}
+  cidrBlocks:
+{{- range .CidrBlocks }}
+  - {{ . }}
+{{- end }}
+  enableDNSHostnames: true
+  enableDNSSupport: true
+  tags:
+  - key: Name
+    value: {{ .Name }}
 `
