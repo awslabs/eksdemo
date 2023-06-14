@@ -60,7 +60,7 @@ func NewApp() *application.Application {
 	return app
 }
 
-// https://github.com/aws-controllers-k8s/community/issues/1822
+// https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/iam/recommended-inline-policy
 const policyDocTemplate = `
 Version: '2012-10-17'
 Statement:
@@ -68,6 +68,9 @@ Statement:
   Action:
   - aps:*
   - logs:CreateLogDelivery
+  - logs:DescribeLogGroups
+  - logs:DescribeResourcePolicies
+  - logs:PutResourcePolicy
   Resource: "*"
 `
 
