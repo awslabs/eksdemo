@@ -4,6 +4,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/acm_certificate"
 	"github.com/awslabs/eksdemo/pkg/resource/addon"
+	"github.com/awslabs/eksdemo/pkg/resource/alarm"
 	"github.com/awslabs/eksdemo/pkg/resource/amg_workspace"
 	"github.com/awslabs/eksdemo/pkg/resource/amp_rule"
 	"github.com/awslabs/eksdemo/pkg/resource/amp_workspace"
@@ -70,6 +71,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(acm_certificate.NewResource().NewGetCmd())
 	cmd.AddCommand(addon.NewResource().NewGetCmd())
 	cmd.AddCommand(addon.NewVersionsResource().NewGetCmd())
+	cmd.AddCommand(alarm.NewResource().NewGetCmd())
 	cmd.AddCommand(amg_workspace.NewResource().NewGetCmd())
 	cmd.AddCommand(amp_rule.NewResource().NewGetCmd())
 	cmd.AddCommand(amp_workspace.NewResource().NewGetCmd())
