@@ -22,14 +22,19 @@ func TagNamePrefix(clusterName string) string {
 func CheckVersion() error {
 	errmsg := fmt.Errorf("eksdemo requires eksctl version %s or later", minVersion)
 
-	eksctlVersion, err := exec.Command("eksctl", "version").Output()
+	eksctlVersionRaw, err := exec.Command("eksctl", "version").Output()
 	if err != nil {
 		return errmsg
 	}
 
-	v, err := version.NewVersion(strings.TrimSpace(string(eksctlVersion)))
+	// Sometimes homebrew installs eksctl from homebrew-core
+	// and `eksctl version` results in something like "0.144.0-dev+92e3cd383.2023-06-09T12:46:50Z"
+	// This removes the -dev part if it exists
+	eksctlVersion := strings.Split(strings.TrimSpace(string(eksctlVersionRaw)), "-")[0]
+
+	v, err := version.NewVersion(eksctlVersion)
 	if err != nil {
-		fmt.Printf("Warning: unable to parse eksctl version :%s\n", err)
+		fmt.Printf("Warning: unable to parse eksctl version: %s\n", err.Error())
 		return nil
 	}
 
