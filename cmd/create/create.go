@@ -45,6 +45,9 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(nodegroup.NewSpotResource().NewCreateCmd())
 	cmd.AddCommand(nodegroup.NewGravitonResource().NewCreateCmd())
 	cmd.AddCommand(organization.NewResource().NewCreateCmd())
+	cmd.AddCommand(NewOtelCollectorCmd())
+	cmd.AddCommand(NewCreateAliasCmds(otelCollectors, "otel-collector-")...)
+	cmd.AddCommand(NewCreateAliasCmds(otelCollectors, "otel-")...)
 	cmd.AddCommand(ssm_session.NewResource().NewCreateCmd())
 	cmd.AddCommand(target_group.NewResource().NewCreateCmd())
 
