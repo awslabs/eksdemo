@@ -12,9 +12,9 @@ import (
 // Docs:    https://docs.aws.amazon.com/app-mesh/latest/userguide/
 // Docs:    https://aws.github.io/aws-app-mesh-controller-for-k8s/
 // GitHub:  https://github.com/aws/aws-app-mesh-controller-for-k8s
-// Helm:    https://github.com/aws/eks-charts/tree/master/stable/appmesh-controller
-// Repo:    602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/appmesh-controller
-// Version: Latest is v1.7.0 (as of 11/04/22)
+// Helm:    https://github.com/aws/aws-app-mesh-controller-for-k8s/tree/master/config/helm/appmesh-controller
+// Repo:    840364872350.dkr.ecr.us-west-2.amazonaws.com/amazon/appmesh-controller
+// Version: Latest is v1.12.1 (as of 6/19/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -40,10 +40,10 @@ func NewApp() *application.Application {
 			Namespace:      "appmesh-system",
 			ServiceAccount: "appmesh-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.7.0",
-				Latest:        "v1.7.0",
-				PreviousChart: "1.5.0",
-				Previous:      "v1.5.0",
+				LatestChart:   "1.12.1",
+				Latest:        "v1.12.1",
+				PreviousChart: "1.7.0",
+				Previous:      "v1.7.0",
 			},
 		},
 
@@ -70,6 +70,7 @@ image:
   tag: {{ .Version }}
 `
 
+// https://github.com/aws/aws-app-mesh-controller-for-k8s/blob/master/config/iam/controller-iam-policy.json
 const policyDocument = `
 Version: '2012-10-17'
 Statement:
