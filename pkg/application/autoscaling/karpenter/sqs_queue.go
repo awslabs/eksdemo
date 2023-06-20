@@ -23,6 +23,7 @@ func karpenterSqsQueue() *resource.Resource {
 	return res
 }
 
+// https://github.com/aws/karpenter/blob/main/website/content/en/preview/getting-started/getting-started-with-karpenter/cloudformation.yaml#L80
 const sqsCloudFormationTemplate = `
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Resources used by https://github.com/aws/karpenter

@@ -24,6 +24,7 @@ func karpenterNodeRole() *resource.Resource {
 	return res
 }
 
+// https://github.com/aws/karpenter/blob/main/website/content/en/preview/getting-started/getting-started-with-karpenter/cloudformation.yaml
 const cloudFormationTemplate = `
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Resources used by https://github.com/aws/karpenter
