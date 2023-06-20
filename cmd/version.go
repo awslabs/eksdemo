@@ -20,7 +20,7 @@ type Version struct {
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "version of eksdemo",
+	Short: "Print the version and build information for eksdemo",
 	Run: func(cmd *cobra.Command, args []string) {
 		eksdemoVersion := Version{
 			Version: version,
