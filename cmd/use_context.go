@@ -10,7 +10,7 @@ import (
 
 var useContextCmd = &cobra.Command{
 	Use:     "use-context CLUSTER",
-	Short:   "set currect kubeconfig context",
+	Short:   "Switch kubeconfig context to CLUSTER",
 	Aliases: []string{"context", "ctx", "uc"},
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

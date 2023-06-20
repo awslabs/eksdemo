@@ -106,7 +106,6 @@ The application catalog includes:
 * `flux` — GitOps family of projects
     * `controllers` — Flux Controllers
     * `sync` — Flux GitRepository to sync with
-* `gateway-api-controller` — AWS Gateway API Controller
 * `harbor` — Cloud Native Registry
 * `ingress` — Ingress Controllers
     * `contour` — Ingress Controller using Envoy proxy
@@ -136,6 +135,7 @@ The application catalog includes:
     * `fsx-lustre-csi` — Amazon FSx for Lustre CSI Driver
     * `openebs` — Kubernetes storage simplified
 * `velero` — Backup and Migrate Kubernetes Applications
+* `vpc-lattice-controller` — Amazon VPC Lattice (Gateway API) Controller
 
 ## Kubectl-like get commands
 `eksdemo` makes it easy to view AWS resources from the command line with commands that are very similar to how `kubectl get` works. Output defaults to a table, but raw AWS API output can be viewed with `-o yaml` and `-o json` flag options.

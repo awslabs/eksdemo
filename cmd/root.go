@@ -17,12 +17,14 @@ var debug, responseBodyDebug bool
 
 var rootCmd = &cobra.Command{
 	Use:              "eksdemo",
-	Short:            "Create and manage demo clusters",
+	Short:            "The easy button for learning, testing, and demoing Amazon EKS",
 	PersistentPreRun: preRun,
 	SilenceErrors:    true,
-	Long: `An opinioned toolkit to quickly and easily create and manage
-EKS clusters. Install applications along with required IAM Roles
-using best practices configurations.`,
+	Long: `The easy button for learning, testing, and demoing Amazon EKS:
+  * Install complex applications and dependencies with a single command
+  * Extensive application catalog (over 50 CNCF, open source and related projects)
+  * Customize application installs easily with simple command line flags
+  * Query and search AWS resources with over 60 kubectl-like get commands`,
 }
 
 func Execute() {
