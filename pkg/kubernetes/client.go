@@ -39,8 +39,8 @@ func CreateResources(kubeContext, manifest string) error {
 
 	// Initial use case for Retry is Karpenter. Helm wait doesn't wait for Webhooks
 	// https://github.com/cert-manager/cert-manager/issues/2908
-	tenSecondRetry := wait.Backoff{
-		Steps:    5,
+	twentySecondRetry := wait.Backoff{
+		Steps:    10,
 		Duration: 2 * time.Second,
 	}
 
@@ -51,7 +51,7 @@ func CreateResources(kubeContext, manifest string) error {
 		}
 		fmt.Println()
 
-		err = retry.OnError(tenSecondRetry, errors.IsInternalError, func() (err error) {
+		err = retry.OnError(twentySecondRetry, errors.IsInternalError, func() (err error) {
 			_, err = resource.NewHelper(info.Client, info.Mapping).Create(info.Namespace, true, info.Object)
 			return
 		})

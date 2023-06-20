@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.27.5 (as of 05/24/23)
+// Version: Latest is v0.28.0 (as of 6/19/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
