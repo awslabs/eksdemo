@@ -13,11 +13,11 @@ The easy button for learning, testing, and demoing Amazon EKS:
 ## Table of Contents
 * [Why `eksdemo`?](#why-eksdemo)
 * [No Magic](#no-magic)
+* [`eksdemo` vs EKS Blueprints](#eksdemo-vs-eks-blueprints)
+* [Install eksdemo](#install-eksdemo)
+  * [Prerequisites](#prerequisites)
 * [Application Catalog](#application-catalog)
 * [Kubectl-like get commands](#kubectl-like-get-commands)
-* [`eksdemo` vs EKS Blueprints](#eksdemo-vs-eks-blueprints)
-* [Prerequisites](#prerequisites)
-* [Install eksdemo](#install-eksdemo)
 * [Tutorials](#tutorials)
   * [Basics](#basics)
     * [Create an Amazon EKS Cluster with Bottlerocket Nodes](/docs/create-cluster.md)
@@ -54,6 +54,43 @@ Application installs are:
     * The `--set` flag is available to override any settings in a Helm chart's values file 
 * Managed by Helm
     * `eksdemo` embeds Helm as a library and it's used to install all applications, even those that don't have a Helm chart
+
+## `eksdemo` vs EKS Blueprints
+
+Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/) automate the creation of EKS clusters and install commonly used applications. Why would you use `eksdemo` for learning, testing, and demoing EKS?
+
+| `eksdemo` | EKS Blueprints |
+------------|-----------------
+Use cases: learning, testing, and demoing EKS | Use cases: customers deploying to prod and non-prod environments
+Kubectl-like CLI installs apps with single command | Infrastructure as Code (IaC) built on Terraform or CDK
+Imperative tooling is great for iterative testing | Declarative IaC tooling is not designed for iterative testing
+Used to get up and running quickly | Used to drive drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
+
+
+## Install `eksdemo`
+
+`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. There are two ways you can install:
+
+* [Homebrew](#install-using-homebrew) — This is the easiest method for Mac and Linux users.
+* [Manually](#install-manually) — This method is required for Windows users.
+
+### Prerequisites
+
+1. AWS Account with Administrator access
+2. Route53 Public Hosted Zone (Optional but strongly recommended)
+    1. You can update the domain registration of your existing domain (using any domain registrar) to [change the name servers for the domain to use the four Route 53 name servers](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html#migrate-dns-update-domain-inactive). 
+    2. You can still use `eksdemo` if you don’t have a Route53 Hosted Zone. Most applications that explose an Ingress resource default to deploying a Service of type LoadBalancer if you don't use the `--ingress-host` flag and your connection to the application will be unencrypted.
+
+
+### Install using Homebrew
+
+[Homebrew](https://brew.sh/) installation method is supported for Mac and Linux. Using the Terminal, enter the following commands:
+
+```
+brew tap aws/tap
+brew install eksdemo
+```
+
 
 ## Application Catalog
 
@@ -206,39 +243,6 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
     * `target-group` —  VPC Lattice Target Group
 * `vpc-summary` — VPC Summary
 
-## `eksdemo` vs EKS Blueprints
-
-Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/) automate the creation of EKS clusters and install commonly used applications. Why would you use `eksdemo` for learning, testing, and demoing EKS?
-
-| `eksdemo` | EKS Blueprints |
-------------|-----------------
-Use cases: learning, testing, and demoing EKS | Use cases: customers deploying to prod and non-prod environments
-Kubectl-like CLI installs apps with single command | Infrastructure as Code (IaC) built on Terraform or CDK
-Imperative tooling is great for iterative testing | Declarative IaC tooling is not designed for iterative testing
-Used to get up and running quickly | Used to drive drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
-
-## Prerequisites
-
-1. AWS Account with Administrator access
-2. Route53 Public Hosted Zone (Optional but strongly recommended)
-    1. You can update the domain registration of your existing domain (using any domain registrar) to [change the name servers for the domain to use the four Route 53 name servers](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html#migrate-dns-update-domain-inactive). 
-    2. You can still use `eksdemo` if you don’t have a Route53 Hosted Zone. Most applications that explose an Ingress resource default to deploying a Service of type LoadBalancer if you don't use the `--ingress-host` flag and your connection to the application will be unencrypted.
-
-## Install `eksdemo`
-
-`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. There are two ways you can install:
-
-* [Homebrew](#install-using-homebrew) — This is the easiest method for Mac and Linux users.
-* [Manually](#install-manually) — This method is required for Windows users.
-
-### Install using Homebrew
-
-[Homebrew](https://brew.sh/) installation method is supported for Mac and Linux. Using the Terminal, enter the following commands:
-
-```
-brew tap aws/tap
-brew install eksdemo
-```
 
 ### Troubleshoot Homebrew Install
 
