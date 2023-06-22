@@ -32,6 +32,7 @@ The easy button for learning, testing, and demoing Amazon EKS:
     * [Install Karpenter autoscaler and test node provisioning and consolidation](/docs/install-karpenter.md)
     * [Install EKS optimized Kubecost using Amazon Managed Prometheus](/docs/install-kubecost.md)
     * [Install Kube Prometheus Stack using Amazon Managed Prometheus](/docs/install-kube-prometheus.md)
+    * [Install Amazon VPC Lattice (Gateway API) Controller](/docs/install-vpc-lattice-controller.md)
 
 ## Why `eksdemo`?
 While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog. An application can be installed (including dependencies) with a single command.
@@ -306,6 +307,7 @@ The Basics tutorials provide detailed knowledge on how `eksdemo` works. It's rec
 * [Install Karpenter autoscaler and test node provisioning and consolidation](/docs/install-karpenter.md)
 * [Install EKS optimized Kubecost using Amazon Managed Prometheus](/docs/install-kubecost.md)
 * [Install Kube Prometheus Stack using Amazon Managed Prometheus](/docs/install-kube-prometheus.md)
+* [Install Amazon VPC Lattice (Gateway API) Controller](/docs/install-vpc-lattice-controller.md)
 
 ## Support & Feedback
 
