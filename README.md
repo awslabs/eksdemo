@@ -11,28 +11,26 @@ The easy button for learning, testing, and demoing Amazon EKS:
 > Note: `eksdemo` is in beta and is intended for demo and test environments only.
 
 ## Table of Contents
-* [Why `eksdemo`?](#why-eksdemo)
-* [No Magic](#no-magic)
-* [`eksdemo` vs EKS Blueprints](#eksdemo-vs-eks-blueprints)
-* [Install eksdemo](#install-eksdemo)
-  * [Prerequisites](#prerequisites)
-* [Application Catalog](#application-catalog)
-* [Kubectl-like get commands](#kubectl-like-get-commands)
-* [Tutorials](#tutorials)
-  * [Basics](#basics)
-    * [Create an Amazon EKS Cluster with Bottlerocket Nodes](/docs/create-cluster.md)
-    * [Request and Validate a Public Certificate with AWS Certificate Manager (ACM)](/docs/create-acm-cert.md)
-    * [Install AWS Load Balancer Controller](/docs/install-awslb.md)
-    * [Install ExternalDNS](/docs/install-edns.md)
-    * [Install Game 2048 Example Application](/docs/install-game-2048.md)
-    * [Install Ingress NGINX](/docs/install-ingress-nginx.md)
-    * [Install cert-manager](/docs/install-cert-manager.md)
-    * [Install EBS CSI Driver](/docs/install-ebs-csi-driver.md)
-  * [Advanced](#advanced)
-    * [Install Karpenter autoscaler and test node provisioning and consolidation](/docs/install-karpenter.md)
-    * [Install EKS optimized Kubecost using Amazon Managed Prometheus](/docs/install-kubecost.md)
-    * [Install Kube Prometheus Stack using Amazon Managed Prometheus](/docs/install-kube-prometheus.md)
-    * [Install Amazon VPC Lattice (Gateway API) Controller](/docs/install-vpc-lattice-controller.md)
+- [`eksdemo` - kubectl-like CLI for Amazon EKS](#eksdemo---kubectl-like-cli-for-amazon-eks)
+  - [Table of Contents](#table-of-contents)
+  - [Why `eksdemo`?](#why-eksdemo)
+  - [No Magic](#no-magic)
+  - [`eksdemo` vs EKS Blueprints](#eksdemo-vs-eks-blueprints)
+  - [Install `eksdemo`](#install-eksdemo)
+    - [Prerequisites](#prerequisites)
+    - [Install using Homebrew](#install-using-homebrew)
+  - [Application Catalog](#application-catalog)
+  - [Kubectl-like get commands](#kubectl-like-get-commands)
+    - [Troubleshoot Homebrew Install](#troubleshoot-homebrew-install)
+    - [Install Manually](#install-manually)
+    - [Set the AWS Region](#set-the-aws-region)
+    - [Validate Install](#validate-install)
+  - [Tutorials](#tutorials)
+    - [Basics](#basics)
+    - [Advanced](#advanced)
+  - [Support \& Feedback](#support--feedback)
+  - [Security](#security)
+  - [License](#license)
 
 ## Why `eksdemo`?
 While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog. An application can be installed (including dependencies) with a single command.
@@ -65,7 +63,7 @@ Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/boot
 Use cases: learning, testing, and demoing EKS | Use cases: customers deploying to prod and non-prod environments
 Kubectl-like CLI installs apps with single command | Infrastructure as Code (IaC) built on Terraform or CDK
 Imperative tooling is great for iterative testing | Declarative IaC tooling is not designed for iterative testing
-Used to get up and running quickly | Used to drive drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
+Used to get up and running quickly | Used to drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
 
 
 ## Install `eksdemo`
