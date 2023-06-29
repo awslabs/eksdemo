@@ -14,6 +14,7 @@ import (
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/postrender"
+	"helm.sh/helm/v3/pkg/registry"
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
 	"helm.sh/helm/v3/pkg/strvals"
@@ -75,11 +76,29 @@ func (h *Helm) DownloadChart() (*chart.Chart, error) {
 
 	// Download chart archive into memory
 	data, err := g.Get(chartPath)
-	if err != nil {
-		if strings.HasPrefix(h.RepositoryURL, "oci://public.ecr.aws") {
-			msg := "Please review: https://docs.aws.amazon.com/AmazonECR/latest/public/public-troubleshooting.html"
-			err = fmt.Errorf("%w\n%s", err, msg)
+
+	// If ECR Public is returning a 403 Forbidden error, then log out and try again
+	// https://docs.aws.amazon.com/AmazonECR/latest/public/public-troubleshooting.html
+	if h.isECRPublicAuthError(err) {
+		fmt.Println("ECR Public is returning a 403 Forbidden error. Logging out and trying again...")
+
+		registryClient, e := registry.NewClient()
+		if e != nil {
+			return nil, fmt.Errorf("failed to create registry client: %w", e)
 		}
+
+		e = registryClient.Logout("public.ecr.aws")
+		if e != nil {
+			return nil, fmt.Errorf("failed to log out of ECR Public: %w", e)
+		}
+
+		ociGetter, e := getter.NewOCIGetter()
+		if e != nil {
+			return nil, e
+		}
+		data, err = ociGetter.Get(chartPath)
+	}
+	if err != nil {
 		return nil, err
 	}
 
@@ -142,6 +161,12 @@ func (h *Helm) Install(chart *chart.Chart, kubeContext string) error {
 	}
 
 	return nil
+}
+
+func (h *Helm) isECRPublicAuthError(err error) bool {
+	return err != nil &&
+		strings.HasPrefix(h.RepositoryURL, "oci://public.ecr.aws") &&
+		strings.HasSuffix(err.Error(), "403 Forbidden")
 }
 
 func List(kubeContext string) ([]*release.Release, error) {
