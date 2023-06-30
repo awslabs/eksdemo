@@ -14,9 +14,12 @@ build:
 install:
 	CGO_ENABLED=0 go install -ldflags "$(LDFLAGS)"
 
+lint:
+	golangci-lint run
+
 tidy:
 	go mod tidy
 
-.PHONY: build install tidy
+.PHONY: build install lint tidy
 
 
