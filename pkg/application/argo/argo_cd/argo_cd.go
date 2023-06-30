@@ -11,7 +11,7 @@ import (
 // GitHub:  https://github.com/argoproj/argo-cd
 // Helm:    https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
 // Repo:    quay.io/argoproj/argocd
-// Version: Latest Chart is 4.9.14, Argo CD v2.4.6 (as of 07/14/22)
+// Version: Latest Chart is 5.37.0, Argo CD v2.7.7 (as of 7/5/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
