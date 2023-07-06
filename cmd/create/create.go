@@ -32,6 +32,8 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(addon.NewResource().NewCreateCmd())
 	cmd.AddCommand(amg_workspace.NewResource().NewCreateCmd())
 	cmd.AddCommand(amp_workspace.NewResource().NewCreateCmd())
+	cmd.AddCommand(NewArgoCmd())
+	cmd.AddCommand(NewCreateAliasCmds(argoResources, "argo-")...)
 	cmd.AddCommand(cluster.NewResource().NewCreateCmd())
 	cmd.AddCommand(dns_record.NewResource().NewCreateCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewCreateCmd())
