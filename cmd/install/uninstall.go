@@ -4,6 +4,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/adot_operator"
 	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
+	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
@@ -80,6 +81,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(velero.NewApp().NewUninstallCmd())
 
 	// Hidden commands for popular apps without using the group
+	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{cluster_autoscaler.NewApp}, "")...)
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{ebs_csi.NewApp}, "")...)
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{karpenter.NewApp}, "")...)
