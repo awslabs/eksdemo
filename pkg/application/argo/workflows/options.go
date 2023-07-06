@@ -1,23 +1,22 @@
-package argo_workflows
+package workflows
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 )
 
-type ArgoWorkflowOptions struct {
+type Options struct {
 	application.ApplicationOptions
 
-	AdminPassword string
-	AuthMode      string
+	AuthMode string
 }
 
-func newOptions() (options *ArgoWorkflowOptions, flags cmd.Flags) {
-	options = &ArgoWorkflowOptions{
+func newOptions() (options *Options, flags cmd.Flags) {
+	options = &Options{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "0.16.8",
-				Latest:        "v3.3.8",
+				LatestChart:   "0.32.1",
+				Latest:        "v3.4.9",
 				PreviousChart: "0.16.8",
 				Previous:      "v3.3.8",
 			},
@@ -25,7 +24,7 @@ func newOptions() (options *ArgoWorkflowOptions, flags cmd.Flags) {
 			ExposeIngressAndLoadBalancer: true,
 			Namespace:                    "argo",
 		},
-		AuthMode: "server",
+		AuthMode: "client",
 	}
 
 	flags = cmd.Flags{

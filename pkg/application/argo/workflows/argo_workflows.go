@@ -1,4 +1,4 @@
-package argo_workflows
+package workflows
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -11,7 +11,7 @@ import (
 // GitHub:  https://github.com/argoproj/argo-workflows
 // Helm:    https://github.com/argoproj/argo-helm/tree/main/charts/argo-workflows
 // Repo:    quay.io/argoproj/argocli, quay.io/argoproj/workflow-controller
-// Version: Latest Chart is 0.16.8, Argo Workflows v3.3.8 (as of 07/27/22)
+// Version: Latest Chart is 0.32.1, Argo Workflows v3.4.9 (as of 7/29/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -19,6 +19,7 @@ func NewApp() *application.Application {
 			Parent:      "argo",
 			Name:        "workflows",
 			Description: "Workflow engine for Kubernetes",
+			Aliases:     []string{"workflow"},
 		},
 
 		Installer: &installer.HelmInstaller{
