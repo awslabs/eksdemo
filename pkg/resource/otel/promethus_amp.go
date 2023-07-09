@@ -1,40 +1,65 @@
 package otel
 
 import (
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/manifest"
 	"github.com/awslabs/eksdemo/pkg/resource"
+	"github.com/awslabs/eksdemo/pkg/resource/amp_workspace"
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-func NewPrometheusCloudWatchCollector() *resource.Resource {
-	return &resource.Resource{
-		Command: cmd.Command{
-			Name:        "prometheus-cloudwatch",
-			Description: "PrometheusCloudWatch Collector",
-			Aliases:     []string{"prom-cw", "promcw"},
-		},
+type PrometheusAMPOptions struct {
+	resource.CommonOptions
 
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: cloudWatchCollectorTemplate,
-			},
-		},
+	AmpAlias    string
+	AmpEndpoint string
+}
 
-		Options: &resource.CommonOptions{
-			Name:           "prometheus-cloudwatch",
+func NewPrometheusAMPCollector() *resource.Resource {
+	options := &PrometheusAMPOptions{
+		CommonOptions: resource.CommonOptions{
+			Name:           "prometheus-amp",
 			Namespace:      "adot-system",
 			NamespaceFlag:  true,
 			ServiceAccount: "adot-collector",
 		},
 	}
+
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "prometheus-amp",
+			Description: "Prometheus AMP Collector",
+			Aliases:     []string{"prom-amp", "promamp"},
+		},
+
+		CreateFlags: []cmd.Flag{
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "alias",
+					Description: "AMP workspace alias",
+					Required:    true,
+				},
+				Option: &options.AmpAlias,
+			},
+		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: promAMPCollectorTemplate,
+			},
+		},
+
+		Options: options,
+	}
 }
 
-// https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-cloudwatch.yaml
-const cloudWatchCollectorTemplate = `---
+// https://github.com/aws-observability/aws-otel-community/blob/master/sample-configs/operator/collector-config-amp.yaml
+const promAMPCollectorTemplate = `---
 #
 # OpenTelemetry Collector configuration
-# Metrics pipeline with Prometheus Receiver and Amazon CloudWatch EMF Exporter sending metrics to Amazon CloudWatch
+# Metrics pipeline with Prometheus Receiver and Prometheus Remote Write Exporter sending metrics to Amazon Managed Prometheus
 #
 ---
 apiVersion: opentelemetry.io/v1alpha1
@@ -44,7 +69,7 @@ metadata:
   name: {{ .Name }}
 spec:
   mode: deployment
-  serviceAccount: {{ .ServiceAccount }}
+  serviceAccount:  {{ .ServiceAccount }}
   podAnnotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '8888'
@@ -53,10 +78,12 @@ spec:
       cpu: "1"
     limits:
       cpu: "1"
-  env:
-    - name: CLUSTER_NAME
-      value: {{ .ClusterName }}
   config: |
+    extensions:
+      sigv4auth:
+        region: {{ .Region }}
+        service: "aps"
+
     receivers:
       #
       # Scrape configuration for the Prometheus Receiver
@@ -340,62 +367,25 @@ spec:
     processors:
       batch/metrics:
         timeout: 60s
-      #
-      # Processor to transform the names of existing labels and/or add new labels to the metrics identified
-      #
-      metricstransform/labelling:
-        transforms:
-          - include: .*
-            match_type: regexp
-            action: update
-            operations:
-              - action: add_label
-                new_label: EKS_Cluster
-                new_value: ${CLUSTER_NAME}
-              - action: update_label
-                label: kubernetes_pod_name
-                new_label: EKS_PodName
-              - action: update_label
-                label: kubernetes_namespace
-                new_label: EKS_Namespace
 
     exporters:
-      #
-      # AWS EMF exporter that sends metrics data as performance log events to Amazon CloudWatch
-      # Only the metrics that were filtered out by the processors get to this stage of the pipeline
-      # Under the metric_declarations field, add one or more sets of Amazon CloudWatch dimensions
-      # Each dimension must alredy exist as a label on the Prometheus metric
-      # For each set of dimensions, add a list of metrics under the metric_name_selectors field
-      # Metrics names may be listed explicitly or using regular expressions
-      # A default list of metrics has been provided
-      # Data from performance log events will be aggregated by Amazon CloudWatch using these dimensions to create an Amazon CloudWatch custom metric
-      #
-      awsemf:
-        region: {{ .Region }}
-        namespace: ContainerInsights/Prometheus
-        log_group_name: '/aws/containerinsights/${CLUSTER_NAME}/prometheus'
-        resource_to_telemetry_conversion:
-          enabled: true
-        dimension_rollup_option: NoDimensionRollup
-        parse_json_encoded_attr_values: [Sources, kubernetes]
-        metric_declarations:
-          - dimensions: [[EKS_Cluster, EKS_Namespace, EKS_PodName]]
-            metric_name_selectors:
-              - apiserver_request_.*
-              - container_memory_.*
-              - container_threads
-              - otelcol_process_.*
+      prometheusremotewrite:
+        endpoint: {{ .AmpEndpoint }}api/v1/remote_write
+        auth:
+          authenticator: sigv4auth
+
     service:
+      extensions: [sigv4auth]
       pipelines:
         metrics:
           receivers: [prometheus]
-          processors: [batch/metrics,metricstransform/labelling]
-          exporters: [awsemf]
+          processors: [batch/metrics]
+          exporters: [prometheusremotewrite]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: otel-prometheus-cloudwatch-role
+  name: otel-prometheus-amp-role
 rules:
   - apiGroups:
       - ""
@@ -425,13 +415,24 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: otel-prometheus-cloudwatch-role-binding
+  name: otel-prometheus-amp-role-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: otel-prometheus-cloudwatch-role
+  name: otel-prometheus-amp-role
 subjects:
   - kind: ServiceAccount
     name: {{ .ServiceAccount }}
     namespace: {{ .Namespace }}
 `
+
+func (o *PrometheusAMPOptions) PreCreate() error {
+	workspace, err := amp_workspace.NewGetter(aws.NewAMPClient()).GetAmpByAlias(o.AmpAlias)
+	if err != nil {
+		return err
+	}
+
+	o.AmpEndpoint = awssdk.ToString(workspace.Workspace.PrometheusEndpoint)
+
+	return nil
+}

@@ -12,7 +12,6 @@ func NewSimplestCollector() *resource.Resource {
 		Command: cmd.Command{
 			Name:        "simplest",
 			Description: "Simplest Collector",
-			Args:        []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{
@@ -22,6 +21,7 @@ func NewSimplestCollector() *resource.Resource {
 		},
 
 		Options: &resource.CommonOptions{
+			Name:          "simplest",
 			Namespace:     "default",
 			NamespaceFlag: true,
 		},
