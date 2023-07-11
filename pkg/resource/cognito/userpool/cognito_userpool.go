@@ -6,9 +6,10 @@ import (
 )
 
 func New() *resource.Resource {
-	options, createFlags, _ := NewOptions()
+	options, createFlags, deleteFlags := NewOptions()
 	res := NewWithOptions(options)
 	res.CreateFlags = createFlags
+	res.DeleteFlags = deleteFlags
 
 	return res
 }

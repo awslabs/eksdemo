@@ -23,16 +23,16 @@ func (m *Manager) Init() {
 	m.userPoolGetter = NewGetter(m.cognitoClient)
 }
 
-func (m *Manager) Create(options resource.Options) error {
-	o, ok := options.(*Options)
+func (m *Manager) Create(o resource.Options) error {
+	options, ok := o.(*Options)
 	if !ok {
 		return fmt.Errorf("internal error, unable to cast options to userpool.Options")
 	}
 
-	_, err := m.userPoolGetter.GetUserPoolByName(o.UserPoolName)
+	_, err := m.userPoolGetter.GetUserPoolByName(options.UserPoolName)
 	// Return if the User Pool already exists
 	if err == nil {
-		fmt.Printf("Cognito User Pool with name %q already exists\n", o.UserPoolName)
+		fmt.Printf("Cognito User Pool with name %q already exists\n", options.UserPoolName)
 		return nil
 	}
 
@@ -43,11 +43,11 @@ func (m *Manager) Create(options resource.Options) error {
 	}
 
 	if m.DryRun {
-		return m.dryRun(o)
+		return m.dryRun(options)
 	}
 
-	fmt.Printf("Creating User Pool: %s...", o.UserPoolName)
-	result, err := m.cognitoClient.CreateUserPool(o.UserPoolName)
+	fmt.Printf("Creating User Pool: %s...", options.UserPoolName)
+	result, err := m.cognitoClient.CreateUserPool(options.UserPoolName)
 	if err != nil {
 		return err
 	}
@@ -56,8 +56,35 @@ func (m *Manager) Create(options resource.Options) error {
 	return nil
 }
 
-func (m *Manager) Delete(_ resource.Options) error {
-	return fmt.Errorf("feature not supported")
+func (m *Manager) Delete(o resource.Options) error {
+	options, ok := o.(*Options)
+	if !ok {
+		return fmt.Errorf("internal error, unable to cast options to userpool.Options")
+	}
+
+	id := options.Common().Id
+
+	if id == "" {
+		up, err := m.userPoolGetter.GetUserPoolByName(options.UserPoolName)
+
+		if err != nil {
+			var rnfe *resource.NotFoundByNameError
+			if errors.As(err, &rnfe) {
+				fmt.Printf("Cognito User Pool with name %q does not exist\n", options.UserPoolName)
+				return nil
+			}
+			return err
+		}
+		id = awssdk.ToString(up.Id)
+	}
+
+	err := m.cognitoClient.DeleteUserPool(id)
+	if err != nil {
+		return aws.FormatErrorAsMessageOnly(err)
+	}
+	fmt.Printf("Cognito User Pool Id %q deleted\n", id)
+
+	return nil
 }
 
 func (m *Manager) SetDryRun() {
