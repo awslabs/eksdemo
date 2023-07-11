@@ -70,7 +70,7 @@ func (g *Getter) GetUserPoolByID(id string) (*types.UserPoolType, error) {
 
 	var rnfe *types.ResourceNotFoundException
 	if err != nil && errors.As(err, &rnfe) {
-		return nil, resource.NotFoundError(fmt.Sprintf("user-pool %q not found", id))
+		return nil, &resource.NotFoundByIDError{Type: "user-pool", ID: id}
 	}
 
 	return userpool, err
@@ -91,7 +91,7 @@ func (g *Getter) GetUserPoolByName(name string) (*types.UserPoolType, error) {
 	}
 
 	if len(found) == 0 {
-		return nil, resource.NotFoundError(fmt.Sprintf("user pool %q not found", name))
+		return nil, &resource.NotFoundByNameError{Type: "user-pool", Name: name}
 	}
 
 	if len(found) > 1 {

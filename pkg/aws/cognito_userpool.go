@@ -16,6 +16,19 @@ func NewCognitoUserPoolClient() *CognitoUserPoolClient {
 	return &CognitoUserPoolClient{cognitoidp.NewFromConfig(GetConfig())}
 }
 
+func (c *CognitoUserPoolClient) CreateUserPool(name string) (*types.UserPoolType, error) {
+	input := cognitoidp.CreateUserPoolInput{
+		PoolName: aws.String(name),
+	}
+
+	result, err := c.Client.CreateUserPool(context.Background(), &input)
+	if err != nil {
+		return nil, err
+	}
+
+	return result.UserPool, err
+}
+
 func (c *CognitoUserPoolClient) DescribeUserPool(id string) (*types.UserPoolType, error) {
 	result, err := c.Client.DescribeUserPool(context.Background(), &cognitoidp.DescribeUserPoolInput{
 		UserPoolId: aws.String(id),
