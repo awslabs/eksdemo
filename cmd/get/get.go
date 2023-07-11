@@ -82,6 +82,8 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(cloudtrail_event.NewResource().NewGetCmd())
 	cmd.AddCommand(cloudtrail_trail.NewResource().NewGetCmd())
 	cmd.AddCommand(cluster.NewResource().NewGetCmd())
+	cmd.AddCommand(NewGetCognitoCmd())
+	cmd.AddCommand(NewGetAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewGetCmd())
 	cmd.AddCommand(ec2_instance.NewResource().NewGetCmd())
 	cmd.AddCommand(ecr_repository.NewResource().NewGetCmd())

@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/aws/aws-sdk-go-v2 v1.17.8
+	github.com/aws/aws-sdk-go-v2 v1.18.1
 	github.com/aws/aws-sdk-go-v2/config v1.18.12
 	github.com/aws/aws-sdk-go-v2/service/acm v1.17.2
 	github.com/aws/aws-sdk-go-v2/service/amp v1.16.1
@@ -13,6 +13,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.23.1
 	github.com/aws/aws-sdk-go-v2/service/cloudwatch v1.25.2
 	github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.20.2
+	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.12
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.85.0
 	github.com/aws/aws-sdk-go-v2/service/ecr v1.18.2
 	github.com/aws/aws-sdk-go-v2/service/eks v1.27.2
@@ -62,8 +63,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.12 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.22 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.32 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.26 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.34 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.28 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.29 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.0.19 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.9.11 // indirect

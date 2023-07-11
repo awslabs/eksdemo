@@ -78,8 +78,9 @@ github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535/go.mod h1:o
 github.com/aws/aws-sdk-go v1.34.9 h1:cUGBW9CVdi0mS7K1hDzxIqTpfeWhpoQiguq81M1tjK0=
 github.com/aws/aws-sdk-go v1.34.9/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
 github.com/aws/aws-sdk-go-v2 v1.17.4/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
-github.com/aws/aws-sdk-go-v2 v1.17.8 h1:GMupCNNI7FARX27L7GjCJM8NgivWbRgpjNI/hOQjFS8=
 github.com/aws/aws-sdk-go-v2 v1.17.8/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
+github.com/aws/aws-sdk-go-v2 v1.18.1 h1:+tefE750oAb7ZQGzla6bLkOwfcQCEtC5y2RqoqCeqKo=
+github.com/aws/aws-sdk-go-v2 v1.18.1/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
 github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 h1:dK82zF6kkPeCo8J1e+tGx4JdvDIQzj7ygIoLg8WMuGs=
 github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10/go.mod h1:VeTZetY5KRJLuD/7fkQXMU6Mw7H5m/KP2J5Iy9osMno=
 github.com/aws/aws-sdk-go-v2/config v1.18.12 h1:fKs/I4wccmfrNRO9rdrbMO1NgLxct6H9rNMiPdBxHWw=
@@ -89,11 +90,13 @@ github.com/aws/aws-sdk-go-v2/credentials v1.13.12/go.mod h1:37HG2MBroXK3jXfxVGtb
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.22 h1:3aMfcTmoXtTZnaT86QlVaYh+BRMbvrrmZwIQ5jWqCZQ=
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.22/go.mod h1:YGSIJyQ6D6FjKMQh16hVFSIUD54L4F7zTGePqYMYYJU=
 github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.28/go.mod h1:3lwChorpIM/BhImY/hy+Z6jekmN92cXGPI1QJasVPYY=
-github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.32 h1:dpbVNUjczQ8Ae3QKHbpHBpfvaVkRdesxpTOe9pTouhU=
 github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.32/go.mod h1:RudqOgadTWdcS3t/erPQo24pcVEoYyqj/kKW5Vya21I=
+github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.34 h1:A5UqQEmPaCFpedKouS4v+dHCTUo2sKqhoKO9U5kxyWo=
+github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.34/go.mod h1:wZpTEecJe0Btj3IYnDx/VlUzor9wm3fJHyvLpQF0VwY=
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.22/go.mod h1:EqK7gVrIGAHyZItrD1D8B0ilgwMD1GiWAmbU4u/JHNk=
-github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.26 h1:QH2kOS3Ht7x+u0gHCh06CXL/h6G8LQJFpZfFBYBNboo=
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.26/go.mod h1:vq86l7956VgFr0/FWQ2BWnK07QC3WYsepKzy33qqY5U=
+github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.28 h1:srIVS45eQuewqz6fKKu6ZGXaq6FuFg5NzgQBAM6g8Y4=
+github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.28/go.mod h1:7VRpKQQedkfIEXb4k52I7swUnZP0wohVajJMRn3vsUw=
 github.com/aws/aws-sdk-go-v2/internal/ini v1.3.29 h1:J4xhFd6zHhdF9jPP0FQJ6WknzBboGMBNjKOv4iTuw4A=
 github.com/aws/aws-sdk-go-v2/internal/ini v1.3.29/go.mod h1:TwuqRBGzxjQJIwH16/fOZodwXt2Zxa9/cwJC5ke4j7s=
 github.com/aws/aws-sdk-go-v2/internal/v4a v1.0.19 h1:FGvpyTg2LKEmMrLlpjOgkoNp9XF5CGeyAyo33LdqZW8=
@@ -112,6 +115,8 @@ github.com/aws/aws-sdk-go-v2/service/cloudwatch v1.25.2 h1:JIodJVAWREjZA2NSPckTB
 github.com/aws/aws-sdk-go-v2/service/cloudwatch v1.25.2/go.mod h1:w9YS8d81ubvhDOrcfI1CMtBW8Q2U3yXe4JzgaLS9aMg=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.20.2 h1:u+ntikIxre6+yThsM7A1Ba8duunG8Uw1Pmsa8U+Efuk=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.20.2/go.mod h1:Hf1p0vV53YlxFUoPPI2mPaXT13AGNnWh3YQ4tg3Qoio=
+github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.12 h1:i1oP53k35gC9uZhl0u8eE3UOTsjYm+DGKsdhczje/Y8=
+github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.22.12/go.mod h1:dDhcdDt2jrZOIqeZxhum4xsH6Tauyt4yiclYXkC9WP8=
 github.com/aws/aws-sdk-go-v2/service/ec2 v1.85.0 h1:/2DsxY+k2OGYUbxjWtm0eb4fqGRSaKRoCvfizx9zXjY=
 github.com/aws/aws-sdk-go-v2/service/ec2 v1.85.0/go.mod h1:jK4MhMMe6HIe4qnjGaQqQQECcsxRZ0q86oCq06T8IEE=
 github.com/aws/aws-sdk-go-v2/service/ecr v1.18.2 h1:wVHiJDAzNaovEUwJYsXLOf3/dXzYkidkcbHnLx+ebD0=
