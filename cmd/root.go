@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/awslabs/eksdemo/cmd/create"
+	del "github.com/awslabs/eksdemo/cmd/delete"
 	"github.com/awslabs/eksdemo/cmd/get"
 	"github.com/awslabs/eksdemo/cmd/install"
 	"github.com/awslabs/eksdemo/pkg/aws"
@@ -44,7 +45,7 @@ func init() {
 
 	rootCmd.AddCommand(
 		create.NewCreateCmd(),
-		newCmdDelete(),
+		del.NewDeleteCmd(),
 		get.NewGetCmd(),
 		install.NewInstallCmd(),
 		install.NewUninstallCmd(),

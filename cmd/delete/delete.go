@@ -1,6 +1,7 @@
-package cmd
+package delete
 
 import (
+	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/acm_certificate"
 	"github.com/awslabs/eksdemo/pkg/resource/addon"
 	"github.com/awslabs/eksdemo/pkg/resource/amg_workspace"
@@ -21,7 +22,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newCmdDelete() *cobra.Command {
+func NewDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
 		Short: "delete resource(s)",
@@ -36,6 +37,8 @@ func newCmdDelete() *cobra.Command {
 	cmd.AddCommand(amp_workspace.NewResource().NewDeleteCmd())
 	cmd.AddCommand(cloudformation_stack.NewResource().NewDeleteCmd())
 	cmd.AddCommand(cluster.NewResource().NewDeleteCmd())
+	cmd.AddCommand(NewCognitoCmd())
+	cmd.AddCommand(NewDeleteAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewDeleteCmd())
 	cmd.AddCommand(ec2_instance.NewResource().NewDeleteCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewDeleteCmd())
@@ -49,4 +52,21 @@ func newCmdDelete() *cobra.Command {
 	cmd.AddCommand(volume.NewResource().NewDeleteCmd())
 
 	return cmd
+}
+
+// This creates alias commands for subcommands under DELETE
+func NewDeleteAliasCmds(resList []func() *resource.Resource, prefix string) []*cobra.Command {
+	cmds := make([]*cobra.Command, 0, len(resList))
+
+	for _, res := range resList {
+		r := res()
+		r.Command.Name = prefix + r.Command.Name
+		r.Command.Hidden = true
+		for i, alias := range r.Command.Aliases {
+			r.Command.Aliases[i] = prefix + alias
+		}
+		cmds = append(cmds, r.NewDeleteCmd())
+	}
+
+	return cmds
 }
