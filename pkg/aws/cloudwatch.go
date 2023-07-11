@@ -30,11 +30,15 @@ func NewCloudwatchDimensionsFilter(dimensions []string) []types.DimensionFilter 
 
 // Retrieves the specified alarms.
 // You can filter the results by specifying a prefix for the alarm name, the alarm state, or a prefix for any action.
-func (c *CloudwatchClient) DescribeAlarms(namePrefix string) ([]types.MetricAlarm, error) {
-	alarms := []types.MetricAlarm{}
+func (c *CloudwatchClient) DescribeAlarms(namePrefix string) ([]types.CompositeAlarm, []types.MetricAlarm, error) {
+	compositeAlarms := []types.CompositeAlarm{}
+	metricAlarms := []types.MetricAlarm{}
 	pageNum := 0
 
-	input := cloudwatch.DescribeAlarmsInput{}
+	input := cloudwatch.DescribeAlarmsInput{
+		AlarmTypes: []types.AlarmType{types.AlarmTypeMetricAlarm, types.AlarmTypeCompositeAlarm},
+	}
+
 	if namePrefix != "" {
 		input.AlarmNamePrefix = aws.String(namePrefix)
 	}
@@ -44,13 +48,14 @@ func (c *CloudwatchClient) DescribeAlarms(namePrefix string) ([]types.MetricAlar
 	for paginator.HasMorePages() && pageNum < maxPages {
 		out, err := paginator.NextPage(context.Background())
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		alarms = append(alarms, out.MetricAlarms...)
+		compositeAlarms = append(compositeAlarms, out.CompositeAlarms...)
+		metricAlarms = append(metricAlarms, out.MetricAlarms...)
 		pageNum++
 	}
 
-	return alarms, nil
+	return compositeAlarms, metricAlarms, nil
 }
 
 // List the specified metrics.
