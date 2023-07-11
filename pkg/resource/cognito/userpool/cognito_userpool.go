@@ -6,6 +6,14 @@ import (
 )
 
 func New() *resource.Resource {
+	options, createFlags, _ := NewOptions()
+	res := NewWithOptions(options)
+	res.CreateFlags = createFlags
+
+	return res
+}
+
+func NewWithOptions(options *Options) *resource.Resource {
 	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "user-pool",
@@ -16,8 +24,8 @@ func New() *resource.Resource {
 
 		Getter: &Getter{},
 
-		Options: &resource.CommonOptions{
-			ClusterFlagDisabled: true,
-		},
+		Manager: &Manager{},
+
+		Options: options,
 	}
 }

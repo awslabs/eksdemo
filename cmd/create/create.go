@@ -35,6 +35,8 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(NewArgoCmd())
 	cmd.AddCommand(NewCreateAliasCmds(argoResources, "argo-")...)
 	cmd.AddCommand(cluster.NewResource().NewCreateCmd())
+	cmd.AddCommand(NewCognitoCmd())
+	cmd.AddCommand(NewCreateAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewCreateCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewCreateCmd())
 	cmd.AddCommand(NewKyvernoCmd())
