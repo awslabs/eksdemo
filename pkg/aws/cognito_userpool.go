@@ -30,6 +30,16 @@ func (c *CognitoUserPoolClient) CreateUserPool(name string) (*types.UserPoolType
 	return result.UserPool, err
 }
 
+// Creates a new domain for a user pool.
+func (c *CognitoUserPoolClient) CreateUserPoolDomain(domain, id string) (*cognitoidp.CreateUserPoolDomainOutput, error) {
+	input := cognitoidp.CreateUserPoolDomainInput{
+		Domain:     aws.String(domain),
+		UserPoolId: aws.String(id),
+	}
+
+	return c.Client.CreateUserPoolDomain(context.Background(), &input)
+}
+
 // Deletes the specified Amazon Cognito user pool.
 func (c *CognitoUserPoolClient) DeleteUserPool(id string) error {
 	_, err := c.Client.DeleteUserPool(context.Background(), &cognitoidp.DeleteUserPoolInput{
