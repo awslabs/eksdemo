@@ -52,6 +52,19 @@ func (c *CognitoUserPoolClient) DescribeUserPool(id string) (*types.UserPoolType
 	return result.UserPool, nil
 }
 
+// Gets information about a domain.
+func (c *CognitoUserPoolClient) DescribeUserPooDomainl(domain string) (*types.DomainDescriptionType, error) {
+	result, err := c.Client.DescribeUserPoolDomain(context.Background(), &cognitoidp.DescribeUserPoolDomainInput{
+		Domain: aws.String(domain),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.DomainDescription, nil
+}
+
 // Lists the user pools associated with an AWS account.
 func (c *CognitoUserPoolClient) ListUserPools() ([]types.UserPoolDescriptionType, error) {
 	pools := []types.UserPoolDescriptionType{}

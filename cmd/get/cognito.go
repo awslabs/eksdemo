@@ -2,6 +2,7 @@ package get
 
 import (
 	"github.com/awslabs/eksdemo/pkg/resource"
+	"github.com/awslabs/eksdemo/pkg/resource/cognito/domain"
 	"github.com/awslabs/eksdemo/pkg/resource/cognito/userpool"
 	"github.com/spf13/cobra"
 )
@@ -26,6 +27,7 @@ func NewGetCognitoCmd() *cobra.Command {
 
 func init() {
 	cognitoResources = []func() *resource.Resource{
+		domain.New,
 		userpool.New,
 	}
 }
