@@ -39,8 +39,19 @@ func (m *Manager) Create(o resource.Options) error {
 	return nil
 }
 
-func (m *Manager) Delete(_ resource.Options) error {
-	return fmt.Errorf("feature not supported")
+func (m *Manager) Delete(o resource.Options) error {
+	options, ok := o.(*Options)
+	if !ok {
+		return fmt.Errorf("internal error, unable to cast options to domain.Options")
+	}
+
+	err := m.cognitoClient.DeleteUserPoolDomain(options.DomainName, options.UserPoolID)
+	if err != nil {
+		return aws.FormatErrorAsMessageOnly(err)
+	}
+	fmt.Printf("Cognito Domain %q deleted\n", options.DomainName)
+
+	return nil
 }
 
 func (m *Manager) SetDryRun() {

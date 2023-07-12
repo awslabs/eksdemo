@@ -13,19 +13,66 @@ import (
 
 type Options struct {
 	resource.CommonOptions
-	DomainName string
-
-	// Create, Delete
 	UserPoolID   string
 	UserPoolName string
+
+	// Create, Delete
+	DomainName string
 }
 
-func NewOptions() (options *Options, createFlags, deleteFlags cmd.Flags) {
+func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flags) {
 	options = &Options{
 		CommonOptions: resource.CommonOptions{
 			Name:                "cognito-domain",
 			ClusterFlagDisabled: true,
-			GetArgumentRequired: true,
+		},
+	}
+
+	getFlags = cmd.Flags{
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "user-pool-id",
+				Description: "id of the user pool",
+				Shorthand:   "I",
+				Validate: func(cmd *cobra.Command, args []string) error {
+					if len(args) == 0 && options.UserPoolID == "" && options.UserPoolName == "" {
+						return fmt.Errorf("must include either %q argument, %q flag or %q flag",
+							"DOMAIN", "--user-pool-id", "--user-pool-name")
+					}
+
+					if options.UserPoolID == "" {
+						return nil
+					}
+
+					up, err := userpool.NewGetter(aws.NewCognitoUserPoolClient()).GetUserPoolByID(options.UserPoolID)
+					if err != nil {
+						return err
+					}
+					options.DomainName = awssdk.ToString(up.Domain)
+					return nil
+				},
+			},
+			Option: &options.UserPoolID,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "user-pool-name",
+				Description: "name of the user pool",
+				Shorthand:   "U",
+				Validate: func(cmd *cobra.Command, args []string) error {
+					if options.UserPoolName == "" {
+						return nil
+					}
+
+					up, err := userpool.NewGetter(aws.NewCognitoUserPoolClient()).GetUserPoolByName(options.UserPoolName)
+					if err != nil {
+						return err
+					}
+					options.DomainName = awssdk.ToString(up.Domain)
+					return nil
+				},
+			},
+			Option: &options.UserPoolName,
 		},
 	}
 
@@ -50,6 +97,10 @@ func NewOptions() (options *Options, createFlags, deleteFlags cmd.Flags) {
 				Description: "name of the user pool",
 				Shorthand:   "U",
 				Validate: func(cmd *cobra.Command, args []string) error {
+					if options.UserPoolName == "" {
+						return nil
+					}
+
 					up, err := userpool.NewGetter(aws.NewCognitoUserPoolClient()).GetUserPoolByName(options.UserPoolName)
 					if err != nil {
 						return err
@@ -63,8 +114,7 @@ func NewOptions() (options *Options, createFlags, deleteFlags cmd.Flags) {
 	}
 
 	createFlags = commonFlags
-
-	deleteFlags = cmd.Flags{}
+	deleteFlags = commonFlags
 
 	return
 }
