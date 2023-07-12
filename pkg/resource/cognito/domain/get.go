@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/awslabs/eksdemo/pkg/aws"
@@ -22,7 +23,16 @@ func (g *Getter) Init() {
 	}
 }
 
-func (g *Getter) Get(domain string, output printer.Output, _ resource.Options) error {
+func (g *Getter) Get(domain string, output printer.Output, o resource.Options) error {
+	options, ok := o.(*Options)
+	if !ok {
+		return fmt.Errorf("internal error, unable to cast options to domain.Options")
+	}
+
+	if domain == "" {
+		domain = options.DomainName
+	}
+
 	userPoolDomain, err := g.cognitoClient.DescribeUserPooDomainl(domain)
 
 	if err != nil {

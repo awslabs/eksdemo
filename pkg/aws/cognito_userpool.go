@@ -49,6 +49,16 @@ func (c *CognitoUserPoolClient) DeleteUserPool(id string) error {
 	return err
 }
 
+// Deletes a domain for a user pool.
+func (c *CognitoUserPoolClient) DeleteUserPoolDomain(domain, userPoolID string) error {
+	_, err := c.Client.DeleteUserPoolDomain(context.Background(), &cognitoidp.DeleteUserPoolDomainInput{
+		Domain:     aws.String(domain),
+		UserPoolId: aws.String(userPoolID),
+	})
+
+	return err
+}
+
 // Returns the configuration information and metadata of the specified user pool.
 func (c *CognitoUserPoolClient) DescribeUserPool(id string) (*types.UserPoolType, error) {
 	result, err := c.Client.DescribeUserPool(context.Background(), &cognitoidp.DescribeUserPoolInput{
