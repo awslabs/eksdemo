@@ -72,8 +72,22 @@ func (c *CognitoUserPoolClient) DescribeUserPool(id string) (*types.UserPoolType
 	return result.UserPool, nil
 }
 
+// Client method for returning the configuration information and metadata of the specified user pool app client.
+func (c *CognitoUserPoolClient) DescribeUserPoolClient(clientID, userPoolID string) (*types.UserPoolClientType, error) {
+	result, err := c.Client.DescribeUserPoolClient(context.Background(), &cognitoidp.DescribeUserPoolClientInput{
+		ClientId:   aws.String(clientID),
+		UserPoolId: aws.String(userPoolID),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.UserPoolClient, nil
+}
+
 // Gets information about a domain.
-func (c *CognitoUserPoolClient) DescribeUserPooDomainl(domain string) (*types.DomainDescriptionType, error) {
+func (c *CognitoUserPoolClient) DescribeUserPoolDomain(domain string) (*types.DomainDescriptionType, error) {
 	result, err := c.Client.DescribeUserPoolDomain(context.Background(), &cognitoidp.DescribeUserPoolDomainInput{
 		Domain: aws.String(domain),
 	})
@@ -83,6 +97,28 @@ func (c *CognitoUserPoolClient) DescribeUserPooDomainl(domain string) (*types.Do
 	}
 
 	return result.DomainDescription, nil
+}
+
+// Lists the clients that have been created for the specified user pool.
+func (c *CognitoUserPoolClient) ListUserPoolClients(userPoolID string) ([]types.UserPoolClientDescription, error) {
+	clients := []types.UserPoolClientDescription{}
+	pageNum := 0
+
+	paginator := cognitoidp.NewListUserPoolClientsPaginator(c.Client, &cognitoidp.ListUserPoolClientsInput{
+		MaxResults: 60,
+		UserPoolId: aws.String(userPoolID),
+	})
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		clients = append(clients, out.UserPoolClients...)
+		pageNum++
+	}
+
+	return clients, nil
 }
 
 // Lists the user pools associated with an AWS account.

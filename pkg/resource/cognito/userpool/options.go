@@ -10,6 +10,7 @@ import (
 
 type Options struct {
 	resource.CommonOptions
+	UserPoolID   string
 	UserPoolName string
 }
 
@@ -28,18 +29,17 @@ func NewOptions() (options *Options, createFlags, deleteFlags cmd.Flags) {
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "id",
-				Description: "delete by ID instead",
+				Description: "delete by id instead",
 				Validate: func(cmd *cobra.Command, args []string) error {
-					if options.Id == "" && len(args) == 0 {
+					if options.UserPoolID == "" && len(args) == 0 {
 						return fmt.Errorf("must include either %q argument or %q flag", "NAME", "--id")
 					}
 					return nil
 				},
 			},
-			Option: &options.Id,
+			Option: &options.UserPoolID,
 		},
 	}
-
 	return
 }
 
