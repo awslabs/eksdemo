@@ -91,11 +91,11 @@ func (g *Getter) GetUserPoolByName(name string) (*types.UserPoolType, error) {
 	}
 
 	if len(found) == 0 {
-		return nil, &resource.NotFoundByNameError{Type: "user-pool", Name: name}
+		return nil, &resource.NotFoundByNameError{Type: "cognito-user-pool", Name: name}
 	}
 
 	if len(found) > 1 {
-		return nil, fmt.Errorf("multiple user pools found with name: %s", name)
+		return nil, fmt.Errorf("multiple cognito user pools found with name: %s", name)
 	}
 
 	return found[0], nil

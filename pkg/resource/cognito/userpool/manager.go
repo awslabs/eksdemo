@@ -62,7 +62,7 @@ func (m *Manager) Delete(o resource.Options) error {
 		return fmt.Errorf("internal error, unable to cast options to userpool.Options")
 	}
 
-	id := options.Common().Id
+	id := options.UserPoolID
 
 	if id == "" {
 		up, err := m.userPoolGetter.GetUserPoolByName(options.UserPoolName)

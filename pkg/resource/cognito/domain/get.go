@@ -33,7 +33,7 @@ func (g *Getter) Get(domain string, output printer.Output, o resource.Options) e
 		domain = options.DomainName
 	}
 
-	userPoolDomain, err := g.cognitoClient.DescribeUserPooDomainl(domain)
+	userPoolDomain, err := g.cognitoClient.DescribeUserPoolDomain(domain)
 
 	if err != nil {
 		return err
