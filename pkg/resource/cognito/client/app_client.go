@@ -26,6 +26,8 @@ func NewWithOptions(options *Options) *resource.Resource {
 
 		Getter: &Getter{},
 
+		Manager: &Manager{},
+
 		Options: options,
 	}
 }

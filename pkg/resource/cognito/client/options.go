@@ -13,16 +13,16 @@ import (
 
 type Options struct {
 	resource.CommonOptions
-	AppClientID  string
+	ClientName   string
 	UserPoolID   string
 	UserPoolName string
 
-	// Create, Delete
-	ClientName string
-
 	// Create
-	OAuthScopes  []string
 	CallbackUrls []string
+	OAuthScopes  []string
+
+	// Get
+	AppClientID string
 }
 
 func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flags) {
@@ -72,8 +72,25 @@ func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flag
 		},
 	}
 
-	createFlags = commonFlags
+	createFlags = append(commonFlags,
+		&cmd.StringSliceFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "callback-urls",
+				Description: "allowed redirect (callback) urls",
+			},
+			Option: &options.CallbackUrls,
+		},
+		&cmd.StringSliceFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "oauth-scopes",
+				Description: "supported oauth scopes",
+			},
+			Option: &options.OAuthScopes,
+		},
+	)
+
 	deleteFlags = commonFlags
+
 	getFlags = append(commonFlags,
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
