@@ -29,7 +29,7 @@ func (g *Getter) Init() {
 func (g *Getter) Get(name string, output printer.Output, o resource.Options) error {
 	options, ok := o.(*Options)
 	if !ok {
-		return fmt.Errorf("internal error, unable to cast options to domain.Options")
+		return fmt.Errorf("internal error, unable to cast options to client.Options")
 	}
 
 	var appClient *types.UserPoolClientType
