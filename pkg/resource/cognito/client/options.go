@@ -13,9 +13,9 @@ import (
 
 type Options struct {
 	resource.CommonOptions
-	ClientName   string
-	UserPoolID   string
-	UserPoolName string
+	AppClientName string
+	UserPoolID    string
+	UserPoolName  string
 
 	// Create
 	CallbackUrls []string
@@ -28,8 +28,9 @@ type Options struct {
 func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flags) {
 	options = &Options{
 		CommonOptions: resource.CommonOptions{
-			Name:                "cognito-domain",
-			ClusterFlagDisabled: true,
+			Name:                   "cognito-app-client",
+			ClusterFlagDisabled:    true,
+			DeleteArgumentOptional: true,
 		},
 		CallbackUrls: []string{"http://localhost"},
 		OAuthScopes:  []string{"openid"},
@@ -89,7 +90,21 @@ func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flag
 		},
 	)
 
-	deleteFlags = commonFlags
+	deleteFlags = append(commonFlags,
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "id",
+				Description: "delete by id instead of name",
+				Validate: func(_ *cobra.Command, args []string) error {
+					if options.AppClientID != "" && len(args) > 0 {
+						return &cmd.ArgumentAndFlagCantBeUsedTogetherError{Arg: "NAME", Flag: "--id"}
+					}
+					return nil
+				},
+			},
+			Option: &options.AppClientID,
+		},
+	)
 
 	getFlags = append(commonFlags,
 		&cmd.StringFlag{
@@ -111,5 +126,5 @@ func NewOptions() (options *Options, createFlags, deleteFlags, getFlags cmd.Flag
 }
 
 func (o *Options) SetName(name string) {
-	o.ClientName = name
+	o.AppClientName = name
 }
