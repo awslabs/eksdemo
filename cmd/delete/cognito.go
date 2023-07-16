@@ -2,6 +2,7 @@ package delete
 
 import (
 	"github.com/awslabs/eksdemo/pkg/resource"
+	"github.com/awslabs/eksdemo/pkg/resource/cognito/client"
 	"github.com/awslabs/eksdemo/pkg/resource/cognito/domain"
 	"github.com/awslabs/eksdemo/pkg/resource/cognito/userpool"
 	"github.com/spf13/cobra"
@@ -27,6 +28,7 @@ func NewCognitoCmd() *cobra.Command {
 
 func init() {
 	cognitoResources = []func() *resource.Resource{
+		client.New,
 		domain.New,
 		userpool.New,
 	}

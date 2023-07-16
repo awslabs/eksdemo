@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
@@ -11,14 +12,16 @@ import (
 )
 
 type Manager struct {
-	DryRun        bool
-	cognitoClient *aws.CognitoUserPoolClient
+	DryRun          bool
+	cognitoClient   *aws.CognitoUserPoolClient
+	appClientGetter *Getter
 }
 
 func (m *Manager) Init() {
 	if m.cognitoClient == nil {
 		m.cognitoClient = aws.NewCognitoUserPoolClient()
 	}
+	m.appClientGetter = NewGetter(m.cognitoClient)
 }
 
 func (m *Manager) Create(o resource.Options) error {
@@ -31,11 +34,11 @@ func (m *Manager) Create(o resource.Options) error {
 		return m.dryRun(options)
 	}
 
-	fmt.Printf("Creating App Client %q for User Pool Id %q...", options.ClientName, options.UserPoolID)
+	fmt.Printf("Creating App Client %q for User Pool Id %q...", options.AppClientName, options.UserPoolID)
 	appClient, err := m.cognitoClient.CreateUserPoolClient(
 		options.OAuthScopes,
 		options.CallbackUrls,
-		options.ClientName,
+		options.AppClientName,
 		options.UserPoolID,
 	)
 	if err != nil {
@@ -46,8 +49,35 @@ func (m *Manager) Create(o resource.Options) error {
 	return nil
 }
 
-func (m *Manager) Delete(_ resource.Options) error {
-	return fmt.Errorf("feature not supported")
+func (m *Manager) Delete(o resource.Options) error {
+	options, ok := o.(*Options)
+	if !ok {
+		return fmt.Errorf("internal error, unable to cast options to client.Options")
+	}
+
+	id := options.AppClientID
+
+	if id == "" {
+		ac, err := m.appClientGetter.GetAppClientByName(options.AppClientName, options.UserPoolID)
+
+		if err != nil {
+			var rnfe *resource.NotFoundByNameError
+			if errors.As(err, &rnfe) {
+				fmt.Printf("Cognito App Client with name %q does not exist\n", options.AppClientName)
+				return nil
+			}
+			return err
+		}
+		id = awssdk.ToString(ac.ClientId)
+	}
+
+	err := m.cognitoClient.DeleteUserPoolClient(id, options.UserPoolID)
+	if err != nil {
+		return aws.FormatError(err)
+	}
+	fmt.Printf("Cognito App Client Id %q deleted\n", id)
+
+	return nil
 }
 
 func (m *Manager) SetDryRun() {
@@ -64,7 +94,7 @@ func (m *Manager) dryRun(options *Options) error {
 	fmt.Printf("AllowedOAuthFlows: %q\n", []types.OAuthFlowType{types.OAuthFlowTypeCode})
 	fmt.Printf("AllowedOAuthScopes: %q\n", options.OAuthScopes)
 	fmt.Printf("CallbackURLs: %q\n", options.CallbackUrls)
-	fmt.Printf("ClientName: %q\n", options.ClientName)
+	fmt.Printf("ClientName: %q\n", options.AppClientName)
 	fmt.Printf("GenerateSecret: %s\n", "true")
 	fmt.Printf("SupportedIdentityProviders: %q\n", []string{"COGNITO"})
 	fmt.Printf("UserPoolId: %q\n", options.UserPoolID)
