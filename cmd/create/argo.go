@@ -27,5 +27,6 @@ func NewArgoCmd() *cobra.Command {
 func init() {
 	argoResources = []func() *resource.Resource{
 		argo.NewGuestbook,
+		argo.NewHelloWorld,
 	}
 }
