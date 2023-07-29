@@ -113,7 +113,7 @@ func (c *AMPClient) ListRuleGroupsNamespaces(workspaceId string) ([]types.RuleGr
 }
 
 // The ListWorkspaces operation lists all of the Amazon Managed Service for Prometheus workspaces in your account.
-//  This includes workspaces being created or deleted.
+// This includes workspaces being created or deleted.
 func (c *AMPClient) ListWorkspaces(alias string) ([]types.WorkspaceSummary, error) {
 	workspaces := []types.WorkspaceSummary{}
 	pageNum := 0
