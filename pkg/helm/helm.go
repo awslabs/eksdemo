@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/awslabs/eksdemo/pkg/printer"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -21,6 +22,8 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
+var debug bool
+
 type Helm struct {
 	AppVersion    string
 	ChartName     string
@@ -33,6 +36,10 @@ type Helm struct {
 
 	SetValues  []string
 	ValuesFile string
+}
+
+func Init(helmDebug bool) {
+	debug = helmDebug
 }
 
 func initialize(kubeContext, namespace string) (*action.Configuration, error) {
@@ -127,6 +134,16 @@ func (h *Helm) Install(chart *chart.Chart, kubeContext string) error {
 		if err := strvals.ParseInto(v, values); err != nil {
 			return fmt.Errorf("failed parsing --set data: %w", err)
 		}
+	}
+
+	if debug {
+		fmt.Println("\nHelm Debug, Final Values:")
+		fmt.Println("---")
+		err := printer.EncodeYAML(os.Stdout, values)
+		if err != nil {
+			return fmt.Errorf("failed to print final values: %w", err)
+		}
+		fmt.Println()
 	}
 
 	actionConfig, err := initialize(kubeContext, h.Namespace)
