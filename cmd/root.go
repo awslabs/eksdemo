@@ -46,6 +46,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.AddCommand(
+		newCmdCompletion(rootCmd),
 		create.NewCreateCmd(),
 		del.NewDeleteCmd(),
 		get.NewGetCmd(),

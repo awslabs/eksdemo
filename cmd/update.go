@@ -8,7 +8,7 @@ import (
 func newCmdUpdate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update",
-		Short: "update resource(s)",
+		Short: "Update resource(s)",
 	}
 
 	// Don't show flag errors for delete without a subcommand

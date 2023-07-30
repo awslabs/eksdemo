@@ -25,7 +25,7 @@ import (
 func NewDeleteCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
-		Short: "delete resource(s)",
+		Short: "Delete resource(s)",
 	}
 
 	// Don't show flag errors for delete without a subcommand

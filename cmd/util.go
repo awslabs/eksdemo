@@ -11,7 +11,7 @@ var namespace string
 
 var utilCmd = &cobra.Command{
 	Use:     "utils",
-	Short:   "utility commands",
+	Short:   "Utility commands",
 	Aliases: []string{"util"},
 }
 
