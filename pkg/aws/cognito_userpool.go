@@ -34,13 +34,14 @@ func (c *CognitoUserPoolClient) CreateUserPool(name string) (*types.UserPoolType
 // When you create a new user pool client, token revocation is automatically activated.
 func (c *CognitoUserPoolClient) CreateUserPoolClient(oauthScopes, callbackUrls []string, clientName, userPoolID string) (*types.UserPoolClientType, error) {
 	input := cognitoidp.CreateUserPoolClientInput{
-		AllowedOAuthFlows:          []types.OAuthFlowType{types.OAuthFlowTypeCode},
-		AllowedOAuthScopes:         oauthScopes,
-		CallbackURLs:               callbackUrls,
-		ClientName:                 aws.String(clientName),
-		GenerateSecret:             true,
-		SupportedIdentityProviders: []string{"COGNITO"},
-		UserPoolId:                 aws.String(userPoolID),
+		AllowedOAuthFlows:               []types.OAuthFlowType{types.OAuthFlowTypeCode},
+		AllowedOAuthFlowsUserPoolClient: true,
+		AllowedOAuthScopes:              oauthScopes,
+		CallbackURLs:                    callbackUrls,
+		ClientName:                      aws.String(clientName),
+		GenerateSecret:                  true,
+		SupportedIdentityProviders:      []string{"COGNITO"},
+		UserPoolId:                      aws.String(userPoolID),
 	}
 
 	result, err := c.Client.CreateUserPoolClient(context.Background(), &input)
