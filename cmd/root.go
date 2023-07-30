@@ -9,6 +9,7 @@ import (
 	"github.com/awslabs/eksdemo/cmd/get"
 	"github.com/awslabs/eksdemo/cmd/install"
 	"github.com/awslabs/eksdemo/pkg/aws"
+	"github.com/awslabs/eksdemo/pkg/helm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -38,6 +39,7 @@ func preRun(cmd *cobra.Command, args []string) {
 	// cmd.SilenceUsage = true
 
 	aws.Init(profile, region, debug, responseBodyDebug)
+	helm.Init(debug)
 }
 
 func init() {
