@@ -27,6 +27,7 @@ func NewOtelCollectorCmd() *cobra.Command {
 
 func init() {
 	otelCollectors = []func() *resource.Resource{
+		otel.NewPrometheusAMPCollector,
 		otel.NewPrometheusCloudWatchCollector,
 		otel.NewSimplestCollector,
 	}
