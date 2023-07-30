@@ -45,5 +45,6 @@ func init() {
 	argoApps = []func() *application.Application{
 		argo_cd.NewApp,
 		workflows.NewApp,
+		workflows.NewAppWithCognito,
 	}
 }
