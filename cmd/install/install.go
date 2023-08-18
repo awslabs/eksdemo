@@ -28,7 +28,7 @@ import (
 func NewInstallCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "install",
-		Short:   "install application and any required dependencies",
+		Short:   "Install application and any required dependencies",
 		Aliases: []string{"inst"},
 	}
 

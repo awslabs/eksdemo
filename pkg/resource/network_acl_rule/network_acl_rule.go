@@ -9,7 +9,7 @@ func NewResource() *resource.Resource {
 	res := &resource.Resource{
 		Command: cmd.Command{
 			Name:        "network-acl-rule",
-			Description: "Network ACL",
+			Description: "Network ACL Rule",
 			Aliases:     []string{"nacl-rules", "nacl-rule", "naclrules", "naclrule"},
 		},
 

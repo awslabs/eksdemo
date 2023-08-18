@@ -20,7 +20,7 @@ import (
 func NewCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "create resource(s)",
+		Short: "Create resource(s)",
 	}
 
 	// Don't show flag errors for create without a subcommand

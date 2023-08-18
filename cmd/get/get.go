@@ -62,7 +62,7 @@ import (
 func NewGetCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get",
-		Short: "view resource(s)",
+		Short: "View resource(s)",
 	}
 
 	// Don't show flag errors for GET without a subcommand

@@ -2,6 +2,7 @@ project_name: eksdemo
 before:
   hooks:
     - go mod tidy
+    - ./scripts/completions.sh
 builds:
   - env:
       - CGO_ENABLED=0
@@ -20,6 +21,10 @@ archives:
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
       {{- else }}{{ .Arch }}{{ end }}
+    files:
+      - LICENSE
+      - README.md
+      - completions/*
 checksum:
   name_template: 'checksums.txt'
 changelog:

@@ -28,7 +28,7 @@ import (
 func NewUninstallCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "uninstall",
-		Short:   "uninstall application and delete dependencies",
+		Short:   "Uninstall application and delete dependencies",
 		Aliases: []string{"uninst"},
 	}
 
