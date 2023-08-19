@@ -25,6 +25,28 @@ archives:
       - LICENSE
       - README.md
       - completions/*
+brews:
+  - repository:
+      owner: eksdemo-brew-pr-bot
+      name: homebrew-tap
+      branch: "{{.ProjectName}}-{{.Version}}"
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+      pull_request:
+        enabled: true
+        base:
+          owner: aws
+          name: homebrew-tap
+          branch: master
+    folder: Formula
+    homepage: https://github.com/awslabs/eksdemo
+    description: The easy button for learning, testing and demoing Amazon EKS
+    license: MIT-0
+    dependencies:
+      - name: weaveworks/tap/eksctl
+    extra_install: |-
+      bash_completion.install "completions/eksdemo.bash" => "eksdemo"
+      zsh_completion.install "completions/eksdemo.zsh" => "_eksdemo"
+      fish_completion.install "completions/eksdemo.fish"
 checksum:
   name_template: 'checksums.txt'
 changelog:
