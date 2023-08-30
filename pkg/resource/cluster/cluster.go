@@ -33,9 +33,13 @@ func NewResource() *resource.Resource {
 const EksctlTemplate = `
 addons:
 - name: vpc-cni
-{{- if .PrefixAssignment }}
-  configurationValues: '{"env":{"ENABLE_PREFIX_DELEGATION":"true"}}'
-{{- end }}
+  version: latest
+  configurationValues: |-
+  {{- if eq .KubernetesVersion "1.27" "1.26" "1.25" }}
+    enableNetworkPolicy: "true"
+  {{- end }}
+    env:
+      ENABLE_PREFIX_DELEGATION: {{ printf "%t" .PrefixAssignment | printf "%q" }}
 {{- if .IPv6 }}
 - name: coredns
 - name: kube-proxy
