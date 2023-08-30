@@ -51,7 +51,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 			KubernetesVersion:   "1.27",
 		},
 
-		HostnameType:     string(types.HostnameTypeIpName),
+		HostnameType:     string(types.HostnameTypeResourceName),
 		NodegroupOptions: ngOptions,
 		NoRoles:          false,
 		VpcCidr:          "192.168.0.0/16",
