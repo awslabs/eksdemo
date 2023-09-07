@@ -12,14 +12,15 @@ import (
 
 // Docs:    https://velero.io/docs/
 // GitHub:  https://github.com/vmware-tanzu/velero
+// GitHub:  https://github.com/vmware-tanzu/velero-plugin-for-aws
 // Helm:    https://github.com/vmware-tanzu/helm-charts/tree/main/charts/velero
 // Repo:    velero/velero
-// Version: Latest is chart 2.30.1, app v1.9.0 (as of 07/15/22)
+// Version: Latest is Chart 5.0.2, app v1.11.1 (as of 9/13/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Name:        "velero",
 			Description: "Backup and Migrate Kubernetes Applications",
@@ -38,6 +39,8 @@ func NewApp() *application.Application {
 			s3_bucket.NewResourceWithOptions(options.BucketOptions),
 		},
 
+		Flags: flags,
+
 		Installer: &installer.HelmInstaller{
 			ChartName:     "velero",
 			ReleaseName:   "velero",
@@ -46,13 +49,12 @@ func NewApp() *application.Application {
 				Template: valuesTemplate,
 			},
 		},
-	}
-	app.Options = options
-	app.Flags = flags
 
-	return app
+		Options: options,
+	}
 }
 
+// https://github.com/vmware-tanzu/velero-plugin-for-aws#set-permissions-for-velero
 const policyDocument = `
 Version: '2012-10-17'
 Statement:
@@ -88,10 +90,11 @@ initContainers:
   - mountPath: /target
     name: plugins
 configuration:
-  provider: aws
   backupStorageLocation:
+  - provider: aws
     bucket: eksdemo-{{ .Account }}-velero
   volumeSnapshotLocation:
+  - provider: aws
     config:
       region: {{ .Region }}
 serviceAccount:
