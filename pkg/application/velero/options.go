@@ -22,13 +22,13 @@ func newOptions() (options *VeleroOptions, flags cmd.Flags) {
 			Namespace:      "velero",
 			ServiceAccount: "velero-server",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "2.30.1",
-				Latest:        "v1.9.0",
-				PreviousChart: "2.30.1",
-				Previous:      "v1.9.0",
+				LatestChart:   "5.0.2",
+				Latest:        "v1.11.1",
+				PreviousChart: "5.0.2",
+				Previous:      "v1.11.1",
 			},
 		},
-		PluginVersion: "v1.5.0",
+		PluginVersion: "v1.7.1",
 		BucketOptions: &s3_bucket.BucketOptions{
 			CommonOptions: resource.CommonOptions{
 				Name: "velero-s3-bucket",
