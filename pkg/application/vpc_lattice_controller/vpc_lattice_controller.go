@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/aws/aws-application-networking-k8s
 // Helm:    https://github.com/aws/aws-application-networking-k8s/tree/main/helm
 // Repo:    https://gallery.ecr.aws/aws-application-networking-k8s/aws-gateway-controller
-// Version: Latest is v0.0.12 (as of 6/1/23)
+// Version: Latest is v0.0.16 (as of 9/13/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -22,7 +22,7 @@ func NewApp() *application.Application {
 		Command: cmd.Command{
 			Name:        "vpc-lattice-controller",
 			Description: "Amazon VPC Lattice (Gateway API) Controller",
-			Aliases:     []string{"gateway-api-controller", "vpc-lattice", "lattice"},
+			Aliases:     []string{"gateway-api-controller", "vpc-lattice", "vpclattice", "lattice"},
 		},
 
 		Dependencies: []*resource.Resource{
@@ -66,6 +66,7 @@ Statement:
   - iam:CreateServiceLinkedRole
   - ec2:DescribeVpcs
   - ec2:DescribeSubnets
+  - ec2:DescribeTags
   Resource: "*"
 `
 
