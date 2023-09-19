@@ -59,7 +59,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		appsForIrsa: []*application.Application{
 			aws_lb_controller.NewApp(),
 			ebs_csi.NewApp(),
-			external_dns.NewApp(),
+			external_dns.New(),
 			karpenter.NewApp(),
 		},
 		IrsaTemplate: &template.TextTemplate{
