@@ -38,6 +38,8 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAckCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(ack, "ack-")...)
 	cmd.AddCommand(adot_operator.NewApp().NewUninstallCmd())
+	cmd.AddCommand(NewUninstallAICmd())
+	cmd.AddCommand(NewUninstallAliasCmds(aiApps, "ai-")...)
 	cmd.AddCommand(appmesh_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallArgoCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(argoApps, "argo-")...)

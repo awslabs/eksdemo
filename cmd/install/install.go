@@ -38,6 +38,8 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAckCmd())
 	cmd.AddCommand(NewInstallAliasCmds(ack, "ack-")...)
 	cmd.AddCommand(adot_operator.NewApp().NewInstallCmd())
+	cmd.AddCommand(NewInstallAICmd())
+	cmd.AddCommand(NewInstallAliasCmds(aiApps, "ai-")...)
 	cmd.AddCommand(appmesh_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallArgoCmd())
 	cmd.AddCommand(NewInstallAliasCmds(argoApps, "argo-")...)
