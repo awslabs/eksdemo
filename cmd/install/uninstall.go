@@ -15,6 +15,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
+	"github.com/awslabs/eksdemo/pkg/application/headlamp"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
@@ -63,6 +64,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds(fluxApps, "flux-")...)
 	cmd.AddCommand(vpc_lattice_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewUninstallCmd())
+	cmd.AddCommand(headlamp.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallIngressCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(ingressControllers, "ingress-")...)
 	cmd.AddCommand(NewUninstallIstioCmd())

@@ -15,6 +15,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
+	"github.com/awslabs/eksdemo/pkg/application/headlamp"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
@@ -63,6 +64,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds(fluxApps, "flux-")...)
 	cmd.AddCommand(vpc_lattice_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewInstallCmd())
+	cmd.AddCommand(headlamp.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallIngressCmd())
 	cmd.AddCommand(NewInstallAliasCmds(ingressControllers, "ingress-")...)
 	cmd.AddCommand(NewInstallIstioCmd())
