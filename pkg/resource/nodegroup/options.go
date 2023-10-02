@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	awssdk "github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/spf13/cobra"
@@ -19,7 +17,6 @@ type NodegroupOptions struct {
 
 	AMI             string
 	InstanceType    string
-	Containerd      bool
 	DesiredCapacity int
 	MinSize         int
 	MaxSize         int
@@ -47,22 +44,6 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 	}
 
 	createFlags = cmd.Flags{
-		&cmd.BoolFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "containerd",
-				Description: "use containerd runtime",
-				Validate: func(cmd *cobra.Command, args []string) error {
-					if !options.Containerd {
-						return nil
-					}
-					if v := options.Common().KubernetesVersion; v == "1.23" || v == "1.22" || v == "1.21" {
-						return nil
-					}
-					return fmt.Errorf("%q flag not supported for EKS versions 1.24 and later", "containerd")
-				},
-			},
-			Option: &options.Containerd,
-		},
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "instance",
@@ -125,9 +106,6 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 					if strings.EqualFold(options.OperatingSystem, "Ubuntu1804") {
 						options.OperatingSystem = "Ubuntu1804"
 					}
-					if options.Containerd && options.OperatingSystem != "AmazonLinux2" {
-						return fmt.Errorf("%q flag can only be used with %q Operating System", "containerd", "AmazonLinux2")
-					}
 					return nil
 				},
 			},
@@ -162,21 +140,6 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 	}
 
 	return
-}
-
-func (o *NodegroupOptions) PreCreate() error {
-	if !o.Containerd {
-		return nil
-	}
-
-	param, err := aws.NewSSMClient().GetParameter(fmt.Sprintf(eksOptmizedAmiPath, o.KubernetesVersion))
-	if err != nil {
-		return fmt.Errorf("ssm failed to lookup EKS Optimized AMI: %w", err)
-	}
-
-	o.AMI = awssdk.ToString(param.Value)
-
-	return nil
 }
 
 func (o *NodegroupOptions) SetName(name string) {
