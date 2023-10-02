@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws
 // Helm:    https://github.com/kubernetes/autoscaler/tree/master/charts/cluster-autoscaler
 // Repo:    registry.k8s.io/autoscaling/cluster-autoscaler
-// Version: Latest for k8s 1.27 is v1.27.3 (as of 8/22/23)
+// Version: Latest for k8s 1.28 is v1.28.0 (as of 10/1/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -40,21 +40,21 @@ func NewApp() *application.Application {
 			Namespace:      "kube-system",
 			ServiceAccount: "cluster-autoscaler",
 			DefaultVersion: &application.KubernetesVersionDependent{
-				LatestChart: "9.29.1",
+				LatestChart: "9.29.3",
 				Latest: map[string]string{
+					"1.28": "v1.28.0",
 					"1.27": "v1.27.3",
 					"1.26": "v1.26.4",
 					"1.25": "v1.25.3",
 					"1.24": "v1.24.3",
-					"1.23": "v1.23.0",
 				},
-				PreviousChart: "9.29.0",
+				PreviousChart: "9.29.1",
 				Previous: map[string]string{
+					"1.28": "v1.28.0",
 					"1.27": "v1.27.1",
 					"1.26": "v1.26.2",
 					"1.25": "v1.25.1",
 					"1.24": "v1.24.1",
-					"1.23": "v1.23.0",
 				},
 			},
 		},

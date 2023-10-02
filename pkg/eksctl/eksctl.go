@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/go-version"
 )
 
-const minVersion = "0.144.0"
+const minVersion = "0.160.0"
 
 func GetClusterName(cluster string) string {
 	return fmt.Sprintf("%s.%s.eksctl.io", cluster, aws.Region())

@@ -56,11 +56,6 @@ managedNodeGroups:
   minSize: {{ .MinSize }}
   desiredCapacity: {{ .DesiredCapacity }}
   maxSize: {{ .MaxSize }}
-{{- if .Containerd }}
-  overrideBootstrapCommand: |
-    #!/bin/bash
-    /etc/eks/bootstrap.sh {{ .ClusterName }} --container-runtime containerd
-{{- end }}
   privateNetworking: true
   spot: {{ .Spot }}
 `
