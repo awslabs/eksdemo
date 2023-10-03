@@ -57,7 +57,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallExampleCmd())
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "ex-")...)
-	cmd.AddCommand(external_dns.NewApp().NewInstallCmd())
+	cmd.AddCommand(external_dns.New().NewInstallCmd())
 	cmd.AddCommand(falco.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallFluxCmd())
 	cmd.AddCommand(NewInstallAliasCmds(fluxApps, "flux-")...)

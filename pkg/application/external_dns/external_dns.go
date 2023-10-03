@@ -13,10 +13,10 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/external-dns
 // Helm:    https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns
 // Repo:    registry.k8s.io/external-dns/external-dns
-// Version: Latest is Chart 1.12.2, App v0.13.4 (as of 5/29/23)
+// Version: Latest is Chart 1.13.1, App v0.13.6 (as of 10/2/23)
 
-func NewApp() *application.Application {
-	app := &application.Application{
+func New() *application.Application {
+	return &application.Application{
 		Command: cmd.Command{
 			Name:        "external-dns",
 			Description: "ExternalDNS",
@@ -39,10 +39,10 @@ func NewApp() *application.Application {
 			Namespace:      "external-dns",
 			ServiceAccount: "external-dns",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.12.2",
-				Latest:        "v0.13.4",
-				PreviousChart: "1.12.1",
-				Previous:      "v0.13.2",
+				LatestChart:   "1.13.1",
+				Latest:        "v0.13.6",
+				PreviousChart: "1.12.2",
+				Previous:      "v0.13.4",
 			},
 		},
 
@@ -55,7 +55,6 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
 // https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy
@@ -71,6 +70,7 @@ Statement:
   Action:
   - route53:ListHostedZones
   - route53:ListResourceRecordSets
+  - route53:ListTagsForResource
   Resource:
   - "*"
 `

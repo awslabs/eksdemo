@@ -57,7 +57,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallExampleCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "ex-")...)
-	cmd.AddCommand(external_dns.NewApp().NewUninstallCmd())
+	cmd.AddCommand(external_dns.New().NewUninstallCmd())
 	cmd.AddCommand(falco.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallFluxCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(fluxApps, "flux-")...)
