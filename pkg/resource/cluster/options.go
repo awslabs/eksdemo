@@ -28,14 +28,15 @@ type ClusterOptions struct {
 	resource.CommonOptions
 	*nodegroup.NodegroupOptions
 
-	Fargate          bool
-	HostnameType     string
-	IPv6             bool
-	Kubeconfig       string
-	NoRoles          bool
-	PrefixAssignment bool
-	Private          bool
-	VpcCidr          string
+	DisableNetworkPolicy bool
+	Fargate              bool
+	HostnameType         string
+	IPv6                 bool
+	Kubeconfig           string
+	NoRoles              bool
+	PrefixAssignment     bool
+	Private              bool
+	VpcCidr              string
 
 	appsForIrsa  []*application.Application
 	IrsaTemplate *template.TextTemplate
@@ -92,6 +93,13 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
+				Name:        "disable-network-policy",
+				Description: "don't enable network policy for Amazon VPC CNI",
+			},
+			Option: &options.DisableNetworkPolicy,
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
 				Name:        "fargate",
 				Description: "create a Fargate profile",
 			},
@@ -135,7 +143,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "prefix-assignment",
-				Description: "configured VPC CNI for prefix assignment",
+				Description: "configure VPC CNI for prefix assignment",
 			},
 			Option: &options.PrefixAssignment,
 		},

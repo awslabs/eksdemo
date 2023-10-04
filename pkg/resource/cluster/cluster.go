@@ -35,7 +35,7 @@ addons:
 - name: vpc-cni
   version: latest
   configurationValues: |-
-  {{- if eq .KubernetesVersion "1.27" "1.26" "1.25" }}
+  {{- if and (ne .KubernetesVersion "1.24") (not .DisableNetworkPolicy) }}
     enableNetworkPolicy: "true"
   {{- end }}
     env:
