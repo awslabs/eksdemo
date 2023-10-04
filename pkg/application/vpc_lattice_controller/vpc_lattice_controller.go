@@ -75,7 +75,7 @@ fullnameOverride: gateway-api-controller
 image:
   tag: {{ .Version }}
 deployment:
-  replicas: {{ .Replicas}}
+  replicas: {{ .Replicas }}
 serviceAccount:
   annotations:
     {{ .IrsaAnnotation }}
