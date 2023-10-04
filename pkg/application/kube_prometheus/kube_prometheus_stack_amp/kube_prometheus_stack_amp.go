@@ -15,9 +15,7 @@ import (
 // Helm:    https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 // Helm:    https://github.com/grafana/helm-charts/tree/main/charts/grafana
 // Repo:    https://quay.io/prometheus-operator/prometheus-operator
-// Version: Latest is Chart 46.6.0, PromOperator v0.65.1 (as of 6/2/23)
-//          But pinning Previous Chart to 34.10.0 due to breaking API Server graphs for k8s < 1.23
-//          https://github.com/prometheus-community/helm-charts/issues/2018
+// Version: Latest is Chart 51.2.0, PromOperator v0.68.0 (as of 10/3/23)
 
 func NewApp() *application.Application {
 	options, flags := NewOptions()
