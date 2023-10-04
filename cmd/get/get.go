@@ -128,6 +128,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(vpc.NewResource().NewGetCmd())
 	cmd.AddCommand(vpc_endpoint.NewResource().NewGetCmd())
 	cmd.AddCommand(NewGetVpcLatticeCmd())
+	cmd.AddCommand(NewGetAliasCmds(vpcLattice, "vpc-lattice-")...)
 	cmd.AddCommand(NewGetAliasCmds(vpcLattice, "vpclattice-")...)
 	cmd.AddCommand(NewGetAliasCmds(vpcLattice, "lattice-")...)
 	cmd.AddCommand(NewGetAliasCmds(vpcLattice, "vpcl-")...)
