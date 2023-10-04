@@ -25,10 +25,10 @@ func NewOptions() (options *KubePrometheusStackAmpOptions, flags cmd.Flags) {
 	options = &KubePrometheusStackAmpOptions{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "46.6.0",
-				Latest:        "v0.65.1",
-				PreviousChart: "34.10.0",
-				Previous:      "v0.55.0",
+				LatestChart:   "51.2.0",
+				Latest:        "v0.68.0",
+				PreviousChart: "46.6.0",
+				Previous:      "v0.65.1",
 			},
 			DisableServiceAccountFlag:    true,
 			ExposeIngressAndLoadBalancer: true,
