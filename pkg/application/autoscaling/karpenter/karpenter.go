@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.29.2 (as of 8/29/23)
+// Version: Latest is v0.31.0 (as of 10/3/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -93,15 +93,6 @@ Statement:
   Action:
   - ec2:RunInstances
   - ec2:CreateFleet
-- Sid: AllowScopedEC2LaunchTemplateActions
-  Effect: Allow
-  Resource: arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
-  Action: ec2:CreateLaunchTemplate
-  Condition:
-    StringEquals:
-      aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
-    StringLike:
-      aws:RequestTag/karpenter.sh/provisioner-name: "*"
 - Sid: AllowScopedEC2InstanceActionsWithTags
   Effect: Allow
   Resource:
@@ -109,9 +100,11 @@ Statement:
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:instance/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:volume/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:network-interface/*
+  - arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
   Action:
   - ec2:RunInstances
   - ec2:CreateFleet
+  - ec2:CreateLaunchTemplate
   Condition:
     StringEquals:
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
@@ -178,12 +171,16 @@ Statement:
   Condition:
     StringEquals:
       aws:RequestedRegion: "{{ .Region }}"
-- Sid: AllowGlobalReadActions
+- Sid: AllowSSMReadActions
+  Effect: Allow
+  Resource: arn:{{ .Partition }}:ssm:{{ .Region }}::parameter/aws/service/*
+  Action:
+  - ssm:GetParameter
+- Sid: AllowPricingReadActions
   Effect: Allow
   Resource: "*"
   Action:
   - pricing:GetProducts
-  - ssm:GetParameter
 - Sid: AllowInterruptionQueueActions
   Effect: Allow
   Resource: arn:{{ .Partition }}:sqs:{{ .Region }}:{{ .Account }}:karpenter-{{ .ClusterName }}
