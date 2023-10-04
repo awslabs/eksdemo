@@ -143,6 +143,7 @@ The application catalog includes:
     * `controllers` — Flux Controllers
     * `sync` — Flux GitRepository to sync with
 * `harbor` — Cloud Native Registry
+* `headlamp` - An easy-to-use and extensible Kubernetes web UI
 * `ingress` — Ingress Controllers
     * `contour` — Ingress Controller using Envoy proxy
     * `emissary` — Open Source API Gateway from Ambassador
