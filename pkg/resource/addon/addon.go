@@ -23,8 +23,8 @@ func NewResource() *resource.Resource {
 			ConfigTemplate: &template.TextTemplate{
 				Template: eksctl.EksctlHeader + eksctlTemplate,
 			},
-			DeleteFlags: &template.TextTemplate{
-				Template: deleteFlagsTemplate,
+			DeleteCommand: &template.TextTemplate{
+				Template: deleteCommandTemplate,
 			},
 		},
 	}
@@ -41,4 +41,4 @@ addons:
   version: {{ .Version }}
 {{- end }}
 `
-const deleteFlagsTemplate = `--name {{ .Name }} --cluster {{ .ClusterName }} --region {{ .Region }} --preserve`
+const deleteCommandTemplate = `--name {{ .Name }} --cluster {{ .ClusterName }} --region {{ .Region }} --preserve`

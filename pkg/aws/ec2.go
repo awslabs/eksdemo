@@ -44,6 +44,13 @@ func NewEC2InstanceStateFilter(states []string) types.Filter {
 	}
 }
 
+func NewEC2InstanceTypeFilter(instanceType string) types.Filter {
+	return types.Filter{
+		Name:   aws.String("instance-type"),
+		Values: []string{instanceType},
+	}
+}
+
 func NewEC2InternetGatewayFilter(internetGatewayId string) types.Filter {
 	return types.Filter{
 		Name:   aws.String("internet-gateway-id"),
@@ -244,6 +251,33 @@ func (c *EC2Client) DescribeInstances(filters []types.Filter) ([]types.Reservati
 	}
 
 	return reservations, nil
+}
+
+// Describes the details of the instance types that are offered in a location.
+// The results can be filtered by the attributes of the instance types.
+func (c *EC2Client) DescribeInstanceTypes(filters []types.Filter) ([]types.InstanceTypeInfo, error) {
+	instanceTypes := []types.InstanceTypeInfo{}
+	pageNum := 0
+
+	input := ec2.DescribeInstanceTypesInput{
+		MaxResults: aws.Int32(100),
+	}
+	if len(filters) > 0 {
+		input.Filters = filters
+	}
+
+	paginator := ec2.NewDescribeInstanceTypesPaginator(c.Client, &input)
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		instanceTypes = append(instanceTypes, out.InstanceTypes...)
+		pageNum++
+	}
+
+	return instanceTypes, nil
 }
 
 // Describes one or more of your internet gateways.

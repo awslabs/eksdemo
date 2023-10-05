@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/spf13/cobra"
@@ -11,6 +14,12 @@ import (
 
 // /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2/recommended/image_id
 const eksOptmizedAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2/recommended/image_id"
+
+// /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2-arm64/recommended/image_id
+const eksOptmizedArmAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-arm64/recommended/image_id"
+
+// /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2-gpu/recommended/image_id
+const eksOptmizedGpuAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-gpu/recommended/image_id"
 
 type NodegroupOptions struct {
 	*resource.CommonOptions
@@ -49,6 +58,10 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 				Name:        "instance",
 				Description: "instance type",
 				Shorthand:   "i",
+				Validate: func(cmd *cobra.Command, args []string) error {
+					options.InstanceType = strings.ToLower(options.InstanceType)
+					return nil
+				},
 			},
 			Option: &options.InstanceType,
 		},
@@ -140,6 +153,66 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 	}
 
 	return
+}
+
+func (o *NodegroupOptions) PreCreate() error {
+	filter := []types.Filter{aws.NewEC2InstanceTypeFilter(o.InstanceType)}
+
+	instanceTypes, err := aws.NewEC2Client().DescribeInstanceTypes(filter)
+	if err != nil {
+		return fmt.Errorf("failed to describe instance types: %w", err)
+	}
+
+	if len(instanceTypes) != 1 {
+		return fmt.Errorf("%q is not a valid instance type in region %q", o.InstanceType, o.Region)
+	}
+
+	// AMI Lookup is currently only for Amazon Linux 2 EKS Optimized AMI
+	if o.OperatingSystem != "AmazonLinux2" {
+		return nil
+	}
+
+	instType := strings.Split(o.InstanceType, ".")[0]
+	ssmClient := aws.NewSSMClient()
+
+	switch {
+	case instType == "g5g":
+		return fmt.Errorf("%q instance type is not supported with the EKS optimized Amazon Linux AMI", "G5g")
+
+	case strings.HasPrefix(instType, "g"),
+		strings.HasPrefix(instType, "p"),
+		strings.HasPrefix(instType, "inf"),
+		strings.HasPrefix(instType, "trn"):
+
+		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedGpuAmiPath, o.KubernetesVersion))
+		if err != nil {
+			return fmt.Errorf("failed to lookup EKS optimized accelerated AMI for instance type %s: %w", o.InstanceType, err)
+		}
+
+		o.AMI = awssdk.ToString(param.Value)
+
+	case strings.HasSuffix(instType, "g"),
+		strings.HasSuffix(instType, "gd"),
+		strings.HasSuffix(instType, "gn"),
+		strings.HasSuffix(instType, "gen"):
+
+		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedArmAmiPath, o.KubernetesVersion))
+		if err != nil {
+			return fmt.Errorf("failed to lookup EKS optimized ARM AMI for instance type %s: %w", o.InstanceType, err)
+		}
+
+		o.AMI = awssdk.ToString(param.Value)
+
+	default:
+		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedAmiPath, o.KubernetesVersion))
+		if err != nil {
+			return fmt.Errorf("failed to lookup EKS optimized AMI for instance type %s: %w", o.InstanceType, err)
+		}
+
+		o.AMI = awssdk.ToString(param.Value)
+	}
+
+	return nil
 }
 
 func (o *NodegroupOptions) SetName(name string) {

@@ -24,7 +24,8 @@ metadata:
 type ResourceManager struct {
 	Resource       string
 	ConfigTemplate template.Template
-	DeleteFlags    template.Template
+	CreateFlags    []string
+	DeleteCommand  template.Template
 	ApproveCreate  bool
 	ApproveDelete  bool
 	DryRun         bool
@@ -48,6 +49,10 @@ func (e *ResourceManager) Create(options resource.Options) error {
 		args = append(args, "--approve")
 	}
 
+	if len(e.CreateFlags) > 0 {
+		args = append(args, e.CreateFlags...)
+	}
+
 	if e.DryRun {
 		fmt.Println("\nEksctl Resource Manager Dry Run:")
 		fmt.Println("eksctl " + strings.Join(args, " "))
@@ -59,14 +64,14 @@ func (e *ResourceManager) Create(options resource.Options) error {
 }
 
 func (e *ResourceManager) Delete(options resource.Options) error {
-	if e.DeleteFlags != nil {
-		return e.DeleteWithFlags(options)
+	if e.DeleteCommand != nil {
+		return e.DeleteWithCommandLine(options)
 	}
 	return e.DeleteWithConfigFile(options)
 }
 
-func (e *ResourceManager) DeleteWithFlags(options resource.Options) error {
-	deleteCommand, err := e.DeleteFlags.Render(options)
+func (e *ResourceManager) DeleteWithCommandLine(options resource.Options) error {
+	deleteCommand, err := e.DeleteCommand.Render(options)
 	if err != nil {
 		return err
 	}
