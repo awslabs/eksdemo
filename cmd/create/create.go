@@ -47,7 +47,6 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(NewCreateAliasCmds(logInsights, "li-")...)
 	cmd.AddCommand(nodegroup.NewResource().NewCreateCmd())
 	cmd.AddCommand(nodegroup.NewSpotResource().NewCreateCmd())
-	cmd.AddCommand(nodegroup.NewGravitonResource().NewCreateCmd())
 	cmd.AddCommand(organization.NewResource().NewCreateCmd())
 	cmd.AddCommand(NewOtelCollectorCmd())
 	cmd.AddCommand(NewCreateAliasCmds(otelCollectors, "otel-collector-")...)

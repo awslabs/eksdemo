@@ -26,8 +26,8 @@ func NewResourceWithOptions(options *IamAuthOptions) *resource.Resource {
 			ConfigTemplate: &template.TextTemplate{
 				Template: eksctl.EksctlHeader + eksctlTemplate,
 			},
-			DeleteFlags: &template.TextTemplate{
-				Template: deleteFlagsTemplate,
+			DeleteCommand: &template.TextTemplate{
+				Template: deleteCommandTemplate,
 			},
 		},
 	}
@@ -49,4 +49,4 @@ iamIdentityMappings:
   username: {{ .Username }}
   noDuplicateARNs: true # prevents shadowing of ARNs
 `
-const deleteFlagsTemplate = `--arn ` + arn + ` --cluster {{ .ClusterName }} --region {{ .Region }}`
+const deleteCommandTemplate = `--arn ` + arn + ` --cluster {{ .ClusterName }} --region {{ .Region }}`
