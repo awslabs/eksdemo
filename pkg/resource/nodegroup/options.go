@@ -30,14 +30,22 @@ type NodegroupOptions struct {
 	MinSize         int
 	MaxSize         int
 	NodegroupName   string
+	NoTaints        bool
 	OperatingSystem string
 	Spot            bool
 	SpotvCPUs       int
 	SpotMemory      int
+	Taints          []Taint
 
 	UpdateDesired int
 	UpdateMin     int
 	UpdateMax     int
+}
+
+type Taint struct {
+	Key    string
+	Value  string
+	Effect string
 }
 
 func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags) {
@@ -102,6 +110,13 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 			},
 			Option: &options.DesiredCapacity,
 		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "no-taints",
+				Description: "don't taint nodes with GPUs or Neuron cores",
+			},
+			Option: &options.NoTaints,
+		},
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "os",
@@ -156,9 +171,9 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 }
 
 func (o *NodegroupOptions) PreCreate() error {
-	filter := []types.Filter{aws.NewEC2InstanceTypeFilter(o.InstanceType)}
-
-	instanceTypes, err := aws.NewEC2Client().DescribeInstanceTypes(filter)
+	instanceTypes, err := aws.NewEC2Client().DescribeInstanceTypes(
+		[]types.Filter{aws.NewEC2InstanceTypeFilter(o.InstanceType)},
+	)
 	if err != nil {
 		return fmt.Errorf("failed to describe instance types: %w", err)
 	}
@@ -167,23 +182,48 @@ func (o *NodegroupOptions) PreCreate() error {
 		return fmt.Errorf("%q is not a valid instance type in region %q", o.InstanceType, o.Region)
 	}
 
+	var isGraviton, isNeuron, isNvidia bool
+	instType := strings.Split(o.InstanceType, ".")[0]
+
+	switch {
+	case strings.HasPrefix(instType, "g"),
+		strings.HasPrefix(instType, "p"):
+
+		isNvidia = true
+
+	case strings.HasPrefix(instType, "inf"),
+		strings.HasPrefix(instType, "trn"):
+
+		isNeuron = true
+
+	case strings.HasSuffix(instType, "g"),
+		strings.HasSuffix(instType, "gd"),
+		strings.HasSuffix(instType, "gn"),
+		strings.HasSuffix(instType, "gen"):
+
+		isGraviton = true
+	}
+
+	if isNeuron && !o.NoTaints {
+		o.Taints = append(o.Taints, Taint{Key: "aws.amazon.com/neuron", Effect: "NoSchedule"})
+	}
+
+	if isNvidia && !o.NoTaints {
+		o.Taints = append(o.Taints, Taint{Key: "nvidia.com/gpu", Effect: "NoSchedule"})
+	}
+
 	// AMI Lookup is currently only for Amazon Linux 2 EKS Optimized AMI
 	if o.OperatingSystem != "AmazonLinux2" {
 		return nil
 	}
 
-	instType := strings.Split(o.InstanceType, ".")[0]
 	ssmClient := aws.NewSSMClient()
 
 	switch {
 	case instType == "g5g":
 		return fmt.Errorf("%q instance type is not supported with the EKS optimized Amazon Linux AMI", "G5g")
 
-	case strings.HasPrefix(instType, "g"),
-		strings.HasPrefix(instType, "p"),
-		strings.HasPrefix(instType, "inf"),
-		strings.HasPrefix(instType, "trn"):
-
+	case isNeuron, isNvidia:
 		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedGpuAmiPath, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized accelerated AMI for instance type %s: %w", o.InstanceType, err)
@@ -191,11 +231,7 @@ func (o *NodegroupOptions) PreCreate() error {
 
 		o.AMI = awssdk.ToString(param.Value)
 
-	case strings.HasSuffix(instType, "g"),
-		strings.HasSuffix(instType, "gd"),
-		strings.HasSuffix(instType, "gn"),
-		strings.HasSuffix(instType, "gen"):
-
+	case isGraviton:
 		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedArmAmiPath, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized ARM AMI for instance type %s: %w", o.InstanceType, err)

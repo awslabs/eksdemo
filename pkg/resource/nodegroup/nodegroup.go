@@ -64,4 +64,10 @@ managedNodeGroups:
 {{- end }}
   privateNetworking: true
   spot: {{ .Spot }}
+{{- range .Taints }}
+  taints:
+  - key: {{ .Key }}
+    value: {{ .Value | printf "%q" }}
+    effect: {{ .Effect }}
+{{- end }}
 `
