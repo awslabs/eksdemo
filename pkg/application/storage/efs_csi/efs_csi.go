@@ -77,6 +77,8 @@ Statement:
   Action:
   - elasticfilesystem:DescribeAccessPoints
   - elasticfilesystem:DescribeFileSystems
+  - elasticfilesystem:DescribeMountTargets
+  - ec2:DescribeAvailabilityZones
   Resource: "*"
 - Effect: Allow
   Action:
@@ -85,6 +87,12 @@ Statement:
   Condition:
     StringLike:
       aws:RequestTag/efs.csi.aws.com/cluster: 'true'
+- Effect: Allow
+  Action: elasticfilesystem:TagResource
+  Resource: "*"
+  Condition:
+    StringLike:
+	aws:ResourceTag/efs.csi.aws.com/cluster: 'true'
 - Effect: Allow
   Action: elasticfilesystem:DeleteAccessPoint
   Resource: "*"
