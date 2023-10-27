@@ -65,7 +65,7 @@ Statement:
   Action:
   - route53:ChangeResourceRecordSets
   Resource:
-  - arn:aws:route53:::hostedzone/*
+  - arn:{{ .Partition }}:route53:::hostedzone/*
 - Effect: Allow
   Action:
   - route53:ListHostedZones
