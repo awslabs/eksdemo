@@ -11,6 +11,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
+	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
@@ -51,6 +52,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(aws_lb_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cert_manager.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewUninstallCmd())
+	cmd.AddCommand(coredumphandler.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallContainerInsightsCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "ci-")...)
