@@ -34,13 +34,6 @@ Parameters:
     Description: "EKS cluster name"
     Default: "{{ .ClusterName }}"
 Resources:
-  KarpenterNodeInstanceProfile:
-    Type: "AWS::IAM::InstanceProfile"
-    Properties:
-      InstanceProfileName: !Sub "KarpenterNodeInstanceProfile-${ClusterName}"
-      Path: "/"
-      Roles:
-        - Ref: "KarpenterNodeRole"
   KarpenterNodeRole:
     Type: "AWS::IAM::Role"
     Properties:
