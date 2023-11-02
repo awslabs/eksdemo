@@ -24,18 +24,19 @@ const eksOptmizedGpuAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-
 type NodegroupOptions struct {
 	*resource.CommonOptions
 
-	AMI             string
-	InstanceType    string
-	DesiredCapacity int
-	MinSize         int
-	MaxSize         int
-	NodegroupName   string
-	NoTaints        bool
-	OperatingSystem string
-	Spot            bool
-	SpotvCPUs       int
-	SpotMemory      int
-	Taints          []Taint
+	AMI              string
+	InstanceType     string
+	IsClusterPrivate bool
+	DesiredCapacity  int
+	MinSize          int
+	MaxSize          int
+	NodegroupName    string
+	NoTaints         bool
+	OperatingSystem  string
+	Spot             bool
+	SpotvCPUs        int
+	SpotMemory       int
+	Taints           []Taint
 
 	UpdateDesired int
 	UpdateMin     int
@@ -212,8 +213,8 @@ func (o *NodegroupOptions) PreCreate() error {
 		o.Taints = append(o.Taints, Taint{Key: "nvidia.com/gpu", Effect: "NoSchedule"})
 	}
 
-	// AMI Lookup is currently only for Amazon Linux 2 EKS Optimized AMI
-	if o.OperatingSystem != "AmazonLinux2" {
+	// AMI Lookup is currently only for Amazon Linux 2 EKS Optimized AMI and clusters that aren't fully private
+	if o.OperatingSystem != "AmazonLinux2" || o.IsClusterPrivate {
 		return nil
 	}
 
