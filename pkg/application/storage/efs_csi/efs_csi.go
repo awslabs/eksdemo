@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/aws-efs-csi-driver
 // Helm:    https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/charts/aws-efs-csi-driver
 // Repo:    amazon/aws-efs-csi-driver
-// Version: Latest is Chart 2.2.7, App v1.4.0 (as of 07/31/22)
+// Version: Latest is Chart 2.5.0, App v1.7.0 (as of 10/11/23)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -27,12 +27,18 @@ func NewApp() *application.Application {
 		Dependencies: []*resource.Resource{
 			irsa.NewResourceWithOptions(&irsa.IrsaOptions{
 				CommonOptions: resource.CommonOptions{
-					Name: "efs-csi-irsa",
+					Name: "efs-csi-controller-irsa",
 				},
-				PolicyType: irsa.PolicyDocument,
-				PolicyDocTemplate: &template.TextTemplate{
-					Template: policyDocument,
+				PolicyType: irsa.PolicyARNs,
+				Policy:     []string{"arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"},
+			}),
+			irsa.NewResourceWithOptions(&irsa.IrsaOptions{
+				CommonOptions: resource.CommonOptions{
+					Name:           "efs-csi-node-irsa",
+					ServiceAccount: "efs-csi-node-sa",
 				},
+				PolicyType: irsa.PolicyARNs,
+				Policy:     []string{"arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"},
 			}),
 		},
 
@@ -40,10 +46,10 @@ func NewApp() *application.Application {
 			Namespace:      "kube-system",
 			ServiceAccount: "efs-csi-controller-sa",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "2.2.7",
-				Latest:        "v1.4.0",
-				PreviousChart: "2.2.6",
-				Previous:      "v1.3.8",
+				LatestChart:   "2.5.0",
+				Latest:        "v1.7.0",
+				PreviousChart: "2.2.7",
+				Previous:      "v1.4.0",
 			},
 		},
 
@@ -65,38 +71,12 @@ image:
   tag: {{ .Version }}
 controller:
   serviceAccount:
+    name: {{ .ServiceAccount }}
     annotations:
       {{ .IrsaAnnotation }}
-    name: {{ .ServiceAccount }}
-`
-
-const policyDocument = `
-Version: '2012-10-17'
-Statement:
-- Effect: Allow
-  Action:
-  - elasticfilesystem:DescribeAccessPoints
-  - elasticfilesystem:DescribeFileSystems
-  - elasticfilesystem:DescribeMountTargets
-  - ec2:DescribeAvailabilityZones
-  Resource: "*"
-- Effect: Allow
-  Action:
-  - elasticfilesystem:CreateAccessPoint
-  Resource: "*"
-  Condition:
-    StringLike:
-      aws:RequestTag/efs.csi.aws.com/cluster: 'true'
-- Effect: Allow
-  Action: elasticfilesystem:TagResource
-  Resource: "*"
-  Condition:
-    StringLike:
-	aws:ResourceTag/efs.csi.aws.com/cluster: 'true'
-- Effect: Allow
-  Action: elasticfilesystem:DeleteAccessPoint
-  Resource: "*"
-  Condition:
-    StringEquals:
-      aws:ResourceTag/efs.csi.aws.com/cluster: 'true'
+node:
+  serviceAccount:
+    name: efs-csi-node-sa
+    annotations:
+      {{ .IrsaAnnotationFor "efs-csi-node-sa" }}
 `
