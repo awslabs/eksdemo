@@ -179,6 +179,8 @@ func (o *ClusterOptions) PreCreate() error {
 	o.Account = aws.AccountId()
 	o.Partition = aws.Partition()
 	o.Region = aws.Region()
+
+	o.NodegroupOptions.IsClusterPrivate = o.Private
 	o.NodegroupOptions.KubernetesVersion = o.KubernetesVersion
 
 	// For apps we want to pre-create IRSA for, find the IRSA dependency
