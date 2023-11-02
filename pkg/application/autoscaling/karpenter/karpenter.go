@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.31.0 (as of 10/3/23)
+// Version: Latest is v0.32.1 (as of 11/1/23)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -69,7 +69,7 @@ func NewApp() *application.Application {
 		},
 
 		PostInstallResources: []*resource.Resource{
-			karpenterDefaultProvisioner(options),
+			karpenterDefaultNodePool(options),
 		},
 	}
 	app.Options = options
@@ -109,7 +109,7 @@ Statement:
     StringEquals:
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
     StringLike:
-      aws:RequestTag/karpenter.sh/provisioner-name: "*"
+      aws:RequestTag/karpenter.sh/nodepool: "*"
 - Sid: AllowScopedResourceCreationTagging
   Effect: Allow
   Resource:
@@ -127,21 +127,20 @@ Statement:
       - CreateFleet
       - CreateLaunchTemplate
     StringLike:
-      aws:RequestTag/karpenter.sh/provisioner-name: "*"
-- Sid: AllowMachineMigrationTagging
+      aws:RequestTag/karpenter.sh/nodepool: "*"
+- Sid: AllowScopedResourceTagging
   Effect: Allow
   Resource: arn:{{ .Partition }}:ec2:{{ .Region }}:*:instance/*
   Action: ec2:CreateTags
   Condition:
     StringEquals:
       aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
-      aws:RequestTag/karpenter.sh/managed-by: "{{ .ClusterName }}"
     StringLike:
-      aws:RequestTag/karpenter.sh/provisioner-name: "*"
+      aws:ResourceTag/karpenter.sh/nodepool: "*"
     ForAllValues:StringEquals:
       aws:TagKeys:
-      - karpenter.sh/provisioner-name
-      - karpenter.sh/managed-by
+      - karpenter.sh/nodeclaim
+      - Name
 - Sid: AllowScopedDeletion
   Effect: Allow
   Resource:
@@ -154,7 +153,7 @@ Statement:
     StringEquals:
       aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
     StringLike:
-      aws:ResourceTag/karpenter.sh/provisioner-name: "*"
+      aws:ResourceTag/karpenter.sh/nodepool: "*"
 - Sid: AllowRegionalReadActions
   Effect: Allow
   Resource: "*"
@@ -196,6 +195,48 @@ Statement:
   Condition:
     StringEquals:
       iam:PassedToService: ec2.amazonaws.com
+- Sid: AllowScopedInstanceProfileCreationActions
+  Effect: Allow
+  Resource: "*"
+  Action:
+  - iam:CreateInstanceProfile
+  Condition:
+    StringEquals:
+      aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/topology.kubernetes.io/region: "{{ .Region }}"
+    StringLike:
+      aws:RequestTag/karpenter.k8s.aws/ec2nodeclass: "*"
+- Sid: AllowScopedInstanceProfileTagActions
+  Effect: Allow
+  Resource: "*"
+  Action:
+  - iam:TagInstanceProfile
+  Condition:
+    StringEquals:
+      aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:ResourceTag/topology.kubernetes.io/region: "{{ .Region }}"
+      aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/topology.kubernetes.io/region: "{{ .Region }}"
+    StringLike:
+      aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass: "*"
+      aws:RequestTag/karpenter.k8s.aws/ec2nodeclass: "*"
+- Sid: AllowScopedInstanceProfileActions
+  Effect: Allow
+  Resource: "*"
+  Action:
+  - iam:AddRoleToInstanceProfile
+  - iam:RemoveRoleFromInstanceProfile
+  - iam:DeleteInstanceProfile
+  Condition:
+    StringEquals:
+      aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:ResourceTag/topology.kubernetes.io/region: "{{ .Region }}"
+    StringLike:
+      aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass: "*"
+- Sid: AllowInstanceProfileReadActions
+  Effect: Allow
+  Resource: "*"
+  Action: iam:GetInstanceProfile
 - Sid: AllowAPIServerEndpointDiscovery
   Effect: Allow
   Resource: arn:{{ .Partition }}:eks:{{ .Region }}:{{ .Account }}:cluster/{{ .ClusterName }}
@@ -212,14 +253,14 @@ replicas: {{ .Replicas }}
 controller:
   image:
     tag: {{ .Version }}
+  resources:
+    requests:
+      cpu: "1"
+      memory: "1Gi"
 settings:
-  aws:
-    clusterName: {{ .ClusterName }}
-    defaultInstanceProfile: KarpenterNodeInstanceProfile-{{ .ClusterName }}
-    interruptionQueueName: karpenter-{{ .ClusterName }}
+  clusterName: {{ .ClusterName }}
+  interruptionQueue: karpenter-{{ .ClusterName }}
   featureGates:
-    # -- driftEnabled is in ALPHA and is disabled by default. eksdemo enables it by default
-    # Setting driftEnabled to true enables the drift deprovisioner to watch for drift between currently deployed nodes
-    # and the desired state of nodes set in provisioners and node templates
-    driftEnabled: {{ not .DisableDrift }}
+    # -- drift is in ALPHA and is disabled by default. eksdemo enables it by default.
+    drift: {{ not .DisableDrift }}
 `

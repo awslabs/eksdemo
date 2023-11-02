@@ -12,10 +12,10 @@ import (
 type KarpenterOptions struct {
 	application.ApplicationOptions
 
-	AMIFamily            string
-	DisableDrift         bool
-	Replicas             int
-	TTLSecondsAfterEmpty int
+	AMIFamily    string
+	DisableDrift bool
+	ExpireAfter  string
+	Replicas     int
 }
 
 func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
@@ -24,14 +24,15 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			Namespace:      "karpenter",
 			ServiceAccount: "karpenter",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.31.0",
-				Latest:        "v0.31.0",
-				PreviousChart: "v0.29.2",
-				Previous:      "v0.29.2",
+				LatestChart:   "v0.32.1",
+				Latest:        "v0.32.1",
+				PreviousChart: "v0.31.0",
+				Previous:      "v0.31.0",
 			},
 		},
-		AMIFamily: "AL2",
-		Replicas:  1,
+		AMIFamily:   "AL2",
+		ExpireAfter: "720h",
+		Replicas:    1,
 	}
 
 	flags = cmd.Flags{
@@ -66,20 +67,19 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			},
 			Option: &options.DisableDrift,
 		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "expire-after",
+				Description: "duration the controller will wait before terminating a node",
+			},
+			Option: &options.ExpireAfter,
+		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "replicas",
 				Description: "number of replicas for the controller deployment",
 			},
 			Option: &options.Replicas,
-		},
-		&cmd.IntFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "ttl-after-empty",
-				Description: "provisioner ttl seconds after empty (disables consolidation)",
-				Shorthand:   "T",
-			},
-			Option: &options.TTLSecondsAfterEmpty,
 		},
 	}
 	return
