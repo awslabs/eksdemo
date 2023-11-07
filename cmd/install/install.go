@@ -11,6 +11,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
+	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
@@ -51,6 +52,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(aws_lb_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(cert_manager.NewApp().NewInstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewInstallCmd())
+	cmd.AddCommand(coredumphandler.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallContainerInsightsCmd())
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "ci-")...)
