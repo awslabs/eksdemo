@@ -130,6 +130,7 @@ The application catalog includes:
     * `cloudwatch-agent` — Container Insights CloudWatch Agent Metrics
     * `fluent-bit` — Container Insights Fluent Bit Logs
     * `prometheus` — CloudWatch Container Insights monitoring for Prometheus
+* `core-dump-handler` - Automatically saves core dumps to S3
 * `crossplane` — Cloud Native Control Planes
 * `example` — Example Applications
     * `eks-workshop` — EKS Workshop Example Microservices
