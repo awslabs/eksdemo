@@ -284,7 +284,7 @@ To validate the AWS region is set, you can run **`eksdemo get cluster`** which w
 |    Age     | Status | Cluster | Version | Platform | Endpoint |
 +------------+--------+---------+---------+----------+----------+
 | 3 weeks    | ACTIVE | green   |    1.26 | eks.5    | Public   |
-| 20 minutes | ACTIVE | *blue   |    1.28 | eks.1    | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.29 | eks.1    | Public   |
 +------------+--------+---------+---------+----------+----------+
 * Indicates current context in local kubeconfig
 ```
