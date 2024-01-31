@@ -24,6 +24,7 @@ func NewResource() *resource.Resource {
 			ConfigTemplate: &template.TextTemplate{
 				Template: eksctl.EksctlHeader + EksctlTemplate + nodegroup.EksctlTemplate,
 			},
+			DeleteFlags: []string{"--disable-nodegroup-eviction"},
 		},
 	}
 
