@@ -25,6 +25,7 @@ type ResourceManager struct {
 	Resource       string
 	ConfigTemplate template.Template
 	CreateFlags    []string
+	DeleteFlags    []string
 	DeleteCommand  template.Template
 	ApproveCreate  bool
 	ApproveDelete  bool
@@ -97,6 +98,10 @@ func (e *ResourceManager) DeleteWithConfigFile(options resource.Options) error {
 
 	if e.ApproveDelete {
 		args = append(args, "--approve")
+	}
+
+	if len(e.DeleteFlags) > 0 {
+		args = append(args, e.DeleteFlags...)
 	}
 
 	return Command(args, eksctlConfig)
