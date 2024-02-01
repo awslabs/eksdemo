@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.32.1 (as of 11/1/23)
+// Version: Latest is v0.33.2 (as of 1/31/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -86,7 +86,6 @@ Statement:
   Resource:
   - arn:{{ .Partition }}:ec2:{{ .Region }}::image/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}::snapshot/*
-  - arn:{{ .Partition }}:ec2:{{ .Region }}:*:spot-instances-request/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:security-group/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:subnet/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
@@ -101,6 +100,7 @@ Statement:
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:volume/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:network-interface/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
+  - arn:{{ .Partition }}:ec2:{{ .Region }}:*:spot-instances-request/*
   Action:
   - ec2:RunInstances
   - ec2:CreateFleet
@@ -118,6 +118,7 @@ Statement:
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:volume/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:network-interface/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
+  - arn:{{ .Partition }}:ec2:{{ .Region }}:*:spot-instances-request/*
   Action: ec2:CreateTags
   Condition:
     StringEquals:
@@ -185,7 +186,6 @@ Statement:
   Resource: arn:{{ .Partition }}:sqs:{{ .Region }}:{{ .Account }}:karpenter-{{ .ClusterName }}
   Action:
   - sqs:DeleteMessage
-  - sqs:GetQueueAttributes
   - sqs:GetQueueUrl
   - sqs:ReceiveMessage
 - Sid: AllowPassingInstanceRole
@@ -261,6 +261,8 @@ settings:
   clusterName: {{ .ClusterName }}
   interruptionQueue: karpenter-{{ .ClusterName }}
   featureGates:
-    # -- drift is in ALPHA and is disabled by default. eksdemo enables it by default.
+    # -- drift is in BETA and is enabled by default.
+    # Setting drift to false disables the drift disruption method to watch for drift between currently deployed nodes
+    # and the desired state of nodes set in provisioners and node templates
     drift: {{ not .DisableDrift }}
 `

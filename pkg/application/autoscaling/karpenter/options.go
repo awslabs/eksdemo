@@ -24,10 +24,10 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			Namespace:      "karpenter",
 			ServiceAccount: "karpenter",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.32.1",
-				Latest:        "v0.32.1",
-				PreviousChart: "v0.31.0",
-				Previous:      "v0.31.0",
+				LatestChart:   "v0.33.2",
+				Latest:        "v0.33.2",
+				PreviousChart: "v0.32.1",
+				Previous:      "v0.32.1",
 			},
 		},
 		AMIFamily:   "AL2",
@@ -39,7 +39,7 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "ami-family",
-				Description: "provisioner ami family",
+				Description: "node class AMI family",
 				Shorthand:   "A",
 				Validate: func(cmd *cobra.Command, args []string) error {
 					if strings.EqualFold(options.AMIFamily, "Al2") {
@@ -63,7 +63,7 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "disable-drift",
-				Description: "disables the drift deprovisioner",
+				Description: "disables the drift feature",
 			},
 			Option: &options.DisableDrift,
 		},
