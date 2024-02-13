@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/aws-load-balancer-controller
 // Helm:    https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller
 // Repo:    https://gallery.ecr.aws/eks/aws-load-balancer-controller
-// Version: Latest is v2.6.1 (as of 10/2/23)
+// Version: Latest is v2.7.0 (as of 2/1/24)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -85,6 +85,7 @@ Statement:
   - elasticloadbalancing:DescribeTargetGroupAttributes
   - elasticloadbalancing:DescribeTargetHealth
   - elasticloadbalancing:DescribeTags
+  - elasticloadbalancing:DescribeTrustStores
   Resource: "*"
 - Effect: Allow
   Action:
