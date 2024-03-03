@@ -137,7 +137,7 @@ func (c *CognitoUserPoolClient) ListUserPoolClients(userPoolID string) ([]types.
 	pageNum := 0
 
 	paginator := cognitoidp.NewListUserPoolClientsPaginator(c.Client, &cognitoidp.ListUserPoolClientsInput{
-		MaxResults: 60,
+		MaxResults: aws.Int32(60),
 		UserPoolId: aws.String(userPoolID),
 	})
 
@@ -159,7 +159,7 @@ func (c *CognitoUserPoolClient) ListUserPools() ([]types.UserPoolDescriptionType
 	pageNum := 0
 
 	paginator := cognitoidp.NewListUserPoolsPaginator(c.Client, &cognitoidp.ListUserPoolsInput{
-		MaxResults: 60,
+		MaxResults: aws.Int32(60),
 	})
 
 	for paginator.HasMorePages() && pageNum < maxPages {

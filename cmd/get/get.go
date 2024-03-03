@@ -18,6 +18,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/dns_record"
 	"github.com/awslabs/eksdemo/pkg/resource/ec2_instance"
 	"github.com/awslabs/eksdemo/pkg/resource/ecr_repository"
+	"github.com/awslabs/eksdemo/pkg/resource/eks/accessentry"
 	"github.com/awslabs/eksdemo/pkg/resource/elastic_ip"
 	"github.com/awslabs/eksdemo/pkg/resource/event_rule"
 	"github.com/awslabs/eksdemo/pkg/resource/fargate_profile"
@@ -68,6 +69,7 @@ func NewGetCmd() *cobra.Command {
 	// Don't show flag errors for GET without a subcommand
 	cmd.DisableFlagParsing = true
 
+	cmd.AddCommand(accessentry.New().NewGetCmd())
 	cmd.AddCommand(acm_certificate.NewResource().NewGetCmd())
 	cmd.AddCommand(addon.NewResource().NewGetCmd())
 	cmd.AddCommand(addon.NewVersionsResource().NewGetCmd())
