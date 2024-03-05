@@ -16,6 +16,19 @@ func NewEKSClient() *EKSClient {
 	return &EKSClient{eks.NewFromConfig(GetConfig())}
 }
 
+func (c *EKSClient) DescribeAccessEntry(clusterName, principalArn string) (*types.AccessEntry, error) {
+	result, err := c.Client.DescribeAccessEntry(context.Background(), &eks.DescribeAccessEntryInput{
+		ClusterName:  aws.String(clusterName),
+		PrincipalArn: aws.String(principalArn),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.AccessEntry, nil
+}
+
 func (c *EKSClient) DescribeAddon(clusterName, addonName string) (*types.Addon, error) {
 	result, err := c.Client.DescribeAddon(context.Background(), &eks.DescribeAddonInput{
 		AddonName:   aws.String(addonName),
@@ -91,6 +104,26 @@ func (c *EKSClient) DescribeNodegroup(clusterName, nodegroupName string) (*types
 	}
 
 	return result.Nodegroup, nil
+}
+
+func (c *EKSClient) ListAccessEntries(clusterName string) ([]string, error) {
+	accessEntries := []string{}
+	pageNum := 0
+
+	paginator := eks.NewListAccessEntriesPaginator(c.Client, &eks.ListAccessEntriesInput{
+		ClusterName: aws.String(clusterName),
+	})
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		accessEntries = append(accessEntries, out.AccessEntries...)
+		pageNum++
+	}
+
+	return accessEntries, nil
 }
 
 func (c *EKSClient) ListAddons(clusterName string) ([]string, error) {
