@@ -35,7 +35,7 @@ See the [Create Cluster documentation](/docs/create-cluster.md) for configuratio
 
 In this section we walk through the process of installing the Karpenter Autoscaler. The command for performing the installation is: `eksdemo install autoscaling-karpenter -c <cluster-name>`
 
-Let’s expore the command and it’s options by using the -h help shorthand flag.
+Let’s explore the command and its options by using the -h help shorthand flag.
 
 ```
 » eksdemo install autoscaling-karpenter -h
@@ -274,7 +274,7 @@ Using chart version "n/a", installed "autoscaling-inflate" version "n/a" in name
 After that it should show the output of eks-node-viewer like below:
 ![eks node viewer workload changes](/docs/images/eks_node_viewer1.png?raw=true "eks_node_viewer_workload_changes")
 
-Wait a few moments and then list the EC2 instances in your EKS cluster's VPC using the `eksdemo get ec2-instance` command. The `-c` shorthard cluster flag is optional and filters the instance list to your EKS Cluster VPC.
+Wait a few moments and then list the EC2 instances in your EKS cluster's VPC using the `eksdemo get ec2-instance` command. The `-c` shorthand cluster flag is optional and filters the instance list to your EKS Cluster VPC.
 
 ```
 » eksdemo get ec2-instance -c <cluster-name>
