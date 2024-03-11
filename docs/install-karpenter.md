@@ -35,7 +35,7 @@ See the [Create Cluster documentation](/docs/create-cluster.md) for configuratio
 
 In this section we walk through the process of installing the Karpenter Autoscaler. The command for performing the installation is: `eksdemo install autoscaling-karpenter -c <cluster-name>`
 
-Let’s expore the command and it’s options by using the -h help shorthand flag.
+Let’s explore the command and its options by using the -h help shorthand flag.
 
 ```
 » eksdemo install autoscaling-karpenter -h
@@ -46,23 +46,25 @@ Usage:
 
 Flags:
   -A, --ami-family string        node class AMI family (default "AL2")
-      --chart-version string     chart version (default "v0.33.2")
+      --chart-version string     chart version (default "v0.34.2")
   -c, --cluster string           cluster to install application (required)
       --disable-drift            disables the drift feature
       --dry-run                  don't install, just print out all installation steps
+      --enable-spottospot        enables the spottospot consolidation feature
       --expire-after string      duration the controller will wait before terminating a node (default "720h")
   -h, --help                     help for autoscaling-karpenter
   -n, --namespace string         namespace to install (default "karpenter")
       --replicas int             number of replicas for the controller deployment (default 1)
       --service-account string   service account name (default "karpenter")
       --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
-      --use-previous             use previous working chart/app versions ("v0.32.1"/"v0.32.1")
-  -v, --version string           application version (default "v0.33.2")
+      --use-previous             use previous working chart/app versions ("v0.33.2"/"v0.33.2")
+  -v, --version string           application version (default "v0.34.2")
 ```
 
 The Karpenter specific flags are:
 * `--ami-family` -- This sets the AMI family on the default `EC2NodeClass`. Options include AL2, Bottlerocket and Ubuntu.
 * `--disable-drift` -- As of v0.33.x, [Drift](https://karpenter.sh/docs/concepts/disruption/#drift) is in BETA and enabled by default. This flag disables this feature.
+* `--enable-spottospot` -- As of v0.34.x, [SpotToSpotConsolidation](https://karpenter.sh/docs/concepts/disruption/#spot-consolidation) is in ALPHA and disabled by default. This flag enables this feature.
 * `--expire-after` -- Karpenter will mark nodes as expired and disrupt them after they have lived a set number of seconds. The default of 720 hours is 30 days.
 * `--replicas` -- `eksdemo` defaults to only 1 replica for easier log viewing in a demo environment. You can use this flag to increase to the default Karpenter Helm chart value of 2 replicas for high availability.
 
@@ -77,7 +79,7 @@ The `eksdemo` install of Karpenter is identical to the [Getting Started with eks
     * The `subnetSelector` uses `eksctl` default tags to select only Private subnets.
     * The `securityGroupSelector` uses the `aws:eks:cluster-name: <cluster-name>` tag selector to use the EKS cluster security group.
 
-Optionally, if you want to see details about all the prequisite items that are created when you install Karpenter, you can run the Karpenter install command with the `--dry-run` flag to first inspect all the actions that will be performed. Replace `<cluster-name>` with the name of your EKS cluster.
+Optionally, if you want to see details about all the prerequisite items that are created when you install Karpenter, you can run the Karpenter install command with the `--dry-run` flag to first inspect all the actions that will be performed. Replace `<cluster-name>` with the name of your EKS cluster.
 
 ```
 » eksdemo install autoscaling-karpenter -c <cluster-name> --dry-run
@@ -85,8 +87,8 @@ Creating 5 dependencies for autoscaling-karpenter
 <snip>
 Helm Installer Dry Run:
 +---------------------+------------------------------------------+
-| Application Version | v0.33.2                                  |
-| Chart Version       | v0.33.2                                  |
+| Application Version | v0.34.2                                  |
+| Chart Version       | v0.34.2                                   |
 | Chart Repository    | oci://public.ecr.aws/karpenter/karpenter |
 | Chart Name          | karpenter                                |
 | Release Name        | autoscaling-karpenter                    |
@@ -104,7 +106,7 @@ serviceAccount:
 replicas: 1
 controller:
   image:
-    tag: v0.33.2
+    tag: v0.34.2
   resources:
     requests:
       cpu: "1"
@@ -117,6 +119,9 @@ settings:
     # Setting drift to false disables the drift disruption method to watch for drift between currently deployed nodes
     # and the desired state of nodes set in provisioners and node templates
     drift: true
+    # -- spotToSpotConsolidation is ALPHA and is disabled by default.
+    # Setting this to true will enable spot replacement consolidation for both single and multi-node consolidation.
+    spotToSpotConsolidation: false
 
 Creating 1 post-install resources for autoscaling-karpenter
 Creating post-install resource: karpenter-default-nodepool
@@ -174,7 +179,7 @@ Now, install Karpenter.
 » eksdemo install autoscaling-karpenter -c <cluster-name>
 Creating 5 dependencies for autoscaling-karpenter
 <snip>
-Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:v0.33.2
+Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:v0.34.2
 Helm installing...
 2024/01/31 15:29:20 creating 1 resource(s)
 2024/01/31 15:29:20 creating 1 resource(s)
@@ -184,7 +189,7 @@ Helm installing...
 2024/01/31 15:29:22 creating 1 resource(s)
 2024/01/31 15:29:22 creating 15 resource(s)
 2024/01/31 15:29:23 beginning wait for 15 resources with timeout of 5m0s
-Using chart version "v0.33.2", installed "autoscaling-karpenter" version "v0.33.2" in namespace "karpenter"
+Using chart version "v0.34.2", installed "autoscaling-karpenter" version "v0.34.2" in namespace "karpenter"
 Creating 1 post-install resources for karpenter
 Creating post-install resource: karpenter-default-nodepool
 Creating NodePool "default"
@@ -269,7 +274,7 @@ Using chart version "n/a", installed "autoscaling-inflate" version "n/a" in name
 After that it should show the output of eks-node-viewer like below:
 ![eks node viewer workload changes](/docs/images/eks_node_viewer1.png?raw=true "eks_node_viewer_workload_changes")
 
-Wait a few moments and then list the EC2 instances in your EKS cluster's VPC using the `eksdemo get ec2-instance` command. The `-c` shorthard cluster flag is optional and filters the instance list to your EKS Cluster VPC.
+Wait a few moments and then list the EC2 instances in your EKS cluster's VPC using the `eksdemo get ec2-instance` command. The `-c` shorthand cluster flag is optional and filters the instance list to your EKS Cluster VPC.
 
 ```
 » eksdemo get ec2-instance -c <cluster-name>
@@ -285,7 +290,7 @@ Wait a few moments and then list the EC2 instances in your EKS cluster's VPC usi
 * Indicates Spot Instance
 ```
 
-In the example above, you can see that Karpenter has created 3 Spot instances all in separate availabiilty zones: `us-west-2b`, `us-west-2c` and `us-west-2d`. The 10 pods are spread across all 3 AZ's due to the topology spread constraints.
+In the example above, you can see that Karpenter has created 3 Spot instances all in separate availability zones: `us-west-2b`, `us-west-2c` and `us-west-2d`. The 10 pods are spread across all 3 AZ's due to the topology spread constraints.
 
 ## Test Node Consolidation
 

@@ -12,10 +12,11 @@ import (
 type KarpenterOptions struct {
 	application.ApplicationOptions
 
-	AMIFamily    string
-	DisableDrift bool
-	ExpireAfter  string
-	Replicas     int
+	AMIFamily        string
+	DisableDrift     bool
+	EnableSpotToSpot bool
+	ExpireAfter      string
+	Replicas         int
 }
 
 func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
@@ -24,10 +25,10 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			Namespace:      "karpenter",
 			ServiceAccount: "karpenter",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v0.33.2",
-				Latest:        "v0.33.2",
-				PreviousChart: "v0.32.1",
-				Previous:      "v0.32.1",
+				LatestChart:   "v0.34.2",
+				Latest:        "v0.34.2",
+				PreviousChart: "v0.33.2",
+				Previous:      "v0.33.2",
 			},
 		},
 		AMIFamily:   "AL2",
@@ -66,6 +67,13 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 				Description: "disables the drift feature",
 			},
 			Option: &options.DisableDrift,
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "enable-spottospot",
+				Description: "enables the spot to spot consolidation feature",
+			},
+			Option: &options.EnableSpotToSpot,
 		},
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
