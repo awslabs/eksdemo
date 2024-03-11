@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.33.2 (as of 1/31/24)
+// Version: Latest is v0.34.2 (as of 3/8/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -265,4 +265,7 @@ settings:
     # Setting drift to false disables the drift disruption method to watch for drift between currently deployed nodes
     # and the desired state of nodes set in provisioners and node templates
     drift: {{ not .DisableDrift }}
+    # -- spotToSpotConsolidation is ALPHA and is disabled by default.
+    # Setting this to true will enable spot replacement consolidation for both single and multi-node consolidation.
+    spotToSpotConsolidation: {{ .EnableSpotToSpot }}
 `
