@@ -12,11 +12,11 @@ import (
 type KarpenterOptions struct {
 	application.ApplicationOptions
 
-	AMIFamily    		string
-	DisableDrift 		bool
-	EnableSpotToSpot 	bool
-	ExpireAfter  		string
-	Replicas     		int
+	AMIFamily        string
+	DisableDrift     bool
+	EnableSpotToSpot bool
+	ExpireAfter      string
+	Replicas         int
 }
 
 func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
