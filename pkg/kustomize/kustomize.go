@@ -15,11 +15,10 @@ func Kustomize(resources, kustomization string) (string, error) {
 	memFS.WriteFile(dir+"kustomization.yaml", []byte(kustomization))
 
 	options := &krusty.Options{
-		DoLegacyResourceSort: true,
-		LoadRestrictions:     types.LoadRestrictionsNone,
-		AddManagedbyLabel:    false,
-		DoPrune:              false,
-		PluginConfig:         types.DisabledPluginConfig(),
+		Reorder:           "legacy",
+		LoadRestrictions:  types.LoadRestrictionsNone,
+		AddManagedbyLabel: false,
+		PluginConfig:      types.DisabledPluginConfig(),
 	}
 
 	k := krusty.MakeKustomizer(options)
