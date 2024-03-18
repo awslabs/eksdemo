@@ -207,6 +207,10 @@ func (o *ClusterOptions) PreCreate() error {
 func (o *ClusterOptions) PreDelete() error {
 	o.Region = aws.Region()
 
+	if err := karpenter.DeleteCustomResources(o.Common().KubeContext); err != nil {
+		return err
+	}
+
 	cloudformationClient := aws.NewCloudformationClient()
 	stacks, err := cloudformation_stack.NewGetter(cloudformationClient).GetStacksByCluster(o.ClusterName, "")
 	if err != nil {
