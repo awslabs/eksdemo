@@ -2,6 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
+	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
 	"github.com/awslabs/eksdemo/pkg/application/neuron/deviceplugin"
 	"github.com/spf13/cobra"
 )
@@ -43,5 +44,6 @@ func NewUninstallAICmd() *cobra.Command {
 func init() {
 	aiApps = []func() *application.Application{
 		deviceplugin.NewApp,
+		k8sgpt.NewApp,
 	}
 }
