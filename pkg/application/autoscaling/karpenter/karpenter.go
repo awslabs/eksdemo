@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.34.2 (as of 3/8/24)
+// Version: Latest is v0.35.2 (as of 3/20/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -81,17 +81,27 @@ func NewApp() *application.Application {
 const irsaPolicyDocument = `
 Version: "2012-10-17"
 Statement:
-- Sid: AllowScopedEC2InstanceActions
+- Sid: AllowScopedEC2InstanceAccessActions
   Effect: Allow
   Resource:
   - arn:{{ .Partition }}:ec2:{{ .Region }}::image/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}::snapshot/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:security-group/*
   - arn:{{ .Partition }}:ec2:{{ .Region }}:*:subnet/*
-  - arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
   Action:
   - ec2:RunInstances
   - ec2:CreateFleet
+- Sid: AllowScopedEC2LaunchTemplateAccessActions
+  Effect: Allow
+  Resource: arn:{{ .Partition }}:ec2:{{ .Region }}:*:launch-template/*
+  Action:
+  - ec2:RunInstances
+  - ec2:CreateFleet
+  Condition:
+    StringEquals:
+      aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+    StringLike:
+      aws:ResourceTag/karpenter.sh/nodepool: "*"
 - Sid: AllowScopedEC2InstanceActionsWithTags
   Effect: Allow
   Resource:
