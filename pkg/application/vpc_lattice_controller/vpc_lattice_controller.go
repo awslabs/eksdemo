@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/aws/aws-application-networking-k8s
 // Helm:    https://github.com/aws/aws-application-networking-k8s/tree/main/helm
 // Repo:    https://gallery.ecr.aws/aws-application-networking-k8s/aws-gateway-controller
-// Version: Latest is v0.0.16 (as of 9/13/23)
+// Version: Latest is v1.0.4 (as of 3/31/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -94,6 +94,7 @@ Statement:
       iam:AWSServiceName: delivery.logs.amazonaws.com
 `
 
+// https://github.com/aws/aws-application-networking-k8s/blob/main/helm/values.yaml
 const valuesTemplate = `---
 fullnameOverride: gateway-api-controller
 image:
@@ -104,4 +105,7 @@ serviceAccount:
   annotations:
     {{ .IrsaAnnotation }}
   name: {{ .ServiceAccount }}
+{{- if .DefaultServiceNetwork }}
+defaultServiceNetwork: {{ .DefaultServiceNetwork }}
+{{- end }}
 `

@@ -13,6 +13,7 @@ import (
 type GatwayApiControllerOptions struct {
 	application.ApplicationOptions
 
+	DefaultServiceNetwork  string
 	Replicas               int
 	VpcLatticePrefixListId string
 }
@@ -23,16 +24,23 @@ func newOptions() (options *GatwayApiControllerOptions, flags cmd.Flags) {
 			Namespace:      "vpc-lattice",
 			ServiceAccount: "gateway-api-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v1.0.3",
-				Latest:        "v1.0.3",
-				PreviousChart: "v0.0.16",
-				Previous:      "v0.0.16",
+				LatestChart:   "v1.0.4",
+				Latest:        "v1.0.4",
+				PreviousChart: "v1.0.3",
+				Previous:      "v1.0.3",
 			},
 		},
 		Replicas: 1,
 	}
 
 	flags = cmd.Flags{
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "default-service-network",
+				Description: "name for service network to create and associate with the cluster VPC",
+			},
+			Option: &options.DefaultServiceNetwork,
+		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "replicas",
