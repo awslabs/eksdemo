@@ -11,6 +11,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
+	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
@@ -85,6 +86,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallStorageCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(velero.NewApp().NewUninstallCmd())
+	cmd.AddCommand(consul.NewApp().NewUninstallCmd())
 
 	// Hidden commands for popular apps without using the group
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
