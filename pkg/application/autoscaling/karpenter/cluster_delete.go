@@ -22,7 +22,9 @@ import (
 func DeleteCustomResources(kubeContext string) error {
 	client, err := kubernetes.DynamicClient(kubeContext)
 	if err != nil {
-		return fmt.Errorf("failed creating kubernetes dynamic client: %w", err)
+		fmt.Printf("Warning: failed creating kubernetes dynamic client: %s\n", err)
+		fmt.Println("Skipping cleaning up Karpenter resource.")
+		return nil
 	}
 
 	if err := DeleteNodePool(client); err != nil {
