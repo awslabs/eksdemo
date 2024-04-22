@@ -37,6 +37,7 @@ type ClusterOptions struct {
 	PrefixAssignment     bool
 	Private              bool
 	VpcCidr              string
+	Zones                []string
 
 	appsForIrsa  []*application.Application
 	IrsaTemplate *template.TextTemplate
@@ -167,6 +168,13 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				},
 			},
 			Option: &options.VpcCidr,
+		},
+		&cmd.StringSliceFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "zones",
+				Description: "Specify comma delimited AZs to use. ie. us-east-1a,us-east-1b,us-east-1c",
+			},
+			Option: &options.Zones,
 		},
 	}
 

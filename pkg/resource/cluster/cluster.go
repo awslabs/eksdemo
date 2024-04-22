@@ -79,4 +79,11 @@ privateCluster:
 vpc:
   cidr: {{ .VpcCidr }}
   hostnameType: {{ .HostnameType }}
+
+{{- if .Zones }}
+availabilityZones:
+{{- range .Zones }}
+- {{.}}
+{{- end }}
+{{- end }}
 `
