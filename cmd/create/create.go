@@ -12,7 +12,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/log_group"
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/resource/organization"
-	"github.com/awslabs/eksdemo/pkg/resource/ssm_session"
+	"github.com/awslabs/eksdemo/pkg/resource/ssm/session"
 	"github.com/awslabs/eksdemo/pkg/resource/target_group"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(NewOtelCollectorCmd())
 	cmd.AddCommand(NewCreateAliasCmds(otelCollectors, "otel-collector-")...)
 	cmd.AddCommand(NewCreateAliasCmds(otelCollectors, "otel-")...)
-	cmd.AddCommand(ssm_session.NewResource().NewCreateCmd())
+	cmd.AddCommand(session.NewResource().NewCreateCmd())
 	cmd.AddCommand(target_group.NewResource().NewCreateCmd())
 
 	return cmd

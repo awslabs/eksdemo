@@ -1,4 +1,4 @@
-package ssm_node
+package node
 
 import (
 	"os"

@@ -1,4 +1,4 @@
-package ssm_session
+package session
 
 import (
 	"fmt"

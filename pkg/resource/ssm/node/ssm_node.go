@@ -1,4 +1,4 @@
-package ssm_session
+package node
 
 import (
 	"github.com/awslabs/eksdemo/pkg/cmd"
@@ -8,17 +8,18 @@ import (
 func NewResource() *resource.Resource {
 	res := &resource.Resource{
 		Command: cmd.Command{
-			Name:        "ssm-session",
-			Description: "SSM Session",
-			Aliases:     []string{"session"},
+			Name:        "ssm-node",
+			Description: "SSM Managed Node",
+			Aliases:     []string{"ssm"},
 			Args:        []string{"INSTANCE_ID"},
 		},
 
 		Getter: &Getter{},
 
-		Manager: &Manager{},
+		Options: &resource.CommonOptions{
+			ClusterFlagDisabled: true,
+		},
 	}
-	res.Options, res.GetFlags = newOptions()
 
 	return res
 }
