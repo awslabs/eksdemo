@@ -1,4 +1,4 @@
-package ssm_session
+package session
 
 import (
 	"fmt"
@@ -27,7 +27,7 @@ func (m *Manager) Create(options resource.Options) error {
 	}
 
 	ssmClient := aws.NewSSMClient()
-	out, err := ssmClient.StartSession(instanceID)
+	out, err := ssmClient.StartSession("SSM-SessionManagerRunShell", instanceID)
 	if err != nil {
 		return err
 	}

@@ -97,8 +97,9 @@ func (c *SSMClient) GetParameter(name string) (*types.Parameter, error) {
 	return out.Parameter, nil
 }
 
-func (c *SSMClient) StartSession(instanceId string) (*ssm.StartSessionOutput, error) {
+func (c *SSMClient) StartSession(documentName, target string) (*ssm.StartSessionOutput, error) {
 	return c.Client.StartSession(context.Background(), &ssm.StartSessionInput{
-		Target: aws.String(instanceId),
+		DocumentName: aws.String(documentName),
+		Target:       aws.String(target),
 	})
 }
