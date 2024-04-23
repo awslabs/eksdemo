@@ -97,9 +97,15 @@ func (c *SSMClient) GetParameter(name string) (*types.Parameter, error) {
 	return out.Parameter, nil
 }
 
-func (c *SSMClient) StartSession(documentName, target string) (*ssm.StartSessionOutput, error) {
-	return c.Client.StartSession(context.Background(), &ssm.StartSessionInput{
+func (c *SSMClient) StartSession(documentName, target string, params map[string][]string) (*ssm.StartSessionOutput, error) {
+	input := &ssm.StartSessionInput{
 		DocumentName: aws.String(documentName),
 		Target:       aws.String(target),
-	})
+	}
+
+	if len(params) > 0 {
+		input.Parameters = params
+	}
+
+	return c.Client.StartSession(context.Background(), input)
 }
