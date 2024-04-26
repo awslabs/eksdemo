@@ -53,10 +53,11 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(aws_lb_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cert_manager.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewUninstallCmd())
-	cmd.AddCommand(coredumphandler.NewApp().NewUninstallCmd())
+	cmd.AddCommand(consul.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallContainerInsightsCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "ci-")...)
+	cmd.AddCommand(coredumphandler.NewApp().NewUninstallCmd())
 	cmd.AddCommand(crossplane.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallExampleCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "example-")...)
@@ -86,7 +87,6 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallStorageCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(velero.NewApp().NewUninstallCmd())
-	cmd.AddCommand(consul.NewApp().NewUninstallCmd())
 
 	// Hidden commands for popular apps without using the group
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)

@@ -5,16 +5,17 @@ import (
 	"github.com/awslabs/eksdemo/pkg/cmd"
 )
 
-type ConsulOptions struct {
+type AppOptions struct {
 	application.ApplicationOptions
-	Namespace  string
-	EnableUI   bool
-	Replicas   int
-	Datacenter string
+	EnableUI    bool
+	EnableMesh  bool
+	EnableAPIGW bool
+	Replicas    int
+	Datacenter  string
 }
 
-func newOptions() (options *ConsulOptions, flags cmd.Flags) {
-	options = &ConsulOptions{
+func newOptions() (options *AppOptions, flags cmd.Flags) {
+	options = &AppOptions{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
 				LatestChart:   "1.4.1",
@@ -22,19 +23,40 @@ func newOptions() (options *ConsulOptions, flags cmd.Flags) {
 				PreviousChart: "1.4.0",
 				Previous:      "v1.18.0",
 			},
+			Namespace: "consul",
 		},
 		Datacenter: "dc1",
-		Namespace:  "consul",
 		Replicas:   1,
 	}
 
 	flags = cmd.Flags{
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "enableUI",
+				Name:        "enable-ui",
 				Description: "Enable Consul UI",
 			},
 			Option: &options.EnableUI,
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "enable-mesh",
+				Description: "Enable Consul Service Mesh",
+			},
+			Option: &options.EnableMesh,
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "enable-api-gw",
+				Description: "Enable Consul API Gateway",
+			},
+			Option: &options.EnableAPIGW,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "datacenter",
+				Description: "Specify Consul Datacenter",
+			},
+			Option: &options.Datacenter,
 		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{

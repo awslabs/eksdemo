@@ -53,10 +53,11 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(aws_lb_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(cert_manager.NewApp().NewInstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewInstallCmd())
-	cmd.AddCommand(coredumphandler.NewApp().NewInstallCmd())
+	cmd.AddCommand(consul.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallContainerInsightsCmd())
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "ci-")...)
+	cmd.AddCommand(coredumphandler.NewApp().NewInstallCmd())
 	cmd.AddCommand(crossplane.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallExampleCmd())
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "example-")...)
@@ -86,7 +87,6 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallStorageCmd())
 	cmd.AddCommand(NewInstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(velero.NewApp().NewInstallCmd())
-	cmd.AddCommand(consul.NewApp().NewInstallCmd())
 
 	// Hidden commands for popular apps without using the group
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)

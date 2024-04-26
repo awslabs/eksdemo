@@ -22,7 +22,6 @@ func NewApp() *application.Application {
 			ChartName:     "consul",
 			ReleaseName:   "consul",
 			RepositoryURL: "https://helm.releases.hashicorp.com",
-			VersionField:  "1.4.1",
 			ValuesTemplate: &template.TextTemplate{
 				Template: valuesTemplate,
 			},
@@ -39,10 +38,9 @@ const valuesTemplate = `---
 global:
   # The main enabled/disabled setting.
   # If true, servers, clients, Consul DNS and the Consul UI will be enabled.
-  # Namespace
-  namespace: {{ .Namespace }}
+  enabled: true
   # The prefix used for all resources created in the Helm chart.
-  name: {{ .Namespace }}
+  name: null
   # The name of the datacenter that the agents should register as.
   datacenter: {{ .Datacenter }}
   # Enables TLS across the cluster to verify authenticity of the Consul servers and clients.
@@ -74,9 +72,18 @@ ui:
 {{ end }}
 
 # Configures and installs the automatic Consul Connect sidecar injector.
+{{ if .EnableMesh }}
 connectInject:
   enabled: true
-
-apiGateway:
-  manageExternalCRDs: true
+    # Enables Consul on Kubernetes to manage the CRDs used for Gateway API.
+    # Setting this to true will install the CRDs used for the Gateway API when Consul on Kubernetes is installed.
+    # These CRDs can clash with existing Gateway API CRDs if they are already installed in your cluster.
+    # If this setting is false, you will need to install the Gateway API CRDs manually.
+    {{ if .EnableAPIGW }}
+  apiGateway:
+    manageExternalCRDs: true
+  managedGatewayClass:
+    serviceType: LoadBalancer
+    {{ end }}
+{{ end }}
 `
