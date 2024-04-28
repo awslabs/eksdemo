@@ -6,7 +6,9 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	res := &resource.Resource{
+	options, createFlags, getFlags := newOptions()
+
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "ssm-session",
 			Description: "SSM Session",
@@ -14,11 +16,13 @@ func NewResource() *resource.Resource {
 			Args:        []string{"INSTANCE_ID"},
 		},
 
+		CreateFlags: createFlags,
+		GetFlags:    getFlags,
+
 		Getter: &Getter{},
 
 		Manager: &Manager{},
-	}
-	res.Options, res.GetFlags = newOptions()
 
-	return res
+		Options: options,
+	}
 }
