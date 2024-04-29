@@ -25,7 +25,6 @@ type HelmInstaller struct {
 	ReleaseName         string
 	RepositoryURL       string
 	ValuesTemplate      template.Template
-	VersionField        string
 	Wait                bool
 
 	options application.Options
