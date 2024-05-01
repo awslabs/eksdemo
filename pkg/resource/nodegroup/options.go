@@ -21,6 +21,12 @@ const eksOptmizedArmAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-
 // /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2-gpu/recommended/image_id
 const eksOptmizedGpuAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-gpu/recommended/image_id"
 
+// /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/x86_64/standard/recommended/image_id
+const eksOptimized2023AmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/x86_64/standard/recommended/image_id"
+
+// /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/arm64/standard/recommended/image_id
+const eksOptimized2023ArmAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/arm64/standard/recommended/image_id"
+
 type NodegroupOptions struct {
 	*resource.CommonOptions
 
@@ -126,6 +132,9 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 					if strings.EqualFold(options.OperatingSystem, "AmazonLinux2") {
 						options.OperatingSystem = "AmazonLinux2"
 					}
+					if strings.EqualFold(options.OperatingSystem, "AmazonLinux2023") {
+						options.OperatingSystem = "AmazonLinux2023"
+					}
 					if strings.EqualFold(options.OperatingSystem, "Bottlerocket") {
 						options.OperatingSystem = "Bottlerocket"
 					}
@@ -139,7 +148,7 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 				},
 			},
 			Option:  &options.OperatingSystem,
-			Choices: []string{"AmazonLinux2", "Bottlerocket", "Ubuntu2004", "Ubuntu1804"},
+			Choices: []string{"AmazonLinux2", "AmazonLinux2023", "Bottlerocket", "Ubuntu2004", "Ubuntu1804"},
 		},
 	}
 
@@ -213,7 +222,8 @@ func (o *NodegroupOptions) PreCreate() error {
 		o.Taints = append(o.Taints, Taint{Key: "nvidia.com/gpu", Effect: "NoSchedule"})
 	}
 
-	// AMI Lookup is currently only for Amazon Linux 2 EKS Optimized AMI and clusters that aren't fully private
+	// AMI Lookup is currently only for Amazon Linux 2 / Amazon Linux 2023 EKS Optimized AMI
+	// and clusters that aren't fully private
 	if o.OperatingSystem != "AmazonLinux2" || o.IsClusterPrivate {
 		return nil
 	}
@@ -225,6 +235,9 @@ func (o *NodegroupOptions) PreCreate() error {
 		return fmt.Errorf("%q instance type is not supported with the EKS optimized Amazon Linux AMI", "G5g")
 
 	case isNeuron, isNvidia:
+		if o.OperatingSystem == "AmazonLinux2023" {
+			return fmt.Errorf("EKS optimized Amazon Linux 2023 AMI does not support GPU(s) yet")
+		}
 		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedGpuAmiPath, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized accelerated AMI for instance type %s: %w", o.InstanceType, err)
@@ -233,7 +246,11 @@ func (o *NodegroupOptions) PreCreate() error {
 		o.AMI = awssdk.ToString(param.Value)
 
 	case isGraviton:
-		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedArmAmiPath, o.KubernetesVersion))
+		path := eksOptmizedArmAmiPath
+		if o.OperatingSystem == "AmazonLinux2023" {
+			path = eksOptimized2023ArmAmiPath
+		}
+		param, err := ssmClient.GetParameter(fmt.Sprintf(path, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized ARM AMI for instance type %s: %w", o.InstanceType, err)
 		}
@@ -241,7 +258,11 @@ func (o *NodegroupOptions) PreCreate() error {
 		o.AMI = awssdk.ToString(param.Value)
 
 	default:
-		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedAmiPath, o.KubernetesVersion))
+		path := eksOptmizedAmiPath
+		if o.OperatingSystem == "AmazonLinux2023" {
+			path = eksOptimized2023AmiPath
+		}
+		param, err := ssmClient.GetParameter(fmt.Sprintf(path, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized AMI for instance type %s: %w", o.InstanceType, err)
 		}
