@@ -224,7 +224,7 @@ func (o *NodegroupOptions) PreCreate() error {
 
 	// AMI Lookup is currently only for Amazon Linux 2 / Amazon Linux 2023 EKS Optimized AMI
 	// and clusters that aren't fully private
-	if o.OperatingSystem != "AmazonLinux2" || o.IsClusterPrivate {
+	if !strings.HasPrefix(o.OperatingSystem, "AmazonLinux") || o.IsClusterPrivate {
 		return nil
 	}
 
