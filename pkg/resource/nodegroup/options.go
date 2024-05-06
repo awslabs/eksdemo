@@ -236,7 +236,7 @@ func (o *NodegroupOptions) PreCreate() error {
 
 	case isNeuron, isNvidia:
 		if o.OperatingSystem == "AmazonLinux2023" {
-			return fmt.Errorf("EKS optimized Amazon Linux 2023 AMI does not support GPU(s) yet")
+			return fmt.Errorf("EKS optimized Amazon Linux 2023 AMI does not support GPU(s) or Neuron devices yet")
 		}
 		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedGpuAmiPath, o.KubernetesVersion))
 		if err != nil {
