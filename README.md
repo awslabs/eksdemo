@@ -11,26 +11,24 @@ The easy button for learning, testing, and demoing Amazon EKS:
 > Note: `eksdemo` is in beta and is intended for demo and test environments only.
 
 ## Table of Contents
-- [`eksdemo` - kubectl-like CLI for Amazon EKS](#eksdemo---kubectl-like-cli-for-amazon-eks)
-  - [Table of Contents](#table-of-contents)
-  - [Why `eksdemo`?](#why-eksdemo)
+- [Why `eksdemo`?](#why-eksdemo)
   - [No Magic](#no-magic)
   - [`eksdemo` vs EKS Blueprints](#eksdemo-vs-eks-blueprints)
-  - [Install `eksdemo`](#install-eksdemo)
-    - [Prerequisites](#prerequisites)
-    - [Install using Homebrew](#install-using-homebrew)
-  - [Application Catalog](#application-catalog)
-  - [Kubectl-like get commands](#kubectl-like-get-commands)
-    - [Troubleshoot Homebrew Install](#troubleshoot-homebrew-install)
-    - [Install Manually](#install-manually)
-    - [Set the AWS Region](#set-the-aws-region)
-    - [Validate Install](#validate-install)
-  - [Tutorials](#tutorials)
-    - [Basics](#basics)
-    - [Advanced](#advanced)
-  - [Support \& Feedback](#support--feedback)
-  - [Security](#security)
-  - [License](#license)
+- [Install `eksdemo`](#install-eksdemo)
+  - [Prerequisites](#prerequisites)
+  - [Install using Homebrew](#install-using-homebrew)
+  - [Troubleshoot Homebrew Install](#troubleshoot-homebrew-install)
+  - [Install Manually](#install-manually)
+  - [Set the AWS Region](#set-the-aws-region)
+  - [Validate Install](#validate-install)
+- [Application Catalog](#application-catalog)
+- [Kubectl-like get commands](#kubectl-like-get-commands)
+- [Tutorials](#tutorials)
+  - [Basics](#basics)
+  - [Advanced](#advanced)
+- [Support \& Feedback](#support--feedback)
+- [Security](#security)
+- [License](#license)
 
 ## Why `eksdemo`?
 While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog. An application can be installed (including dependencies) with a single command.
@@ -44,7 +42,7 @@ For example, the command: **`eksdemo install autoscaling-karpenter -c <cluster-n
 6. Install the Karpenter Helm Chart
 7. Create default Karpenter `Provisioner` and `AWSNodeTemplate` Custom Resources
 
-## No Magic
+### No Magic
 Application installs are:
 * Transparent
     * The `--dry-run` flag prints out all the steps `eksdemo` will take to create dependencies and install the application
@@ -54,7 +52,7 @@ Application installs are:
 * Managed by Helm
     * `eksdemo` embeds Helm as a library and it's used to install all applications, even those that don't have a Helm chart
 
-## `eksdemo` vs EKS Blueprints
+### `eksdemo` vs EKS Blueprints
 
 Both `eksdemo` and [EKS Blueprints](https://aws.amazon.com/blogs/containers/bootstrapping-clusters-with-eks-blueprints/) automate the creation of EKS clusters and install commonly used applications. Why would you use `eksdemo` for learning, testing, and demoing EKS?
 
@@ -64,7 +62,6 @@ Use cases: learning, testing, and demoing EKS | Use cases: customers deploying t
 Kubectl-like CLI installs apps with single command | Infrastructure as Code (IaC) built on Terraform or CDK
 Imperative tooling is great for iterative testing | Declarative IaC tooling is not designed for iterative testing
 Used to get up and running quickly | Used to drive standards and communicate vetted architecture patterns  for utilizing EKS within customer organizations
-
 
 ## Install `eksdemo`
 
@@ -90,6 +87,49 @@ brew tap aws/tap
 brew install eksdemo
 ```
 
+### Troubleshoot Homebrew Install
+
+Note: Depending on how you originally installed `eksctl`, you may receive the error: `eksctl is already installed from homebrew/core!`  This is because `eksdemo` uses the official Weaveworks tap `weaveworks/tap` as a dependency.
+
+If you receive the error above, run the following commands:
+
+```
+brew uninstall eksctl
+brew install eksdemo
+```
+
+### Install Manually
+
+Navigate to [Releases](https://github.com/awslabs/eksdemo/releases/latest), look under Assets and locate the binary that matches your operation system and platform. Download the file, uncompress and copy to a location of your choice that is in your path. A common location on Mac and Linux is `/usr/local/bin`. Note that `eksctl` is required and [must be installed](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) as well.
+
+### Set the AWS Region
+
+Most `eksdemo` commands require that you have configured a default AWS region or use the `--region` flag. There are 2 ways to configure a default region, either:
+
+* Set in the the [AWS CLI Configuration file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html). On Linux and MacOS this file is located in ~/.aws/config. You can use the `aws configure` command to set the region.
+* Set the [`AWS_REGION` environment variable](https://docs.aws.amazon.com/sdkref/latest/guide/environment-variables.html) to the desired default region. An example is `export AWS_REGION=us-west-2`. Unless you set the environment variable in your `~/.bashrc` or `~/.zshrc`, you will need to set this every time you open a new terminal.
+
+### Validate Install
+
+To validate installation you can run the **`eksdemo version`** command and confirm you are running the latest version. The output will be similar to below:
+
+```
+» eksdemo version
+eksdemo version info: cmd.Version{Version:"0.13.0", Date:"2024-03-20T21:59:34Z", Commit:"bf9a812"}
+```
+
+To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
+
+```
+» eksdemo get cluster
++------------+--------+---------+---------+----------+----------+
+|    Age     | Status | Cluster | Version | Platform | Endpoint |
++------------+--------+---------+---------+----------+----------+
+| 3 weeks    | ACTIVE | green   |    1.26 | eks.5    | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.29 | eks.1    | Public   |
++------------+--------+---------+---------+----------+----------+
+* Indicates current context in local kubeconfig
+```
 
 ## Application Catalog
 
@@ -110,6 +150,9 @@ The application catalog includes:
     * `prometheusservice-controller` — ACK Prometheus Service Controller
     * `s3-controller` — ACK S3 Controller
 * `adot-operator` — AWS Distro for OpenTelemetry Operator
+* `ai` — AI/ML Applications for Kubernetes
+    * `k8sgpt-operator` — K8sGPT Operator
+    * `neuron-device-plugin` — Neuron SDK Device Plugin
 * `appmesh-controller` — AWS App Mesh Controller
 * `argo` — Get stuff done with Kubernetes!
     * `cd` — Declarative continuous deployment for Kubernetes
@@ -135,6 +178,7 @@ The application catalog includes:
 * `example` — Example Applications
     * `eks-workshop` — EKS Workshop Example Microservices
     * `game-2048` — Example Game 2048
+    * `ghost` — Turn your audience into a business
     * `kube-ops-view` — Kubernetes Operational View
     * `podinfo` — Go app w/microservices best practices
     * `wordpress` — WordPress Blog
@@ -144,7 +188,7 @@ The application catalog includes:
     * `controllers` — Flux Controllers
     * `sync` — Flux GitRepository to sync with
 * `harbor` — Cloud Native Registry
-* `headlamp` - An easy-to-use and extensible Kubernetes web UI
+* `headlamp` — An easy-to-use and extensible Kubernetes web UI
 * `ingress` — Ingress Controllers
     * `contour` — Ingress Controller using Envoy proxy
     * `emissary` — Open Source API Gateway from Ambassador
@@ -244,51 +288,6 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
     * `target-group` —  VPC Lattice Target Group
 * `vpc-summary` — VPC Summary
 
-
-### Troubleshoot Homebrew Install
-
-Note: Depending on how you originally installed `eksctl`, you may receive the error: `eksctl is already installed from homebrew/core!`  This is because `eksdemo` uses the official Weaveworks tap `weaveworks/tap` as a dependency.
-
-If you receive the error above, run the following commands:
-
-```
-brew uninstall eksctl
-brew install eksdemo
-```
-
-### Install Manually
-
-Navigate to [Releases](https://github.com/awslabs/eksdemo/releases/latest), look under Assets and locate the binary that matches your operation system and platform. Download the file, uncompress and copy to a location of your choice that is in your path. A common location on Mac and Linux is `/usr/local/bin`. Note that `eksctl` is required and [must be installed](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) as well.
-
-### Set the AWS Region
-
-For most `eksdemo` commands, it requires that you have configured a default AWS region or use the `--region` flag. There are 2 ways to configure a default region, either:
-
-* Set in the the [AWS CLI Configuration file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html). On Linux and MacOS this file is located in ~/.aws/config. You can use the `aws configure` command to set the region.
-* Set the [`AWS_REGION` environment variable](https://docs.aws.amazon.com/sdkref/latest/guide/environment-variables.html) to the desired default region. An example is `export AWS_REGION=us-west-2`. Unless you set the environment variable in your `~/.bashrc` or `~/.zshrc`, you will need to set this every time you open a new terminal.
-
-### Validate Install
-
-To validate installation you can run the **`eksdemo version`** command and confirm you are running the latest version. The output will be similar to below:
-
-```
-» eksdemo version
-eksdemo version info: cmd.Version{Version:"0.8.0", Date:"2023-06-03T17:45:05Z", Commit:"bac7ddb"}
-```
-
-To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
-
-```
-» eksdemo get cluster
-+------------+--------+---------+---------+----------+----------+
-|    Age     | Status | Cluster | Version | Platform | Endpoint |
-+------------+--------+---------+---------+----------+----------+
-| 3 weeks    | ACTIVE | green   |    1.26 | eks.5    | Public   |
-| 20 minutes | ACTIVE | *blue   |    1.29 | eks.1    | Public   |
-+------------+--------+---------+---------+----------+----------+
-* Indicates current context in local kubeconfig
-```
-
 ## Tutorials
 
 The Basics tutorials provide detailed knowledge on how `eksdemo` works. It's recommended you review the Basics tutorials before proceeding to Advanced tutorial as they assume this knowlege.
@@ -308,6 +307,7 @@ The Basics tutorials provide detailed knowledge on how `eksdemo` works. It's rec
 * [Install EKS optimized Kubecost using Amazon Managed Prometheus](/docs/install-kubecost.md)
 * [Install Kube Prometheus Stack using Amazon Managed Prometheus](/docs/install-kube-prometheus.md)
 * [Install Amazon VPC Lattice (Gateway API) Controller](/docs/install-vpc-lattice-controller.md)
+* [Install HashiCorp Consul Application with Consul self-signed TLS](/docs/install-hashicorp-consul.md)
 
 ## Support & Feedback
 
