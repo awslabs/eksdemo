@@ -38,7 +38,7 @@ func NewResource() *resource.Resource {
 const EksctlTemplate = `
 managedNodeGroups:
 - name: {{ .NodegroupName }}
-{{- if .AMI }}
+{{- if and .AMI (ne .OperatingSystem "AmazonLinux2023") }}
   ami: {{ .AMI }}
 {{- end }}
   amiFamily: {{ .OperatingSystem }}
