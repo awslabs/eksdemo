@@ -16,6 +16,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/cloudtrail_trail"
 	"github.com/awslabs/eksdemo/pkg/resource/cluster"
 	"github.com/awslabs/eksdemo/pkg/resource/dns_record"
+	"github.com/awslabs/eksdemo/pkg/resource/ec2/ami"
 	"github.com/awslabs/eksdemo/pkg/resource/ec2_instance"
 	"github.com/awslabs/eksdemo/pkg/resource/ecr_repository"
 	"github.com/awslabs/eksdemo/pkg/resource/eks/accessentry"
@@ -75,6 +76,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(addon.NewVersionsResource().NewGetCmd())
 	cmd.AddCommand(alarm.NewResource().NewGetCmd())
 	cmd.AddCommand(amg_workspace.NewResource().NewGetCmd())
+	cmd.AddCommand(ami.NewResource().NewGetCmd())
 	cmd.AddCommand(amp_rule.NewResource().NewGetCmd())
 	cmd.AddCommand(amp_workspace.NewResource().NewGetCmd())
 	cmd.AddCommand(application.NewResource().NewGetCmd())
