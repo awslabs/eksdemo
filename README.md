@@ -224,11 +224,13 @@ The application catalog includes:
 
 Almost all of the command have shorthand alaises to make it easier to type. For example, `get ec2` is an alias for `get ec2-instance`. You can find the aliases using the help command, `eksdemo get ec2-instance -h`.
 
+* `access-entry` — EKS Access Entry
 * `acm-certificate` — ACM Cerificate
 * `addon` — EKS Managed Addon
 * `addon-versions` — EKS Managed Addon Versions
 * `alarm` — CloudWatch Alarm
 * `amg-workspace` — Amazon Managed Grafana Workspace
+* `ami` — Amazon Machine Image (AMI)
 * `amp-rule` — Amazon Managed Prometheus Rule Namespace
 * `amp-workspace` — Amazon Managed Prometheus Workspace
 * `application` — Installed Applications

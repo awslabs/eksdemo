@@ -65,6 +65,13 @@ func NewEC2InternetGatewayVpcFilter(vpcId string) types.Filter {
 	}
 }
 
+func NewEC2NameFilter(name string) types.Filter {
+	return types.Filter{
+		Name:   aws.String("name"),
+		Values: []string{name},
+	}
+}
+
 func NewEC2NatGatewayFilter(natGatewayId string) types.Filter {
 	return types.Filter{
 		Name:   aws.String("nat-gateway-id"),
@@ -204,16 +211,16 @@ func (c *EC2Client) DescribeAddresses(filters []types.Filter) ([]types.Address, 
 
 // Describes the Availability Zones, Local Zones, and Wavelength Zones that are available to you.
 // If there is an event impacting a zone, you can use this request to view the state and any provided messages for that zone.
-func (c *EC2Client) DescribeAvailabilityZones(name string, all bool) ([]types.AvailabilityZone, error) {
+func (c *EC2Client) DescribeAvailabilityZones(zoneName string, all bool) ([]types.AvailabilityZone, error) {
 	filters := []types.Filter{}
 	input := ec2.DescribeAvailabilityZonesInput{
 		AllAvailabilityZones: aws.Bool(all),
 	}
 
-	if name != "" {
+	if zoneName != "" {
 		filters = append(filters, types.Filter{
 			Name:   aws.String("zone-name"),
-			Values: []string{name},
+			Values: []string{zoneName},
 		})
 	}
 
@@ -227,6 +234,39 @@ func (c *EC2Client) DescribeAvailabilityZones(name string, all bool) ([]types.Av
 	}
 
 	return result.AvailabilityZones, nil
+}
+
+// Describes the specified images (AMIs, AKIs, and ARIs) available to you
+// or all of the images available to you.
+func (c *EC2Client) DescribeImages(filters []types.Filter, imageIds, owners []string) ([]types.Image, error) {
+	images := []types.Image{}
+	input := ec2.DescribeImagesInput{}
+	pageNum := 0
+
+	if len(filters) > 0 {
+		input.Filters = filters
+	}
+
+	if len(imageIds) > 0 {
+		input.ImageIds = imageIds
+	}
+
+	if len(owners) > 0 {
+		input.Owners = owners
+	}
+
+	paginator := ec2.NewDescribeImagesPaginator(c.Client, &input)
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		images = append(images, out.Images...)
+		pageNum++
+	}
+
+	return images, nil
 }
 
 // Describes the specified instances or all instances.
