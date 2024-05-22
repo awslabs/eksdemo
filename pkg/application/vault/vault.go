@@ -41,8 +41,13 @@ global:
   # The prefix used for all resources created in the Helm chart.
   name: null
   # Enables TLS across the cluster to verify authenticity of the Vault servers and clients.
+{{ if .EnableTLS }}
   tls:
-    enabled: true
+    enabled: {{ .EnableTLS }}
+{{ else }}
+  tls:
+    enabled: false
+{{ end }}
 
 # Configures High Availability Mode for Vault Server
 {{ if gt .Replicas 1 }}
@@ -52,13 +57,4 @@ server:
     # The number of server agents to run. This determines the fault tolerance of the cluster.
     replicas: {{ .Replicas }}
 {{ end }}
-
-# Contains values that configure the Vault UI.
-{{ if .EnableUI }}
-# Vault UI
-ui:
-  enabled: true
-  serviceType: "LoadBalancer"
-  serviceNodePort: null
-  externalPort: 8200
-{{ end }}`
+`

@@ -29,13 +29,6 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 	flags = cmd.Flags{
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "enable-ui",
-				Description: "Enable Vault UI",
-			},
-			Option: &options.EnableUI,
-		},
-		&cmd.BoolFlag{
-			CommandFlag: cmd.CommandFlag{
 				Name:        "enable-tls",
 				Description: "Enable TLS for end-to-end encrypted transport",
 			},
