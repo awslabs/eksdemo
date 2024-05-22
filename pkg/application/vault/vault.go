@@ -40,13 +40,11 @@ global:
   enabled: true
   # The prefix used for all resources created in the Helm chart.
   name: null
-  # Enables TLS across the cluster to verify authenticity of the Vault servers and clients.
+  # TLS for end-to-end encrypted transport
 {{ if .EnableTLS }}
-  tls:
-    enabled: {{ .EnableTLS }}
+  tlsDisable: false
 {{ else }}
-  tls:
-    enabled: false
+  tlsDisable: true
 {{ end }}
 
 # Configures High Availability Mode for Vault Server
