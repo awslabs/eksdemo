@@ -9,7 +9,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/cloudformation_stack"
 	"github.com/awslabs/eksdemo/pkg/resource/cluster"
 	"github.com/awslabs/eksdemo/pkg/resource/dns_record"
-	"github.com/awslabs/eksdemo/pkg/resource/ec2_instance"
+	"github.com/awslabs/eksdemo/pkg/resource/ec2/instance"
 	"github.com/awslabs/eksdemo/pkg/resource/fargate_profile"
 	"github.com/awslabs/eksdemo/pkg/resource/irsa"
 	"github.com/awslabs/eksdemo/pkg/resource/load_balancer"
@@ -40,7 +40,7 @@ func NewDeleteCmd() *cobra.Command {
 	cmd.AddCommand(NewCognitoCmd())
 	cmd.AddCommand(NewDeleteAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewDeleteCmd())
-	cmd.AddCommand(ec2_instance.NewResource().NewDeleteCmd())
+	cmd.AddCommand(instance.NewResource().NewDeleteCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewDeleteCmd())
 	cmd.AddCommand(irsa.NewResource().NewDeleteCmd())
 	cmd.AddCommand(load_balancer.NewResource().NewDeleteCmd())

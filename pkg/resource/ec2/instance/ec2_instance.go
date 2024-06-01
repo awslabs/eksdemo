@@ -1,4 +1,4 @@
-package ec2_instance
+package instance
 
 import (
 	"github.com/awslabs/eksdemo/pkg/cmd"
@@ -6,7 +6,9 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	res := &resource.Resource{
+	options, getFlags := newOptions()
+
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "ec2-instance",
 			Description: "EC2 Instance",
@@ -14,12 +16,12 @@ func NewResource() *resource.Resource {
 			Args:        []string{"ID"},
 		},
 
+		GetFlags: getFlags,
+
 		Getter: &Getter{},
 
 		Manager: &Manager{},
+
+		Options: options,
 	}
-
-	res.Options, res.GetFlags = newOptions()
-
-	return res
 }
