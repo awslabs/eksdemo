@@ -97,6 +97,29 @@ func (c *SSMClient) GetParameter(name string) (*types.Parameter, error) {
 	return out.Parameter, nil
 }
 
+func (c *SSMClient) GetParametersByPath(path string) ([]types.Parameter, error) {
+	parameters := []types.Parameter{}
+	pageNum := 0
+
+	input := &ssm.GetParametersByPathInput{
+		Path:      aws.String(path),
+		Recursive: aws.Bool(true),
+	}
+
+	paginator := ssm.NewGetParametersByPathPaginator(c.Client, input)
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		parameters = append(parameters, out.Parameters...)
+		pageNum++
+	}
+
+	return parameters, nil
+}
+
 func (c *SSMClient) StartSession(documentName, target string, params map[string][]string) (*ssm.StartSessionOutput, error) {
 	input := &ssm.StartSessionInput{
 		DocumentName: aws.String(documentName),
