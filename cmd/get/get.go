@@ -50,6 +50,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/security_group_rule"
 	"github.com/awslabs/eksdemo/pkg/resource/sqs_queue"
 	ssmnode "github.com/awslabs/eksdemo/pkg/resource/ssm/node"
+	"github.com/awslabs/eksdemo/pkg/resource/ssm/parameter"
 	"github.com/awslabs/eksdemo/pkg/resource/ssm/session"
 	"github.com/awslabs/eksdemo/pkg/resource/subnet"
 	"github.com/awslabs/eksdemo/pkg/resource/target_group"
@@ -124,6 +125,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(security_group_rule.NewResource().NewGetCmd())
 	cmd.AddCommand(sqs_queue.NewResource().NewGetCmd())
 	cmd.AddCommand(ssmnode.NewResource().NewGetCmd())
+	cmd.AddCommand(parameter.NewResource().NewGetCmd())
 	cmd.AddCommand(session.NewResource().NewGetCmd())
 	cmd.AddCommand(subnet.NewResource().NewGetCmd())
 	cmd.AddCommand(target_group.NewResource().NewGetCmd())
