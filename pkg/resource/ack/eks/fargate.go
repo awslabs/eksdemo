@@ -24,7 +24,7 @@ func NewFargateProfileResource() *resource.Resource {
 			Name:        "eks-fargate-profile",
 			Description: "Fargate Profile",
 			Aliases:     []string{"eks-fargate", "fargate-profile", "fargate", "fp"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

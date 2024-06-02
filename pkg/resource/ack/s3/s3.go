@@ -13,7 +13,7 @@ func NewResource() *resource.Resource {
 			Name:        "s3-bucket",
 			Description: "Amazon S3 bucket",
 			Aliases:     []string{"s3"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

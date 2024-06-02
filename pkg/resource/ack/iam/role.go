@@ -18,7 +18,7 @@ func NewRoleResource() *resource.Resource {
 			Name:        "iam-role",
 			Description: "ECR Repository",
 			Aliases:     []string{"role"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

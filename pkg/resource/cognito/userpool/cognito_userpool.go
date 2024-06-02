@@ -20,6 +20,7 @@ func NewWithOptions(options *Options) *resource.Resource {
 			Name:        "user-pool",
 			Description: "Cognito User Pool",
 			Aliases:     []string{"user-pools", "userpools", "userpool", "up"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

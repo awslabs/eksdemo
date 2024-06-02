@@ -14,6 +14,7 @@ func NewResource() *resource.Resource {
 			Name:        "cluster",
 			Description: "EKS Cluster",
 			Aliases:     []string{"clusters"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

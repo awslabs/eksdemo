@@ -22,6 +22,7 @@ func NewResourceWithOptions(options *AmgOptions) *resource.Resource {
 			Name:        "amg-workspace",
 			Description: "Amazon Managed Grafana Workspace",
 			Aliases:     []string{"amg"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

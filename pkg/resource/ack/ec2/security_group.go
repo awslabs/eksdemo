@@ -18,7 +18,7 @@ func NewSecurityGroupResource() *resource.Resource {
 			Name:        "security-group",
 			Description: "EC2 Security Group",
 			Aliases:     []string{"security-groups", "sg"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

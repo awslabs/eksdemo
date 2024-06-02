@@ -13,7 +13,8 @@ func NewResource() *resource.Resource {
 			Name:        "ssm-session",
 			Description: "SSM Session",
 			Aliases:     []string{"session"},
-			Args:        []string{"INSTANCE_ID"},
+			CreateArgs:  []string{"INSTANCE_ID"},
+			Args:        []string{"SESSION_ID"},
 		},
 
 		CreateFlags: createFlags,

@@ -39,8 +39,8 @@ func (r *Resource) Update(cmd *cobra.Command) error {
 
 func (r *Resource) NewCreateCmd() *cobra.Command {
 	use := r.Command.Name
-	if len(r.Args) > 0 {
-		use += " " + strings.Join(r.Args, " ")
+	if len(r.CreateArgs) > 0 {
+		use += " " + strings.Join(r.CreateArgs, " ")
 	}
 
 	cmd := &cobra.Command{
@@ -48,7 +48,7 @@ func (r *Resource) NewCreateCmd() *cobra.Command {
 		Short:   r.Description,
 		Long:    "Create " + r.Description,
 		Aliases: r.Aliases,
-		Args:    cobra.ExactArgs(len(r.Args)),
+		Args:    cobra.ExactArgs(len(r.CreateArgs)),
 		Hidden:  r.Hidden,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := r.CreateFlags.ValidateFlags(cmd, args); err != nil {
@@ -60,7 +60,7 @@ func (r *Resource) NewCreateCmd() *cobra.Command {
 			}
 			cmd.SilenceUsage = true
 
-			if len(r.Args) > 0 {
+			if len(r.CreateArgs) > 0 {
 				r.SetName(args[0])
 			}
 

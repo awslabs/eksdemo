@@ -13,6 +13,7 @@ func NewResource() *resource.Resource {
 			Name:        "nodegroup",
 			Description: "EKS Managed Nodegroup",
 			Aliases:     []string{"nodegroups", "mng", "ng"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

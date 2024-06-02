@@ -20,7 +20,7 @@ func NewSubnetResource() *resource.Resource {
 			Name:        "subnet",
 			Description: "EC2 Subnet",
 			Aliases:     []string{"subnets"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{
