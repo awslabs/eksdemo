@@ -19,7 +19,7 @@ func NewResource() *resource.Resource {
 			Name:        "ecr-repo",
 			Description: "ECR Repository",
 			Aliases:     []string{"ecr"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

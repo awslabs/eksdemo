@@ -8,13 +8,18 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	res := &resource.Resource{
+	options, createFlags := NewOptions()
+
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "fargate-profile",
 			Description: "EKS Fargate Profile",
 			Aliases:     []string{"fargate-profiles", "fargateprofiles", "fargateprofile", "fargate", "fp"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
+
+		CreateFlags: createFlags,
 
 		Getter: &Getter{},
 
@@ -27,11 +32,9 @@ func NewResource() *resource.Resource {
 				Template: deleteCommandTemplate,
 			},
 		},
+
+		Options: options,
 	}
-
-	res.Options, res.CreateFlags = NewOptions()
-
-	return res
 }
 
 const eksctlTemplate = `

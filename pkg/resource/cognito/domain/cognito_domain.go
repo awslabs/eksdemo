@@ -20,6 +20,7 @@ func NewWithOptions(options *Options) *resource.Resource {
 		Command: cmd.Command{
 			Name:        "domain",
 			Description: "Cognito User Pool Domain",
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"DOMAIN"},
 		},
 

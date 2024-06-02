@@ -11,6 +11,7 @@ func NewResource() *resource.Resource {
 			Name:        "target-group",
 			Description: "Target Group",
 			Aliases:     []string{"target-groups", "tg"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

@@ -6,20 +6,25 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	res := &resource.Resource{
+	options, createFlags, deleteFlags, getFlags := newOptions()
+
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "dns-record",
 			Description: "Route53 Resource Record Set",
 			Aliases:     []string{"dns-records", "records", "record", "dns"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
+
+		CreateFlags: createFlags,
+		DeleteFlags: deleteFlags,
+		GetFlags:    getFlags,
 
 		Getter: &Getter{},
 
 		Manager: &Manager{},
+
+		Options: options,
 	}
-
-	res.Options, res.CreateFlags, res.DeleteFlags, res.GetFlags = newOptions()
-
-	return res
 }

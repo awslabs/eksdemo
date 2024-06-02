@@ -11,6 +11,7 @@ func NewResource() *resource.Resource {
 			Name:        "acm-certificate",
 			Description: "ACM Cerificate",
 			Aliases:     []string{"acm-certificates", "acm-certs", "acm-cert", "acm"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

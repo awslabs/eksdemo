@@ -13,6 +13,7 @@ func NewResource() *resource.Resource {
 			Name:        "addon",
 			Description: "EKS Managed Addon",
 			Aliases:     []string{"addons"},
+			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
 

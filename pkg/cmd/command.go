@@ -6,5 +6,6 @@ type Command struct {
 	Description string
 	Aliases     []string
 	Args        []string
+	CreateArgs  []string
 	Hidden      bool
 }

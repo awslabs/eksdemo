@@ -20,8 +20,9 @@ func NewWithOptions(options *Options) *resource.Resource {
 		Command: cmd.Command{
 			Name:        "app-client",
 			Description: "Cognito User Pool App Client",
-			Args:        []string{"NAME"},
 			Aliases:     []string{"client"},
+			CreateArgs:  []string{"NAME"},
+			Args:        []string{"NAME"},
 		},
 
 		Getter: &Getter{},

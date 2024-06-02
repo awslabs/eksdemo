@@ -23,7 +23,9 @@ type Options interface {
 }
 
 type CommonOptions struct {
-	Name                   string
+	Name string
+	// If both ClusterFlagDisabled and ClusterFlagOptional are true, the cluster flag
+	// is only available for Get, and not available for Create, Update and Delete commands
 	ClusterFlagDisabled    bool
 	ClusterFlagOptional    bool
 	DeleteArgumentOptional bool

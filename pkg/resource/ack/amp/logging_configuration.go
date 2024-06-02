@@ -24,7 +24,7 @@ func NewLoggingConfigurationResource() *resource.Resource {
 			Name:        "amp-logging-configuration",
 			Description: "AMP Logging Configuration",
 			Aliases:     []string{"amp-logging-config", "amp-logging", "amp-log"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

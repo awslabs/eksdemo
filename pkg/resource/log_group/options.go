@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newOptions() (options *resource.CommonOptions, getFlags, deleteFlags cmd.Flags) {
+func newOptions() (options *resource.CommonOptions, deleteFlags, getFlags cmd.Flags) {
 	options = &resource.CommonOptions{
 		DeleteArgumentOptional: true,
 		ClusterFlagDisabled:    true,

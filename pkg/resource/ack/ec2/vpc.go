@@ -18,7 +18,7 @@ func NewVpcResource() *resource.Resource {
 			Name:        "vpc",
 			Description: "Virtual Private Cloud (VPC)",
 			Aliases:     []string{"vpcs"},
-			Args:        []string{"NAME"},
+			CreateArgs:  []string{"NAME"},
 		},
 
 		Manager: &manifest.ResourceManager{

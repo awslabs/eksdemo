@@ -22,7 +22,7 @@ func NewWorkspaceResource() *resource.Resource {
 			Name:        "amp-workspace",
 			Description: "AMP Workspace",
 			Aliases:     []string{"amp"},
-			Args:        []string{"ALIAS"},
+			CreateArgs:  []string{"ALIAS"},
 		},
 
 		Manager: &manifest.ResourceManager{

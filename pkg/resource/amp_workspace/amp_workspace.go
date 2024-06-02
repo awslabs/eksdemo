@@ -19,6 +19,7 @@ func NewResourceWithOptions(options *AmpWorkspaceOptions) *resource.Resource {
 			Name:        "amp-workspace",
 			Description: "Amazon Managed Prometheus Workspace",
 			Aliases:     []string{"amp"},
+			CreateArgs:  []string{"ALIAS"},
 			Args:        []string{"ALIAS"},
 		},
 
