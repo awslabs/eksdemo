@@ -6,17 +6,19 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	options, getFlags := newOptions()
+	options, createFlags, getFlags := newOptions()
 
 	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "ec2-instance",
 			Description: "EC2 Instance",
 			Aliases:     []string{"ec2-instances", "ec2", "instances", "instance"},
-			Args:        []string{"ID"},
+			Args:        []string{"INSTANCE_ID"},
+			CreateArgs:  []string{"NAME"},
 		},
 
-		GetFlags: getFlags,
+		CreateFlags: createFlags,
+		GetFlags:    getFlags,
 
 		Getter: &Getter{},
 

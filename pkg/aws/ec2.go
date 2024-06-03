@@ -693,6 +693,48 @@ func (c *EC2Client) GetManagedPrefixListEntries(prefixListId string) ([]types.Pr
 	return entries, nil
 }
 
+// Launches the specified number of instances using an AMI for which you have permissions.
+func (c *EC2Client) RunInstances(ami, instType, keyName, name, subnetID, volName string, count, volSize int) (*ec2.RunInstancesOutput, error) {
+	input := &ec2.RunInstancesInput{
+		ImageId:      aws.String(ami),
+		InstanceType: types.InstanceType(instType),
+		MaxCount:     aws.Int32(int32(count)),
+		MinCount:     aws.Int32(int32(count)),
+		TagSpecifications: []types.TagSpecification{
+			{
+				ResourceType: types.ResourceTypeInstance,
+				Tags: []types.Tag{
+					{
+						Key:   aws.String("Name"),
+						Value: aws.String(name),
+					},
+				},
+			},
+		},
+	}
+
+	if keyName != "" {
+		input.KeyName = aws.String(keyName)
+	}
+
+	if subnetID != "" {
+		input.SubnetId = aws.String(subnetID)
+	}
+
+	if volSize > 0 {
+		input.BlockDeviceMappings = []types.BlockDeviceMapping{
+			{
+				DeviceName: aws.String(volName),
+				Ebs: &types.EbsBlockDevice{
+					VolumeSize: aws.Int32(int32(volSize)),
+				},
+			},
+		}
+	}
+
+	return c.Client.RunInstances(context.Background(), input)
+}
+
 // Shuts down the specified instances.
 // This operation is idempotent; if you terminate an instance more than once, each call succeeds.
 func (c *EC2Client) TerminateInstances(id string) error {

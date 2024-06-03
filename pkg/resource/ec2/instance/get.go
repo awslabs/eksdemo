@@ -26,7 +26,7 @@ func (g *Getter) Init() {
 }
 
 func (g *Getter) Get(id string, output printer.Output, options resource.Options) error {
-	ec2Options, ok := options.(*EC2InstanceOptions)
+	ec2Options, ok := options.(*Options)
 	if !ok {
 		return fmt.Errorf("internal error, unable to cast options to EC2InstanceOptions")
 	}
