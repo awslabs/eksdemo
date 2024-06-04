@@ -28,6 +28,7 @@ type CommonOptions struct {
 	// is only available for Get, and not available for Create, Update and Delete commands
 	ClusterFlagDisabled    bool
 	ClusterFlagOptional    bool
+	CreateArgumentOptional bool
 	DeleteArgumentOptional bool
 	GetArgumentRequired    bool
 	KubeContext            string

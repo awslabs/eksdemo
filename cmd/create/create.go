@@ -8,6 +8,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/amp_workspace"
 	"github.com/awslabs/eksdemo/pkg/resource/cluster"
 	"github.com/awslabs/eksdemo/pkg/resource/dns_record"
+	"github.com/awslabs/eksdemo/pkg/resource/ec2/instance"
 	"github.com/awslabs/eksdemo/pkg/resource/fargate_profile"
 	"github.com/awslabs/eksdemo/pkg/resource/log_group"
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
@@ -39,6 +40,7 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(NewCreateAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewCreateCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewCreateCmd())
+	cmd.AddCommand(instance.NewResource().NewCreateCmd())
 	cmd.AddCommand(NewKyvernoCmd())
 	cmd.AddCommand(NewCreateAliasCmds(kyvernoPolicies, "kyverno-")...)
 	cmd.AddCommand(log_group.NewResource().NewCreateCmd())
