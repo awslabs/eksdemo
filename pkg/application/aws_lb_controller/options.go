@@ -23,13 +23,13 @@ func newOptions() (options *AWSLBControllerOptions, flags cmd.Flags) {
 			Namespace:      "awslb",
 			ServiceAccount: "aws-load-balancer-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.7.0",
-				Latest:        "v2.7.0",
-				PreviousChart: "1.6.1",
-				Previous:      "v2.6.1",
+				LatestChart:   "1.8.1",
+				Latest:        "v2.8.1",
+				PreviousChart: "1.7.0",
+				Previous:      "v2.7.0",
 			},
 		},
-		DefaultTargetType: "instance",
+		DefaultTargetType: "ip",
 		Replicas:          1,
 	}
 

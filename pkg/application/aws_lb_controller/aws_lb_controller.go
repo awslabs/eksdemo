@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/aws-load-balancer-controller
 // Helm:    https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller
 // Repo:    https://gallery.ecr.aws/eks/aws-load-balancer-controller
-// Version: Latest is v2.7.0 (as of 2/1/24)
+// Version: Latest is v2.8.1 (as of 6/4/24)
 
 func NewApp() *application.Application {
 	app := &application.Application{
@@ -222,6 +222,7 @@ Statement:
   Resource: "*"
 `
 
+// https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/values.yaml
 const valuesTemplate = `---
 replicaCount: {{ .Replicas }}
 image:
