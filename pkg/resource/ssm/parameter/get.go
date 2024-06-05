@@ -3,7 +3,9 @@ package parameter
 import (
 	"errors"
 	"os"
+	"sort"
 
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/printer"
@@ -29,6 +31,11 @@ func (g *Getter) Get(pathOrName string, output printer.Output, _ resource.Option
 	if err != nil {
 		return err
 	}
+
+	// Show recently updated Parameters at the end of the list
+	sort.Slice(params, func(i, j int) bool {
+		return params[i].LastModifiedDate.Before(awssdk.ToTime(params[j].LastModifiedDate))
+	})
 
 	return output.Print(os.Stdout, NewPrinter(params))
 }

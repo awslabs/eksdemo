@@ -277,6 +277,7 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 * `security-group-rule` — Security Group Rule
 * `sqs-queue` — SQS Queue
 * `ssm-node` — SSM Managed Node
+* `ssm-parameter` — SSM Parameter
 * `ssm-session` — SSM Session
 * `subnet` — VPC Subnet
 * `target-group` — Target Group
