@@ -54,6 +54,8 @@ spec:
           operator: Gt
           values: ["2"]
       nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
         name: default
   limits:
     cpu: 1000
@@ -74,4 +76,9 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         aws:eks:cluster-name: {{ .ClusterName }}
-`
+{{- if .AMISelectorIDs }}
+  amiSelectorTerms:
+  {{- range .AMISelectorIDs }}
+    - id: {{ . }}
+  {{- end }}
+{{- end }}`

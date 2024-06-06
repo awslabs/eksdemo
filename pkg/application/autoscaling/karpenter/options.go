@@ -3,9 +3,11 @@ package karpenter
 import (
 	"strings"
 
+	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/awslabs/eksdemo/pkg/application"
+	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
-
+	"github.com/awslabs/eksdemo/pkg/resource/ssm/parameter"
 	"github.com/spf13/cobra"
 )
 
@@ -13,6 +15,7 @@ type KarpenterOptions struct {
 	application.ApplicationOptions
 
 	AMIFamily        string
+	AMISelectorIDs   []string
 	DisableDrift     bool
 	EnableSpotToSpot bool
 	ExpireAfter      string
@@ -25,10 +28,10 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			Namespace:      "karpenter",
 			ServiceAccount: "karpenter",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "0.35.2",
-				Latest:        "0.35.2",
-				PreviousChart: "v0.34.2",
-				Previous:      "v0.34.2",
+				LatestChart:   "0.37.0",
+				Latest:        "0.37.0",
+				PreviousChart: "0.35.2",
+				Previous:      "0.35.2",
 			},
 		},
 		AMIFamily:   "AL2",
@@ -41,10 +44,40 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			CommandFlag: cmd.CommandFlag{
 				Name:        "ami-family",
 				Description: "node class AMI family",
-				Shorthand:   "A",
-				Validate: func(cmd *cobra.Command, args []string) error {
-					if strings.EqualFold(options.AMIFamily, "Al2") {
+				Shorthand:   "a",
+				Validate: func(_ *cobra.Command, _ []string) error {
+					eksVersion := awssdk.ToString(options.Common().Cluster.Version)
+					ssm := parameter.NewGetter(aws.NewSSMClient())
+
+					if strings.EqualFold(options.AMIFamily, "AL2") {
 						options.AMIFamily = "AL2"
+
+						al2AMI, err := ssm.GetEKSOptimizedAL2AMI(eksVersion)
+						if err != nil {
+							return err
+						}
+						al2Arm64AMI, err := ssm.GetEKSOptimizedAL2Arm64AMI(eksVersion)
+						if err != nil {
+							return err
+						}
+
+						options.AMISelectorIDs = append(options.AMISelectorIDs, al2AMI, al2Arm64AMI)
+
+						return nil
+					}
+					if strings.EqualFold(options.AMIFamily, "AL2023") {
+						options.AMIFamily = "AL2023"
+
+						al2023AMI, err := ssm.GetEKSOptimizedAL2023AMI(eksVersion)
+						if err != nil {
+							return err
+						}
+						al2023Arm64AMI, err := ssm.GetEKSOptimizedAL2023Arm64AMI(eksVersion)
+						if err != nil {
+							return err
+						}
+
+						options.AMISelectorIDs = append(options.AMISelectorIDs, al2023AMI, al2023Arm64AMI)
 						return nil
 					}
 					if strings.EqualFold(options.AMIFamily, "Bottlerocket") {
@@ -59,7 +92,7 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 				},
 			},
 			Option:  &options.AMIFamily,
-			Choices: []string{"AL2", "Bottlerocket", "Ubuntu"},
+			Choices: []string{"AL2", "AL2023", "Bottlerocket", "Ubuntu"},
 		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
