@@ -40,6 +40,14 @@ func (g *Getter) Get(pathOrName string, output printer.Output, _ resource.Option
 	return output.Print(os.Stdout, NewPrinter(params))
 }
 
+func (g *Getter) GetByName(name string) (*types.Parameter, error) {
+	param, err := g.ssmClient.GetParameter(name)
+	if err != nil {
+		return nil, err
+	}
+	return param, nil
+}
+
 func (g *Getter) GetByPathOrName(pathOrName string) ([]types.Parameter, error) {
 	params, err := g.ssmClient.GetParametersByPath(pathOrName)
 	if err != nil {

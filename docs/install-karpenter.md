@@ -45,8 +45,8 @@ Usage:
   eksdemo install autoscaling-karpenter [flags]
 
 Flags:
-  -A, --ami-family string        node class AMI family (default "AL2")
-      --chart-version string     chart version (default "v0.34.2")
+  -a, --ami-family string        node class AMI family (default "AL2")
+      --chart-version string     chart version (default "0.37.0")
   -c, --cluster string           cluster to install application (required)
       --disable-drift            disables the drift feature
       --dry-run                  don't install, just print out all installation steps
@@ -57,12 +57,12 @@ Flags:
       --replicas int             number of replicas for the controller deployment (default 1)
       --service-account string   service account name (default "karpenter")
       --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
-      --use-previous             use previous working chart/app versions ("v0.33.2"/"v0.33.2")
-  -v, --version string           application version (default "v0.34.2")
+      --use-previous             use previous working chart/app versions ("0.35.2"/"0.35.2")
+  -v, --version string           application version (default "0.37.0")
 ```
 
 The Karpenter specific flags are:
-* `--ami-family` -- This sets the AMI family on the default `EC2NodeClass`. Options include AL2, Bottlerocket and Ubuntu.
+* `--ami-family` -- This sets the AMI family on the default `EC2NodeClass`. Options include AL2, AL2023, Bottlerocket and Ubuntu.
 * `--disable-drift` -- As of v0.33.x, [Drift](https://karpenter.sh/docs/concepts/disruption/#drift) is in BETA and enabled by default. This flag disables this feature.
 * `--enable-spottospot` -- As of v0.34.x, [SpotToSpotConsolidation](https://karpenter.sh/docs/concepts/disruption/#spot-consolidation) is in ALPHA and disabled by default. This flag enables this feature.
 * `--expire-after` -- Karpenter will mark nodes as expired and disrupt them after they have lived a set number of seconds. The default of 720 hours is 30 days.
@@ -87,8 +87,8 @@ Creating 5 dependencies for autoscaling-karpenter
 <snip>
 Helm Installer Dry Run:
 +---------------------+------------------------------------------+
-| Application Version | v0.34.2                                  |
-| Chart Version       | v0.34.2                                   |
+| Application Version | 0.37.0                                   |
+| Chart Version       | 0.37.0                                   |
 | Chart Repository    | oci://public.ecr.aws/karpenter/karpenter |
 | Chart Name          | karpenter                                |
 | Release Name        | autoscaling-karpenter                    |
@@ -106,7 +106,7 @@ serviceAccount:
 replicas: 1
 controller:
   image:
-    tag: v0.34.2
+    tag: 0.37.0
   resources:
     requests:
       cpu: "1"
@@ -152,6 +152,8 @@ spec:
           operator: Gt
           values: ["2"]
       nodeClassRef:
+        apiVersion: karpenter.k8s.aws/v1beta1
+        kind: EC2NodeClass
         name: default
   limits:
     cpu: 1000
@@ -172,6 +174,9 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         aws:eks:cluster-name: blue
+  amiSelectorTerms:
+    - id: ami-0ca1408e5bc9f6901
+    - id: ami-0c6246ca7b2855fb0
 ```
 
 Now, install Karpenter.
@@ -179,17 +184,17 @@ Now, install Karpenter.
 » eksdemo install autoscaling-karpenter -c <cluster-name>
 Creating 5 dependencies for autoscaling-karpenter
 <snip>
-Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:v0.34.2
+Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:0.37.0
 Helm installing...
-2024/01/31 15:29:20 creating 1 resource(s)
-2024/01/31 15:29:20 creating 1 resource(s)
-2024/01/31 15:29:20 creating 1 resource(s)
-2024/01/31 15:29:20 Clearing discovery cache
-2024/01/31 15:29:20 beginning wait for 3 resources with timeout of 1m0s
-2024/01/31 15:29:22 creating 1 resource(s)
-2024/01/31 15:29:22 creating 15 resource(s)
-2024/01/31 15:29:23 beginning wait for 15 resources with timeout of 5m0s
-Using chart version "v0.34.2", installed "autoscaling-karpenter" version "v0.34.2" in namespace "karpenter"
+2024/06/06 15:29:20 creating 1 resource(s)
+2024/06/06 15:29:20 creating 1 resource(s)
+2024/06/06 15:29:20 creating 1 resource(s)
+2024/06/06 15:29:20 Clearing discovery cache
+2024/06/06 15:29:20 beginning wait for 3 resources with timeout of 1m0s
+2024/06/06 15:29:22 creating 1 resource(s)
+2024/06/06 15:29:22 creating 15 resource(s)
+2024/06/06 15:29:23 beginning wait for 15 resources with timeout of 5m0s
+Using chart version "0.37.0", installed "autoscaling-karpenter" version "0.37.0" in namespace "karpenter"
 Creating 1 post-install resources for karpenter
 Creating post-install resource: karpenter-default-nodepool
 Creating NodePool "default"
@@ -264,8 +269,8 @@ Now, remove the `--dry-run` flag and install the Inflate app to trigger an autos
 ```
 » eksdemo install autoscaling-inflate -c <cluster-name> --replicas 10 --spread
 Helm installing...
-2024/01/31 16:31:26 creating 1 resource(s)
-2024/01/31 16:31:26 creating 1 resource(s)
+2024/06/06 16:31:26 creating 1 resource(s)
+2024/06/06 16:31:26 creating 1 resource(s)
 Using chart version "n/a", installed "autoscaling-inflate" version "n/a" in namespace "inflate"
 ```
 

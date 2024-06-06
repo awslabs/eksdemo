@@ -15,12 +15,12 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.35.2 (as of 3/20/24)
+// Version: Latest is v0.37.0 (as of 6/6/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "autoscaling",
 			Name:        "karpenter",
@@ -58,6 +58,8 @@ func NewApp() *application.Application {
 			}),
 		},
 
+		Flags: flags,
+
 		Installer: &installer.HelmInstaller{
 			ChartName:     "karpenter",
 			ReleaseName:   "autoscaling-karpenter",
@@ -68,14 +70,12 @@ func NewApp() *application.Application {
 			Wait: true,
 		},
 
+		Options: options,
+
 		PostInstallResources: []*resource.Resource{
 			karpenterDefaultNodePool(options),
 		},
 	}
-	app.Options = options
-	app.Flags = flags
-
-	return app
 }
 
 const irsaPolicyDocument = `
@@ -253,6 +253,7 @@ Statement:
   Action: eks:DescribeCluster
 `
 
+// https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/values.yaml
 const valuesTemplate = `---
 fullnameOverride: karpenter
 serviceAccount:
