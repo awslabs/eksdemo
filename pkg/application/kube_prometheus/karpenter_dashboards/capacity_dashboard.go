@@ -1,9 +1,9 @@
 package karpenter_dashboards
 
-// Json: https://github.com/aws/karpenter/blob/main/website/content/en/preview/getting-started/getting-started-with-eksctl/karpenter-capacity-dashboard.json
+// JSON: https://github.com/aws/karpenter-provider-aws/blob/main/website/content/en/preview/getting-started/getting-started-with-karpenter/karpenter-capacity-dashboard.json
 //
 //	kubectl create configmap karpenter-capacity \
-//	  --from-file=karpenter-capacity-dashboard.json=./karpenter-capacity-dashboard.json \
+//	  --from-file=./karpenter-capacity-dashboard.json \
 //	  --dry-run=client -o yaml > capacity_dashboard.yaml
 //
 // Must double escape because textTemplate transforms and Helm uses the same Golang template
@@ -502,7 +502,7 @@ data:
                             "uid": "${datasource}"
                         },
                         "editorMode": "code",
-                        "expr": "sum by ($distribution_filter)(\n    karpenter_pods_state{arch=~\"$arch\", capacity_type=~\"$capacity_type\", instance_type=~\"$instance_type\", provisioner=~\"$provisioner\"}\n)",
+                        "expr": "sum by ($distribution_filter)(\n    karpenter_pods_state{arch=~\"$arch\", capacity_type=~\"$capacity_type\", instance_type=~\"$instance_type\", nodepool=~\"$nodepool\"}\n)",
                         "legendFormat": "{{ "{{" }} {{ "{{label_name}}" | printf "%q" }} {{ "}}" }}",
                         "range": true,
                         "refId": "A"
@@ -519,7 +519,7 @@ data:
                 "fieldConfig": {
                     "defaults": {
                         "color": {
-                            "mode": "thresholds"
+                            "mode": "continuous-RdYlGr"
                         },
                         "custom": {
                             "align": "left",
@@ -606,7 +606,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "karpenter_provisioner_usage{resource_type=\"cpu\"} / karpenter_provisioner_limit{resource_type=\"cpu\"}",
+                        "expr": "karpenter_nodepool_usage{resource_type=\"cpu\"} / karpenter_nodepool_limit{resource_type=\"cpu\"}",
                         "format": "table",
                         "instant": true,
                         "legendFormat": "CPU Limit Utilization",
@@ -620,7 +620,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "count by (provisioner)(karpenter_nodes_allocatable{provisioner!=\"N/A\",resource_type=\"cpu\"}) # Selects a single resource type to get node count",
+                        "expr": "count by (nodepool)(karpenter_nodes_allocatable{nodepool!=\"N/A\",resource_type=\"cpu\"}) # Selects a single resource type to get node count",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -634,7 +634,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "(karpenter_provisioner_usage{resource_type=\"memory\"} / karpenter_provisioner_limit{resource_type=\"memory\"}) or karpenter_provisioner_limit*0",
+                        "expr": "karpenter_nodepool_usage{resource_type=\"memory\"} / karpenter_nodepool_limit{resource_type=\"memory\"}",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -649,7 +649,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "sum by (provisioner)(karpenter_nodes_allocatable{provisioner!=\"N/A\",resource_type=\"cpu\"})",
+                        "expr": "sum by (nodepool)(karpenter_nodes_allocatable{nodepool!=\"N/A\",resource_type=\"cpu\"})",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -663,7 +663,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "sum by (provisioner)(karpenter_nodes_allocatable{provisioner!=\"N/A\",resource_type=\"memory\"})",
+                        "expr": "sum by (nodepool)(karpenter_nodes_allocatable{nodepool!=\"N/A\",resource_type=\"memory\"})",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -671,12 +671,12 @@ data:
                         "refId": "Memory Capacity"
                     }
                 ],
-                "title": "Provisioner Summary",
+                "title": "Nodepool Summary",
                 "transformations": [
                     {
                         "id": "seriesToColumns",
                         "options": {
-                            "byField": "provisioner"
+                            "byField": "nodepool"
                         }
                     },
                     {
@@ -715,7 +715,7 @@ data:
                                 "instance 2": 12,
                                 "job 1": 9,
                                 "job 2": 13,
-                                "provisioner": 0,
+                                "nodepool": 0,
                                 "resource_type 1": 10,
                                 "resource_type 2": 14
                             },
@@ -732,7 +732,7 @@ data:
                                 "instance": "",
                                 "instance 1": "",
                                 "job": "",
-                                "provisioner": "Provisioner"
+                                "nodepool": "Nodepool"
                             }
                         }
                     }
@@ -822,7 +822,7 @@ data:
                             "uid": "${datasource}"
                         },
                         "editorMode": "code",
-                        "expr": "(count(karpenter_nodes_allocatable{arch=~\"$arch\",capacity_type=\"spot\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"}) or vector(0)) / count(karpenter_nodes_allocatable{arch=~\"$arch\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"})",
+                        "expr": "(count(karpenter_nodes_allocatable{arch=~\"$arch\",capacity_type=\"spot\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"}) or vector(0)) / count(karpenter_nodes_allocatable{arch=~\"$arch\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"})",
                         "legendFormat": "Percentage",
                         "range": true,
                         "refId": "A"
@@ -839,7 +839,7 @@ data:
                 "fieldConfig": {
                     "defaults": {
                         "color": {
-                            "mode": "thresholds"
+                            "mode": "continuous-RdYlGr"
                         },
                         "custom": {
                             "align": "left",
@@ -964,7 +964,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "((karpenter_nodes_total_daemon_requests{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0) + \n(karpenter_nodes_total_pod_requests{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0)) / \nkarpenter_nodes_allocatable{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"}",
+                        "expr": "((karpenter_nodes_total_daemon_requests{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0) + \n(karpenter_nodes_total_pod_requests{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0)) / \nkarpenter_nodes_allocatable{resource_type=\"cpu\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"}",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -979,7 +979,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "((karpenter_nodes_total_daemon_requests{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0) + \n(karpenter_nodes_total_pod_requests{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0)) / \nkarpenter_nodes_allocatable{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"}",
+                        "expr": "((karpenter_nodes_total_daemon_requests{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0) + \n(karpenter_nodes_total_pod_requests{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"} or karpenter_nodes_allocatable*0)) / \nkarpenter_nodes_allocatable{resource_type=\"memory\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"}",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -994,7 +994,7 @@ data:
                         },
                         "editorMode": "code",
                         "exemplar": false,
-                        "expr": "karpenter_nodes_total_daemon_requests{resource_type=\"pods\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"} + \nkarpenter_nodes_total_pod_requests{resource_type=\"pods\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",provisioner=~\"$provisioner\",zone=~\"$zone\"}",
+                        "expr": "karpenter_nodes_total_daemon_requests{resource_type=\"pods\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"} + \nkarpenter_nodes_total_pod_requests{resource_type=\"pods\",arch=~\"$arch\",capacity_type=~\"$capacity_type\",instance_type=~\"$instance_type\",nodepool=~\"$nodepool\",zone=~\"$zone\"}",
                         "format": "table",
                         "hide": false,
                         "instant": true,
@@ -1109,9 +1109,9 @@ data:
                                 "os 1": true,
                                 "os 2": true,
                                 "os 3": true,
-                                "provisioner 1": false,
-                                "provisioner 2": true,
-                                "provisioner 3": true,
+                                "nodepool 1": false,
+                                "nodepool 2": true,
+                                "nodepool 3": true,
                                 "resource_type": true,
                                 "resource_type 1": true,
                                 "resource_type 2": true,
@@ -1179,9 +1179,9 @@ data:
                                 "os 1": 23,
                                 "os 2": 41,
                                 "os 3": 61,
-                                "provisioner 1": 2,
-                                "provisioner 2": 42,
-                                "provisioner 3": 62,
+                                "nodepool 1": 2,
+                                "nodepool 2": 42,
+                                "nodepool 3": 62,
                                 "resource_type 1": 24,
                                 "resource_type 2": 43,
                                 "resource_type 3": 63,
@@ -1208,7 +1208,7 @@ data:
                                 "instance_type": "Instance Type",
                                 "instance_type 1": "Instance Type",
                                 "node_name": "Node Name",
-                                "provisioner 1": "Provisioner",
+                                "nodepool 1": "Nodepool",
                                 "zone 1": "Zone"
                             }
                         }
@@ -1225,6 +1225,24 @@ data:
             "list": [
                 {
                     "current": {
+                        "selected": false,
+                        "text": "Prometheus",
+                        "value": "Prometheus"
+                    },
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Data Source",
+                    "multi": false,
+                    "name": "datasource",
+                    "options": [],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "type": "datasource"
+                },
+                {
+                    "current": {
                         "selected": true,
                         "text": [
                             "All"
@@ -1237,14 +1255,14 @@ data:
                         "type": "prometheus",
                         "uid": "${datasource}"
                     },
-                    "definition": "label_values(karpenter_nodes_allocatable, provisioner)",
+                    "definition": "label_values(karpenter_nodes_allocatable, nodepool)",
                     "hide": 0,
                     "includeAll": true,
                     "multi": true,
-                    "name": "provisioner",
+                    "name": "nodepool",
                     "options": [],
                     "query": {
-                        "query": "label_values(karpenter_nodes_allocatable, provisioner)",
+                        "query": "label_values(karpenter_nodes_allocatable, nodepool)",
                         "refId": "StandardVariableQuery"
                     },
                     "refresh": 2,
@@ -1376,8 +1394,8 @@ data:
                 {
                     "current": {
                         "selected": true,
-                        "text": "provisioner",
-                        "value": "provisioner"
+                        "text": "nodepool",
+                        "value": "nodepool"
                     },
                     "hide": 0,
                     "includeAll": false,
@@ -1411,8 +1429,8 @@ data:
                         },
                         {
                             "selected": true,
-                            "text": "provisioner",
-                            "value": "provisioner"
+                            "text": "nodepool",
+                            "value": "nodepool"
                         },
                         {
                             "selected": false,
@@ -1420,28 +1438,10 @@ data:
                             "value": "zone"
                         }
                     ],
-                    "query": "arch,capacity_type,instance_type,namespace,node,provisioner,zone",
+                    "query": "arch,capacity_type,instance_type,namespace,node,nodepool,zone",
                     "queryValue": "",
                     "skipUrlSync": false,
                     "type": "custom"
-                },
-                {
-                    "current": {
-                        "selected": false,
-                        "text": "Prometheus",
-                        "value": "Prometheus"
-                    },
-                    "hide": 2,
-                    "includeAll": false,
-                    "label": "Data Source",
-                    "multi": false,
-                    "name": "datasource",
-                    "options": [],
-                    "query": "prometheus",
-                    "refresh": 1,
-                    "regex": "",
-                    "skipUrlSync": false,
-                    "type": "datasource"
                 }
             ]
         },

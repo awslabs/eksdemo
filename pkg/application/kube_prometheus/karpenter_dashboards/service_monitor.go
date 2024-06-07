@@ -1,6 +1,6 @@
 package karpenter_dashboards
 
-// Manifest: https://github.com/aws/karpenter/blob/main/charts/karpenter/templates/servicemonitor.yaml
+// Manifest: https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/templates/servicemonitor.yaml
 const serviceMonitorTemplate = `---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

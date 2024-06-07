@@ -8,19 +8,21 @@ import (
 )
 
 // Docs:       https://karpenter.sh/docs/
-// GitHub:     https://github.com/awslabs/karpenter
-// Dashboards: https://github.com/aws/karpenter/tree/main/website/content/en/preview/getting-started/getting-started-with-eksctl
-// Version:    Latest is v0.24.0 (as of 02/18/23)
+// GitHub:     https://github.com/aws/karpenter-provider-aws
+// Dashboards: https://github.com/aws/karpenter-provider-aws/tree/main/website/content/en/preview/getting-started/getting-started-with-karpenter
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "kube-prometheus",
 			Name:        "karpenter-dashboards",
 			Description: "Karpenter Dashboards and ServiceMonitor",
+			Aliases:     []string{"karpenter"},
 		},
+
+		Flags: flags,
 
 		Installer: &installer.ManifestInstaller{
 			AppName: "kube-prometheus-karpenter-dashboards",
@@ -31,12 +33,9 @@ func NewApp() *application.Application {
 				Template: kustomizeTemplate,
 			},
 		},
+
+		Options: options,
 	}
-
-	app.Options = options
-	app.Flags = flags
-
-	return app
 }
 
 const kustomizeTemplate = `---

@@ -1,9 +1,9 @@
 package karpenter_dashboards
 
-// Json: https://github.com/aws/karpenter/blob/main/website/content/en/preview/getting-started/getting-started-with-eksctl/karpenter-performance-dashboard.json
+// JSON: https://github.com/aws/karpenter-provider-aws/blob/main/website/content/en/preview/getting-started/getting-started-with-karpenter/karpenter-performance-dashboard.json
 //
 //	kubectl create configmap karpenter-performance \
-//	  --from-file=karpenter-performance-dashboard.json=./karpenter-performance-dashboard.json \
+//	  --from-file=./karpenter-performance-dashboard.json \
 //	  --dry-run=client -o yaml > performance_dashboard.yaml
 //
 // Must double escape because textTemplate transforms and Helm uses the same Golang template
@@ -535,6 +535,24 @@ data:
                 {
                     "current": {
                         "selected": false,
+                        "text": "Prometheus",
+                        "value": "Prometheus"
+                    },
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Data Source",
+                    "multi": false,
+                    "name": "datasource",
+                    "options": [],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "type": "datasource"
+                },
+                {
+                    "current": {
+                        "selected": false,
                         "text": "provisioning",
                         "value": "provisioning"
                     },
@@ -557,24 +575,6 @@ data:
                     "skipUrlSync": false,
                     "sort": 0,
                     "type": "query"
-                },
-                {
-                    "current": {
-                        "selected": false,
-                        "text": "Prometheus",
-                        "value": "Prometheus"
-                    },
-                    "hide": 2,
-                    "includeAll": false,
-                    "label": "Data Source",
-                    "multi": false,
-                    "name": "datasource",
-                    "options": [],
-                    "query": "prometheus",
-                    "refresh": 1,
-                    "regex": "",
-                    "skipUrlSync": false,
-                    "type": "datasource"
                 }
             ]
         },
