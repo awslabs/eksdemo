@@ -37,7 +37,7 @@ brews:
           owner: aws
           name: homebrew-tap
           branch: master
-    folder: Formula
+    directory: Formula
     homepage: https://github.com/awslabs/eksdemo
     description: The easy button for learning, testing and demoing Amazon EKS
     license: MIT-0
@@ -53,4 +53,5 @@ changelog:
   sort: asc
   filters:
     exclude:
+      - '^ci:'
       - '^test:'
