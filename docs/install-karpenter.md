@@ -16,9 +16,9 @@ This tutorial walks through the installation of the Karpenter Autoscaler and the
 2. [Install Karpenter Autoscaler](#install-karpenter-autoscaler)
 3. [Test Automatic Node Provisioning](#test-automatic-node-provisioning)
 4. [Test Node Consolidation](#test-node-consolidation)
-5. [(Optional) Inspect Karpenter IAM Roles](#optional-inspect-karpenter-iam-roles)
-6. [(Optional) Inspect Karpenter SQS Queue and EventBridge Rules](#optional-inspect-karpenter-sqs-queue-and-eventbridge-rules)
-7. [(Optional) Install Karpenter Dashboards with Kube Prometheus Stack](/docs/install-kube-prometheus.md)
+5. [(Optional) Install Karpenter Dashboards](#optional-install-karpenter-dashboards)
+6. [(Optional) Inspect Karpenter IAM Roles](#optional-inspect-karpenter-iam-roles)
+7. [(Optional) Inspect Karpenter SQS Queue and EventBridge Rules](#optional-inspect-karpenter-sqs-queue-and-eventbridge-rules)
 
 ## Prerequisites
 
@@ -326,6 +326,16 @@ If you have installed the eks-node-viewer, the output would be like below:
 ```
 
 In the example above, Karpenter decided to terminate one of the Spot instances in `us-west-2b` because there is already a Managed Node Group node running in `us-west-2b` so the deployment is still spread across AZ's.
+
+## (Optional) Install Karpenter Dashboards
+
+The Karpenter team has created 2 Grafana dashboards that provide a variety of visualization examples of Karpenter metrics:
+* Karpenter Capacity Dashboard
+* Karpenter Performance Dashboard
+
+If you already have Prometheus Operator installed, you can [Install the Karpenter Dashboards](/docs/install-kube-prometheus.md#optional-install-karpenter-dashboards). Otherwise you can use `eksdemo` to [Install the Kube Prometheus Stack](/docs/install-kube-prometheus.md) first, which includes Prometheus Operator.
+
+![Karpenter Performance Dashboard](/docs/images/karpenter-perf-dashboard.png "Karpenter Performance Dashboard")
 
 ## (Optional) Inspect Karpenter IAM Roles 
 
