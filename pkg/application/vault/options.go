@@ -7,9 +7,9 @@ import (
 
 type AppOptions struct {
 	application.ApplicationOptions
-	EnableUI    bool
-	EnableTLS   bool
-	Replicas    int
+	EnableUI  bool
+	EnableTLS bool
+	Replicas  int
 }
 
 func newOptions() (options *AppOptions, flags cmd.Flags) {
@@ -23,7 +23,7 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 			},
 			Namespace: "vault",
 		},
-		Replicas:   1,
+		Replicas: 1,
 	}
 
 	flags = cmd.Flags{
