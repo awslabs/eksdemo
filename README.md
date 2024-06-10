@@ -18,6 +18,8 @@ The easy button for learning, testing, and demoing Amazon EKS:
   - [Prerequisites](#prerequisites)
   - [Install using Homebrew](#install-using-homebrew)
   - [Troubleshoot Homebrew Install](#troubleshoot-homebrew-install)
+  - [Install on AWS CloudShell](#install-on-aws-cloudshell)
+  - [Install on AWS Cloud9](#install-on-aws-cloud9)
   - [Install Manually](#install-manually)
   - [Set the AWS Region](#set-the-aws-region)
   - [Validate Install](#validate-install)
@@ -65,10 +67,12 @@ Used to get up and running quickly | Used to drive standards and communicate vet
 
 ## Install `eksdemo`
 
-`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. There are two ways you can install:
+`eksdemo` is a Golang binary and releases include support for Mac, Linux and Windows running on x86 or arm64. There are a number of ways you can install:
 
-* [Homebrew](#install-using-homebrew) — This is the easiest method for Mac and Linux users.
-* [Manually](#install-manually) — This method is required for Windows users.
+* [Install using Homebrew](#install-using-homebrew) — Install locally for Mac and Linux users.
+* [Install on AWS CloudShell](#install-on-aws-cloudshell) — Easiest way to use `eksdemo`.
+* [Install on AWS Cloud9](#install-on-aws-cloud9) — Install into your Cloud9 instance.
+* [Install Manually](#install-manually) — This method is required for Windows users.
 
 ### Prerequisites
 
@@ -98,6 +102,55 @@ brew uninstall eksctl
 brew install eksdemo
 ```
 
+### Install on AWS CloudShell
+
+AWS CloudShell environments are mostly ephemeral and software you install is lost the next time you reconnect. There is [persistent storage available](https://docs.aws.amazon.com/cloudshell/latest/userguide/limits.html#persistent-storage-limitations) in the home directory that is retained for 120 days after the end of your last session. Use the following commands to install `eksdemo` on AWS CloudShell:
+
+```
+curl -s -L "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar xz -C /tmp
+curl -s -L "https://github.com/awslabs/eksdemo/releases/latest/download/eksdemo_Linux_x86_64.tar.gz" | tar xz -C /tmp
+mkdir -p ~/.local/bin && mv /tmp/eksctl ~/.local/bin && mv /tmp/eksdemo ~/.local/bin
+```
+
+To configure Bash completion, first install the bash-completion package:
+
+```
+sudo dnf install bash-completion -y
+```
+
+Once that completes, run the following commands that will configure bash completion to work across CloudShell sessions by installing everything needed in the home directory:
+
+```
+mkdir -p ~/.bashrc.d
+cp /usr/share/bash-completion/bash_completion ~/.bashrc.d/
+echo '. <(eksdemo completion bash)' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### Install on AWS Cloud9
+
+To install on Cloud9, you will need to install Homebrew first. In the Cloud9 terminal, run the following commands:
+
+```
+CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> ~/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew install aws/tap/eksdemo
+```
+
+To configure Bash completion, run the following commands and then start a new terminal:
+```
+cat >> ~/.bashrc << \EOF
+if type brew &>/dev/null
+then
+  for COMPLETION in "$(brew --prefix)/etc/bash_completion.d/"*
+  do
+    [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+  done
+fi
+EOF
+```
+
 ### Install Manually
 
 Navigate to [Releases](https://github.com/awslabs/eksdemo/releases/latest), look under Assets and locate the binary that matches your operation system and platform. Download the file, uncompress and copy to a location of your choice that is in your path. A common location on Mac and Linux is `/usr/local/bin`. Note that `eksctl` is required and [must be installed](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) as well.
@@ -115,7 +168,7 @@ To validate installation you can run the **`eksdemo version`** command and confi
 
 ```
 » eksdemo version
-eksdemo version info: cmd.Version{Version:"0.13.0", Date:"2024-03-20T21:59:34Z", Commit:"bf9a812"}
+eksdemo version info: cmd.Version{Version:"0.14.0", Date:"2024-06-09T22:58:50Z", Commit:"0c99d42"}
 ```
 
 To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
