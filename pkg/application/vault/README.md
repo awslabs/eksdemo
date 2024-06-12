@@ -56,10 +56,10 @@ $ kubectl --namespace vault exec vault-0 -- vault operator init \
 ```
 {
   "unseal_keys_b64": [
-    "6onhnY+ENwYCw2Bd9ts0SGUZac6YJ2go41wERaRr2jg="
+    "****"
   ],
   "unseal_keys_hex": [
-    "ea89e19d8f84370602c3605df6db3448651969ce98276828e35c0445a46bda38"
+    "****"
   ],
   "unseal_shares": 1,
   "unseal_threshold": 1,
@@ -67,7 +67,7 @@ $ kubectl --namespace vault exec vault-0 -- vault operator init \
   "recovery_keys_hex": [],
   "recovery_keys_shares": 0,
   "recovery_keys_threshold": 0,
-  "root_token": "hvs.uruz2wt9NhbE1eXrvPU1ci62"
+  "root_token": "****"
 }
 ```
 
