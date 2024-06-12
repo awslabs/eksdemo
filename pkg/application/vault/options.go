@@ -7,7 +7,6 @@ import (
 
 type AppOptions struct {
 	application.ApplicationOptions
-	EnableUI  bool
 	EnableTLS bool
 	Replicas  int
 }
