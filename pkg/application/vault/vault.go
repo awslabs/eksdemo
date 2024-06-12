@@ -56,23 +56,24 @@ server:
     enabled: true
     # The number of server agents to run. This determines the fault tolerance of the cluster.
     replicas: {{ .Replicas }}
-{{ end }}
-{{ if .Enterprise }}
-  # [Enterprise Only] This value refers to a Kubernetes secret that you have
-  # created that contains your enterprise license. If you are not using an
-  # enterprise image or if you plan to introduce the license key via another
-  # route, then leave secretName blank ("") or set it to null.
-  # Requires Vault Enterprise 1.8 or later.
-  enterpriseLicense:
-    # The name of the Kubernetes secret that holds the enterprise license. The
-    # secret must be in the same namespace that Vault is installed into.
-    secretName: "{{ .Enterprise }}"
-    # The key within the Kubernetes secret that holds the enterprise license.
-    secretKey: "license"
-{{ end }}
-# Warning: Vault cannot run in both HA and Development Modes; Development Wins
-{{ if .DevelopmentMode }}
-  dev:
-    enabled: true
-{{ end }}
-`
+  # For HA configuration and because we need to manually init the vault,
+  # we need to define custom readiness/liveness Probe settings
+    raft:
+       enabled: true
+       setNodeId: true
+       config: |
+          cluster_name = "vault-integrated-storage"
+          storage "raft" {
+             path    = "/vault/data/"
+          }
+          listener "tcp" {
+             address = "[::]:8200"
+             cluster_address = "[::]:8201"
+             tls_disable = "true"
+          }
+          service_registration "kubernetes" {}
+{{ else }}
+  ha:
+    enabled: false
+    replicas: 1
+{{ end }}`
