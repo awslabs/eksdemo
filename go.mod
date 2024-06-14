@@ -1,6 +1,8 @@
 module github.com/awslabs/eksdemo
 
-go 1.19
+go 1.21
+
+toolchain go1.21.10
 
 require (
 	github.com/Masterminds/goutils v1.1.1
