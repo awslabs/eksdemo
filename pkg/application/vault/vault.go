@@ -42,12 +42,7 @@ global:
   enabled: true
   # The prefix used for all resources created in the Helm chart.
   name: null
-  # TLS for end-to-end encrypted transport
-{{ if .EnableTLS }}
   tlsDisable: false
-{{ else }}
-  tlsDisable: true
-{{ end }}
 
 server:
 # Configures High Availability Mode for Vault Server

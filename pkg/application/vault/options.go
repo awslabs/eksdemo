@@ -7,7 +7,6 @@ import (
 
 type AppOptions struct {
 	application.ApplicationOptions
-	EnableTLS bool
 	Replicas  int
 }
 
@@ -26,13 +25,6 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 	}
 
 	flags = cmd.Flags{
-		&cmd.BoolFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "enable-tls",
-				Description: "Enable TLS for end-to-end encrypted transport",
-			},
-			Option: &options.EnableTLS,
-		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "replicas",
