@@ -8,8 +8,6 @@
 `eksdemo install vault`
 
 ## Installation Arguments
-- `enable-tls` -> Enable TLS for end-to-end encrypted transport
-  - Diabled by default
 - `replicas` -> Configure Number of replicas (3 recommended)
   - 1 replica by default
 
