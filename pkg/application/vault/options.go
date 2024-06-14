@@ -28,7 +28,7 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "replicas",
-				Description: "Number of replicas (3 recommended)",
+				Description: "Number of replicas (3 recommended for High Availability)",
 			},
 			Option: &options.Replicas,
 		},
