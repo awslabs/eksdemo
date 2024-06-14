@@ -7,11 +7,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-// https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-raft-deployment-guide
-// https://developer.hashicorp.com/vault/tutorials/kubernetes/kubernetes-amazon-eks
-
-// fmt.Println(getField(&v, "X"))
-
 func NewApp() *application.Application {
 	app := &application.Application{
 		Command: cmd.Command{
@@ -32,27 +27,15 @@ func NewApp() *application.Application {
 	app.Options, app.Flags = newOptions()
 
 	return app
-
+// https://github.com/hashicorp/vault-helm/blob/main/values.yaml
 }
 
 const valuesTemplate = `---
-global:
-  # The main enabled/disabled setting.
-  # If true, servers, clients, Vault UI will be enabled.
-  enabled: true
-  # The prefix used for all resources created in the Helm chart.
-  name: null
-  tlsDisable: false
-
 server:
-# Configures High Availability Mode for Vault Server
 {{ if gt .Replicas 1 }}
   ha:
     enabled: true
-    # The number of server agents to run. This determines the fault tolerance of the cluster.
     replicas: {{ .Replicas }}
-  # For HA configuration and because we need to manually init the vault,
-  # we need to define custom readiness/liveness Probe settings
     raft:
        enabled: true
        setNodeId: true
