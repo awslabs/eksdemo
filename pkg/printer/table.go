@@ -71,3 +71,24 @@ func (p *TablePrinter) Print(writer io.Writer) {
 	table.AppendBulk(p.data)
 	table.Render()
 }
+
+func (p *TablePrinter) TruncateBeginning(text string, max int) string {
+	if len(text) > max {
+		return "..." + text[len(text)-max+3:]
+	}
+	return text
+}
+
+func (p *TablePrinter) TruncateMiddle(text string, max int) string {
+	if len(text) > max {
+		return text[:max/2-1] + "..." + text[len(text)-max/2+1:]
+	}
+	return text
+}
+
+func (p *TablePrinter) TruncateMiddleWithEllipsisLocation(text string, ellipisLocation, max int) string {
+	if len(text) > max {
+		return text[:ellipisLocation-1] + "..." + text[len(text)-max+ellipisLocation+2:]
+	}
+	return text
+}
