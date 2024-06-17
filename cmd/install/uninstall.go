@@ -23,6 +23,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
 	"github.com/awslabs/eksdemo/pkg/application/prometheus_node_exporter"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
+	"github.com/awslabs/eksdemo/pkg/application/vault"
 	"github.com/awslabs/eksdemo/pkg/application/velero"
 	"github.com/awslabs/eksdemo/pkg/application/vpc_lattice_controller"
 	"github.com/spf13/cobra"
@@ -86,6 +87,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(prometheus_node_exporter.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallStorageCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(storageApps, "storage-")...)
+	cmd.AddCommand(vault.NewApp().NewUninstallCmd())
 	cmd.AddCommand(velero.NewApp().NewUninstallCmd())
 
 	// Hidden commands for popular apps without using the group
