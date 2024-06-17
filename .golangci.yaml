@@ -2,11 +2,7 @@
 run:
   tests: true
 
-  timeout: 10m
-
-  skip-dirs:
-    - dist
-    - doc
+  timeout: 15m
 
 linters:
   enable:
@@ -33,3 +29,6 @@ linters-settings:
 issues:
   # TODO: remove when linting errors in existing code have been cleared
   new-from-rev: HEAD~1
+  exclude-dirs:
+    - dist
+    - doc
