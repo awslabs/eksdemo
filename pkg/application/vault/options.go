@@ -7,7 +7,7 @@ import (
 
 type AppOptions struct {
 	application.ApplicationOptions
-	Replicas  int
+	Replicas int
 }
 
 func newOptions() (options *AppOptions, flags cmd.Flags) {
