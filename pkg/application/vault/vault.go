@@ -27,9 +27,9 @@ func NewApp() *application.Application {
 	app.Options, app.Flags = newOptions()
 
 	return app
-// https://github.com/hashicorp/vault-helm/blob/main/values.yaml
 }
 
+// https://github.com/hashicorp/vault-helm/blob/main/values.yaml
 const valuesTemplate = `---
 server:
 {{ if gt .Replicas 1 }}
