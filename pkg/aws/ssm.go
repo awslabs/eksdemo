@@ -47,6 +47,24 @@ func (c *SSMClient) DescribeInstanceInformation(instanceId string) ([]types.Inst
 	return instances, nil
 }
 
+func (c *SSMClient) DescribeParameters() ([]types.ParameterMetadata, error) {
+	parameters := []types.ParameterMetadata{}
+	pageNum := 0
+
+	paginator := ssm.NewDescribeParametersPaginator(c.Client, &ssm.DescribeParametersInput{})
+
+	for paginator.HasMorePages() && pageNum < maxPages {
+		out, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		parameters = append(parameters, out.Parameters...)
+		pageNum++
+	}
+
+	return parameters, nil
+}
+
 func (c *SSMClient) DescribeSessions(id, state string) ([]types.Session, error) {
 	filters := []types.SessionFilter{}
 	sessions := []types.Session{}

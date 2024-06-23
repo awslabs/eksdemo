@@ -6,18 +6,20 @@ import (
 )
 
 func NewResource() *resource.Resource {
+	options, getFlags := newOptions()
+
 	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "ssm-parameter",
 			Description: "SSM Parameter",
 			Aliases:     []string{"ssm-parameters", "ssm-params", "ssm-param", "params", "param"},
-			Args:        []string{"PATH_OR_NAME"},
+			Args:        []string{"PARAMETER_NAME"},
 		},
+
+		GetFlags: getFlags,
 
 		Getter: &Getter{},
 
-		Options: &resource.CommonOptions{
-			ClusterFlagDisabled: true,
-		},
+		Options: options,
 	}
 }

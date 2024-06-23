@@ -2,6 +2,7 @@ package parameter
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"sort"
 
@@ -26,18 +27,43 @@ func (g *Getter) Init() {
 	}
 }
 
-func (g *Getter) Get(pathOrName string, output printer.Output, _ resource.Options) error {
-	params, err := g.GetByPathOrName(pathOrName)
-	if err != nil {
-		return err
+func (g *Getter) Get(name string, output printer.Output, o resource.Options) error {
+	options, ok := o.(*Options)
+	if !ok {
+		return fmt.Errorf("internal error, unable to cast options to parameter.Options")
 	}
 
-	// Show recently updated Parameters at the end of the list
-	sort.Slice(params, func(i, j int) bool {
-		return params[i].LastModifiedDate.Before(awssdk.ToTime(params[j].LastModifiedDate))
-	})
+	switch {
+	case options.Path != "":
+		params, err := g.GetByPath(options.Path)
+		if err != nil {
+			return err
+		}
+		// Show recently updated Parameters at the end of the list
+		sort.Slice(params, func(i, j int) bool {
+			return params[i].LastModifiedDate.Before(awssdk.ToTime(params[j].LastModifiedDate))
+		})
+		return output.Print(os.Stdout, NewPrinter(params))
 
-	return output.Print(os.Stdout, NewPrinter(params))
+	case name != "":
+		param, err := g.GetByName(name)
+		var rnfe *types.ParameterNotFound
+		if err != nil {
+			if errors.As(err, &rnfe) {
+				return fmt.Errorf("ssm-parameter name %q not found", name)
+			}
+			return err
+		}
+		return output.Print(os.Stdout, NewPrinter([]types.Parameter{*param}))
+
+	default:
+		params, err := g.ssmClient.DescribeParameters()
+		if err != nil {
+			return err
+		}
+		return output.Print(os.Stdout, NewMetadataPrinter(params))
+	}
+
 }
 
 func (g *Getter) GetByName(name string) (*types.Parameter, error) {
@@ -48,27 +74,10 @@ func (g *Getter) GetByName(name string) (*types.Parameter, error) {
 	return param, nil
 }
 
-func (g *Getter) GetByPathOrName(pathOrName string) ([]types.Parameter, error) {
+func (g *Getter) GetByPath(pathOrName string) ([]types.Parameter, error) {
 	params, err := g.ssmClient.GetParametersByPath(pathOrName)
 	if err != nil {
 		return nil, err
 	}
-
-	if len(params) > 0 {
-		return params, nil
-	}
-
-	param, err := g.ssmClient.GetParameter(pathOrName)
-
-	// Return all errors except NotFound
-	var rnfe *types.ParameterNotFound
-	if err != nil && !errors.As(err, &rnfe) {
-		return nil, err
-	}
-
-	if param != nil {
-		return []types.Parameter{*param}, nil
-	}
-
-	return nil, nil
+	return params, nil
 }

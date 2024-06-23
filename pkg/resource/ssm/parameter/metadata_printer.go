@@ -2,6 +2,7 @@ package parameter
 
 import (
 	"io"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -10,20 +11,17 @@ import (
 	"github.com/hako/durafmt"
 )
 
-type Printer struct {
-	params []types.Parameter
+type MetadataPrinter struct {
+	params []types.ParameterMetadata
 }
 
-func NewPrinter(params []types.Parameter) *Printer {
-	return &Printer{params}
+func NewMetadataPrinter(params []types.ParameterMetadata) *MetadataPrinter {
+	return &MetadataPrinter{params}
 }
 
-func (p *Printer) PrintTable(writer io.Writer) error {
+func (p *MetadataPrinter) PrintTable(writer io.Writer) error {
 	table := printer.NewTablePrinter()
-	table.SetHeader([]string{"Age", "Name", "Value"})
-	table.SetColumnAlignment([]int{
-		printer.ALIGN_LEFT, printer.ALIGN_LEFT, printer.ALIGN_LEFT,
-	})
+	table.SetHeader([]string{"Age", "Name", "Tier", "Type", "Ver"})
 
 	for _, param := range p.params {
 		age := durafmt.ParseShort(time.Since(aws.ToTime(param.LastModifiedDate)))
@@ -31,7 +29,9 @@ func (p *Printer) PrintTable(writer io.Writer) error {
 		table.AppendRow([]string{
 			age.String(),
 			table.TruncateMiddleWithEllipsisLocation(aws.ToString(param.Name), 20, 80),
-			table.TruncateMiddle(aws.ToString(param.Value), 25),
+			string(param.Tier),
+			aws.ToString(param.DataType),
+			strconv.Itoa(int(param.Version)),
 		})
 	}
 
@@ -40,10 +40,10 @@ func (p *Printer) PrintTable(writer io.Writer) error {
 	return nil
 }
 
-func (p *Printer) PrintJSON(writer io.Writer) error {
+func (p *MetadataPrinter) PrintJSON(writer io.Writer) error {
 	return printer.EncodeJSON(writer, p.params)
 }
 
-func (p *Printer) PrintYAML(writer io.Writer) error {
+func (p *MetadataPrinter) PrintYAML(writer io.Writer) error {
 	return printer.EncodeYAML(writer, p.params)
 }

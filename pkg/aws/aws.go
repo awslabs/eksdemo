@@ -7,7 +7,7 @@ import (
 	"github.com/aws/smithy-go"
 )
 
-const maxPages = 10
+const maxPages = 30
 
 // Return cleaner error message for service API errors
 func FormatError(err error) error {
