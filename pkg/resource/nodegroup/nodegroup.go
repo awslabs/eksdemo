@@ -39,7 +39,7 @@ func NewResource() *resource.Resource {
 const EksctlTemplate = `
 managedNodeGroups:
 - name: {{ .NodegroupName }}
-{{- if and .AMI (ne .OperatingSystem "AmazonLinux2023") }}
+{{- if .AMI }}
   ami: {{ .AMI }}
 {{- end }}
   amiFamily: {{ .OperatingSystem }}
@@ -58,7 +58,7 @@ managedNodeGroups:
 {{- end }}
   minSize: {{ .MinSize }}
   maxSize: {{ .MaxSize }}
-{{- if .AMI }}
+{{- if and .AMI (ne .OperatingSystem "AmazonLinux2023") }}
   overrideBootstrapCommand: |
     #!/bin/bash
     /etc/eks/bootstrap.sh {{ .ClusterName }}
