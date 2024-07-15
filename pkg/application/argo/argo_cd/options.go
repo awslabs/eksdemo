@@ -15,10 +15,10 @@ func newOptions() (options *ArgoCdOptions, flags cmd.Flags) {
 	options = &ArgoCdOptions{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "5.37.0",
-				Latest:        "v2.7.7",
-				PreviousChart: "4.9.14",
-				Previous:      "v2.4.6",
+				LatestChart:   "6.10.0",
+				Latest:        "v2.11.4",
+				PreviousChart: "5.37.0",
+				Previous:      "v2.7.7",
 			},
 			DisableServiceAccountFlag:    true,
 			ExposeIngressAndLoadBalancer: true,
