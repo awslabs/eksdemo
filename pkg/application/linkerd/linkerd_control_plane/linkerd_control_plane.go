@@ -104,7 +104,6 @@ Begin Helm App
 */
 
 	helmValues := fmt.Sprintf(valuesTemplate, caPEM, crtPEM, keyPEM)
-	fmt.Println( "[DEBUG] sending " + helmValues )
 
 	app := &application.Application{
 		Command: cmd.Command{
