@@ -32,5 +32,5 @@ func NewApp() *application.Application {
 	return app
 }
 
-// https://github.com/hashicorp/vault-helm/blob/main/values.yaml
+// https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
 const valuesTemplate = ``
