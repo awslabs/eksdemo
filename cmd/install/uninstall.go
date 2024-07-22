@@ -13,7 +13,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
-	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
@@ -59,7 +58,9 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(containerInsightsApps, "ci-")...)
 	cmd.AddCommand(coredumphandler.NewApp().NewUninstallCmd())
-	cmd.AddCommand(crossplane.NewApp().NewUninstallCmd())
+	cmd.AddCommand(NewUninstallCrossplaneCmd())
+	cmd.AddCommand(NewUninstallAliasCmds(crossplane, "crossplane-")...)
+	cmd.AddCommand(NewUninstallAliasCmds(crossplane, "cp-")...)
 	cmd.AddCommand(NewUninstallExampleCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "ex-")...)

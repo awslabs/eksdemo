@@ -227,7 +227,9 @@ The application catalog includes:
     * `fluent-bit` — Container Insights Fluent Bit Logs
     * `prometheus` — CloudWatch Container Insights monitoring for Prometheus
 * `core-dump-handler` - Automatically saves core dumps to S3
-* `crossplane` — Cloud Native Control Planes
+* `crossplane` — The Cloud Native Control Plane
+    * `core` — Crossplane Core Components
+    * `s3-provider` — Crossplane S3 Provider
 * `example` — Example Applications
     * `eks-workshop` — EKS Workshop Example Microservices
     * `game-2048` — Example Game 2048

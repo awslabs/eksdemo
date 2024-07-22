@@ -1,4 +1,4 @@
-package crossplane
+package core
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -8,26 +8,23 @@ import (
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-// Docs:    https://crossplane.io/docs/
+// Docs:    https://docs.crossplane.io
 // GitHub:  https://github.com/crossplane/crossplane
 // Helm:    https://github.com/crossplane/crossplane/tree/master/cluster/charts/crossplane
-// Repo:    crossplane/crossplane
-// Version: Latest is Chart/App v1.9.0, Provider AWS v0.29.0 (as of 08/07/22)
+// Repo:    xpkg.upbound.io/crossplane/crossplane
+// Version: Latest is Chart/App v1.16.0 (as of 7/21/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
-			Name:        "crossplane",
-			Description: "Cloud Native Control Planes",
+			Parent:      "crossplane",
+			Name:        "core",
+			Description: "Crossplane Core Components",
 		},
 
-		Dependencies: []*resource.Resource{
-			crossplaneIrsa(options),
-		},
-
-		Options: &application.ApplicationOptions{},
+		Flags: flags,
 
 		Installer: &installer.HelmInstaller{
 			ChartName:     "crossplane",
@@ -38,17 +35,15 @@ func NewApp() *application.Application {
 			},
 		},
 
+		Options: options,
+
 		PostInstallResources: []*resource.Resource{
-			waitForControllerConfigCRD(),
-			awsProvider(options),
+			waitForProviderCRD(),
+			providerFamilyAWS(options),
 			waitForProviderConfigCRD(),
 			defaultProviderConfig(),
 		},
 	}
-	app.Options = options
-	app.Flags = flags
-
-	return app
 }
 
 const valuesTemplate = `---

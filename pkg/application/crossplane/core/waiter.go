@@ -1,4 +1,4 @@
-package crossplane
+package core
 
 import (
 	"context"
@@ -15,40 +15,36 @@ import (
 	"k8s.io/client-go/util/retry"
 )
 
-func waitForControllerConfigCRD() *resource.Resource {
-	res := &resource.Resource{
+func waitForProviderCRD() *resource.Resource {
+	return &resource.Resource{
 		Options: &resource.CommonOptions{
-			Name: "wait-for-controller-config-crd",
+			Name: "wait-for-provider-crd",
 		},
 
 		Manager: &WaitManager{
-			CRD:         "ControllerConfig",
+			CRD:         "Provider",
 			Group:       "pkg.crossplane.io",
-			Resource:    "controllerconfigs",
-			Version:     "v1alpha1",
-			WaitSeconds: 150,
+			Resource:    "providers",
+			Version:     "v1",
+			WaitSeconds: 200,
 		},
 	}
-
-	return res
 }
 
 func waitForProviderConfigCRD() *resource.Resource {
-	res := &resource.Resource{
+	return &resource.Resource{
 		Options: &resource.CommonOptions{
 			Name: "wait-for-provider-config-crd",
 		},
 
 		Manager: &WaitManager{
 			CRD:         "ProviderConfig",
-			Group:       "aws.crossplane.io",
+			Group:       "aws.upbound.io",
 			Resource:    "providerconfigs",
 			Version:     "v1beta1",
-			WaitSeconds: 150,
+			WaitSeconds: 200,
 		},
 	}
-
-	return res
 }
 
 type WaitManager struct {
@@ -62,6 +58,10 @@ type WaitManager struct {
 }
 
 func (m *WaitManager) Create(options resource.Options) error {
+	if m.DryRun {
+		return nil
+	}
+
 	client, err := kubernetes.DynamicClient(options.Common().KubeContext)
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (m *WaitManager) Create(options resource.Options) error {
 	return nil
 }
 
-func (m *WaitManager) Delete(options resource.Options) error {
+func (m *WaitManager) Delete(_ resource.Options) error {
 	return fmt.Errorf("feature not supported")
 
 }
@@ -103,6 +103,6 @@ func (m *WaitManager) SetDryRun() {
 	m.DryRun = true
 }
 
-func (m *WaitManager) Update(options resource.Options, cmd *cobra.Command) error {
+func (m *WaitManager) Update(_ resource.Options, _ *cobra.Command) error {
 	return fmt.Errorf("feature not supported")
 }

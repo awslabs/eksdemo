@@ -4,24 +4,33 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cloudformation"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/irsa"
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-func crossplaneIrsa(options application.Options) *resource.Resource {
+type IrsaOptions struct {
+	irsa.IrsaOptions
+	ProviderName    string
+	ManagedPolicies []string
+}
+
+func Irsa(options *ProviderOptions, managedPolicies []string) *resource.Resource {
 	o := options.Common()
 
 	return &resource.Resource{
-		Options: &irsa.IrsaOptions{
-			CommonOptions: resource.CommonOptions{
-				ClusterName:    o.ClusterName,
-				Name:           fmt.Sprintf("crossplane-%s-irsa", o.Namespace),
-				Namespace:      o.Namespace,
-				ServiceAccount: o.ServiceAccount,
+		Options: &IrsaOptions{
+			IrsaOptions: irsa.IrsaOptions{
+				CommonOptions: resource.CommonOptions{
+					ClusterName:    o.ClusterName,
+					Name:           fmt.Sprintf("%s-%s-irsa", o.Namespace, options.ProviderName),
+					Namespace:      o.Namespace,
+					ServiceAccount: o.ServiceAccount,
+				},
 			},
+			ProviderName:    options.ProviderName,
+			ManagedPolicies: managedPolicies,
 		},
 
 		Manager: &cloudformation.ResourceManager{
@@ -52,7 +61,9 @@ Resources:
           - sts:AssumeRoleWithWebIdentity
           Condition:
             StringLike:
-              "{{ .ClusterOIDCProvider }}:sub": "system:serviceaccount:{{ .Namespace }}:provider-aws-*"
+              "{{ .ClusterOIDCProvider }}:sub": "system:serviceaccount:{{ .Namespace }}:{{ .ProviderName }}-*"
       ManagedPolicyArns:
-      - !Sub "arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess"
+	  {{- range .ManagedPolicies }}
+      - !Sub "arn:${AWS::Partition}:iam::aws:policy/{{ . }}"
+	  {{- end }}
 `
