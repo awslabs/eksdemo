@@ -4,6 +4,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane/core"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane/ec2"
+	"github.com/awslabs/eksdemo/pkg/application/crossplane/iam"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane/s3"
 	"github.com/spf13/cobra"
 )
@@ -48,6 +49,7 @@ func init() {
 	crossplane = []func() *application.Application{
 		core.NewApp,
 		ec2.NewApp,
+		iam.NewApp,
 		s3.NewApp,
 	}
 }
