@@ -1,4 +1,4 @@
-package vpc_lattice_controller
+package vpclattice
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"

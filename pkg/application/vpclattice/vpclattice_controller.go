@@ -1,4 +1,4 @@
-package vpc_lattice_controller
+package vpclattice
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -13,12 +13,12 @@ import (
 // GitHub:  https://github.com/aws/aws-application-networking-k8s
 // Helm:    https://github.com/aws/aws-application-networking-k8s/tree/main/helm
 // Repo:    https://gallery.ecr.aws/aws-application-networking-k8s/aws-gateway-controller
-// Version: Latest is v1.0.4 (as of 3/31/24)
+// Version: Latest is v1.0.6 (as of 7/25/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
 
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Name:        "vpc-lattice-controller",
 			Description: "Amazon VPC Lattice (Gateway API) Controller",
@@ -38,6 +38,8 @@ func NewApp() *application.Application {
 			securityGroupRule(options),
 		},
 
+		Flags: flags,
+
 		Installer: &installer.HelmInstaller{
 			ReleaseName:   "vpc-lattice-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart",
@@ -46,14 +48,12 @@ func NewApp() *application.Application {
 			},
 		},
 
+		Options: options,
+
 		PostInstallResources: []*resource.Resource{
 			gatewayClass(),
 		},
 	}
-	app.Options = options
-	app.Flags = flags
-
-	return app
 }
 
 // https://github.com/aws/aws-application-networking-k8s/blob/main/config/iam/recommended-inline-policy.json

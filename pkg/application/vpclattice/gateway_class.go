@@ -1,4 +1,4 @@
-package vpc_lattice_controller
+package vpclattice
 
 import (
 	"github.com/awslabs/eksdemo/pkg/manifest"

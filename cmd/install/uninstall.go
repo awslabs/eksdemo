@@ -24,7 +24,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/application/vault"
 	"github.com/awslabs/eksdemo/pkg/application/velero"
-	"github.com/awslabs/eksdemo/pkg/application/vpc_lattice_controller"
+	"github.com/awslabs/eksdemo/pkg/application/vpclattice"
 	"github.com/spf13/cobra"
 )
 
@@ -68,7 +68,6 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(falco.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallFluxCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(fluxApps, "flux-")...)
-	cmd.AddCommand(vpc_lattice_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewUninstallCmd())
 	cmd.AddCommand(headlamp.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallIngressCmd())
@@ -90,6 +89,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(vault.NewApp().NewUninstallCmd())
 	cmd.AddCommand(velero.NewApp().NewUninstallCmd())
+	cmd.AddCommand(vpclattice.NewApp().NewUninstallCmd())
 
 	// Hidden commands for popular apps without using the group
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
