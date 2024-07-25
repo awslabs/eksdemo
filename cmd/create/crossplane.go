@@ -3,6 +3,7 @@ package create
 import (
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/crossplane/s3"
+	"github.com/awslabs/eksdemo/pkg/resource/crossplane/vpc"
 	"github.com/spf13/cobra"
 )
 
@@ -28,5 +29,6 @@ func NewCrossplaneCmd() *cobra.Command {
 func init() {
 	crossplane = []func() *resource.Resource{
 		s3.NewResource,
+		vpc.NewResource,
 	}
 }
