@@ -1,4 +1,4 @@
-package crossplane
+package core
 
 import (
 	"github.com/awslabs/eksdemo/pkg/manifest"
@@ -22,11 +22,11 @@ func defaultProviderConfig() *resource.Resource {
 }
 
 const providerConfigManifest = `---
-apiVersion: aws.crossplane.io/v1beta1
+apiVersion: aws.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: default
 spec:
   credentials:
-    source: InjectedIdentity
+    source: IRSA
 `

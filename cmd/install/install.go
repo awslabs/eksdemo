@@ -13,7 +13,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
-	"github.com/awslabs/eksdemo/pkg/application/crossplane"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
@@ -59,7 +58,9 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "container-insights-")...)
 	cmd.AddCommand(NewInstallAliasCmds(containerInsightsApps, "ci-")...)
 	cmd.AddCommand(coredumphandler.NewApp().NewInstallCmd())
-	cmd.AddCommand(crossplane.NewApp().NewInstallCmd())
+	cmd.AddCommand(NewInstallCrossplaneCmd())
+	cmd.AddCommand(NewInstallAliasCmds(crossplane, "crossplane-")...)
+	cmd.AddCommand(NewInstallAliasCmds(crossplane, "cp-")...)
 	cmd.AddCommand(NewInstallExampleCmd())
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "ex-")...)

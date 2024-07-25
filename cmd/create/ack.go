@@ -19,7 +19,7 @@ func NewAckCmd() *cobra.Command {
 		Short: "AWS Controllers for Kubernetes (ACK)",
 	}
 
-	// Don't show flag errors for `create ack`` without a subcommand
+	// Don't show flag errors for `create ack` without a subcommand
 	cmd.DisableFlagParsing = true
 
 	for _, r := range ack {

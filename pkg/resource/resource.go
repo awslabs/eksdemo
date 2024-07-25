@@ -48,9 +48,9 @@ func (r *Resource) NewCreateCmd() *cobra.Command {
 	}
 
 	if r.Common().CreateArgumentOptional {
-		args = cobra.RangeArgs(0, len(r.Args))
+		args = cobra.RangeArgs(0, len(r.CreateArgs))
 	} else {
-		args = cobra.ExactArgs(len(r.Args))
+		args = cobra.ExactArgs(len(r.CreateArgs))
 	}
 
 	cmd := &cobra.Command{

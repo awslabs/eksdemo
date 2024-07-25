@@ -1,37 +1,35 @@
-package crossplane
+package core
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 )
 
-type CrossplaneOptions struct {
+type Options struct {
 	application.ApplicationOptions
 	ProviderVersion string
 }
 
-func newOptions() (options *CrossplaneOptions, flags cmd.Flags) {
-	options = &CrossplaneOptions{
+func newOptions() (options *Options, flags cmd.Flags) {
+	options = &Options{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.9.0",
-				Latest:        "v1.9.0",
-				PreviousChart: "1.9.0",
-				Previous:      "v1.9.0",
+				LatestChart:   "1.16.0",
+				Latest:        "v1.16.0",
+				PreviousChart: "1.16.0",
+				Previous:      "v1.16.0",
 			},
 			DisableServiceAccountFlag: true,
-			Namespace:                 "crossplane-system",
-			// Used for role name in custom IRSA
-			ServiceAccount: "provider-aws",
+			Namespace:                 "crossplane",
 		},
-		ProviderVersion: "v0.29.0",
+		ProviderVersion: "v1.9.0",
 	}
 
 	flags = cmd.Flags{
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "provider-version",
-				Description: "version of provider-aws",
+				Description: "version of provider-family-aws",
 			},
 			Option: &options.ProviderVersion,
 		},
