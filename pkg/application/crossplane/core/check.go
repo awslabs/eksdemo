@@ -1,4 +1,4 @@
-package crossplane
+package core
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-func CheckCore() *resource.Resource {
+func Check() *resource.Resource {
 	return &resource.Resource{
 		Options: &resource.CommonOptions{
 			Name: "check-for-crossplane-core",

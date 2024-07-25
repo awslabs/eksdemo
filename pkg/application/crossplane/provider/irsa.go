@@ -1,4 +1,4 @@
-package crossplane
+package provider
 
 import (
 	"fmt"
@@ -12,11 +12,10 @@ import (
 
 type IrsaOptions struct {
 	irsa.IrsaOptions
-	ProviderName    string
 	ManagedPolicies []string
 }
 
-func Irsa(options *ProviderOptions, managedPolicies []string) *resource.Resource {
+func Irsa(options *Options, managedPolicies []string) *resource.Resource {
 	o := options.Common()
 
 	return &resource.Resource{
@@ -24,12 +23,11 @@ func Irsa(options *ProviderOptions, managedPolicies []string) *resource.Resource
 			IrsaOptions: irsa.IrsaOptions{
 				CommonOptions: resource.CommonOptions{
 					ClusterName:    o.ClusterName,
-					Name:           fmt.Sprintf("%s-%s-irsa", o.Namespace, options.ProviderName),
+					Name:           fmt.Sprintf("%s-%s-irsa", o.Namespace, o.ServiceAccount),
 					Namespace:      o.Namespace,
 					ServiceAccount: o.ServiceAccount,
 				},
 			},
-			ProviderName:    options.ProviderName,
 			ManagedPolicies: managedPolicies,
 		},
 
@@ -61,7 +59,7 @@ Resources:
           - sts:AssumeRoleWithWebIdentity
           Condition:
             StringLike:
-              "{{ .ClusterOIDCProvider }}:sub": "system:serviceaccount:{{ .Namespace }}:{{ .ProviderName }}-*"
+              "{{ .ClusterOIDCProvider }}:sub": "system:serviceaccount:{{ .Namespace }}:{{ .ServiceAccount }}-*"
       ManagedPolicyArns:
 	  {{- range .ManagedPolicies }}
       - !Sub "arn:${AWS::Partition}:iam::aws:policy/{{ . }}"

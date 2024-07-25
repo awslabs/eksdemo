@@ -1,4 +1,4 @@
-package crossplane
+package provider
 
 import (
 	"fmt"
@@ -6,15 +6,13 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application"
 )
 
-type ProviderOptions struct {
+type Options struct {
 	application.ApplicationOptions
 	ProviderName string
 }
 
-func NewProviderOptions(provider string) *ProviderOptions {
-	providerName := fmt.Sprintf("provider-aws-%s", provider)
-
-	return &ProviderOptions{
+func newOptions(provider string) *Options {
+	return &Options{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
 				Latest:   "v1.9.0",
@@ -23,8 +21,8 @@ func NewProviderOptions(provider string) *ProviderOptions {
 			DisableServiceAccountFlag: true,
 			Namespace:                 "crossplane",
 			// Used only for role name in Crossplane IRSA
-			ServiceAccount: providerName,
+			ServiceAccount: fmt.Sprintf("provider-aws-%s", provider),
 		},
-		ProviderName: providerName,
+		ProviderName: provider,
 	}
 }

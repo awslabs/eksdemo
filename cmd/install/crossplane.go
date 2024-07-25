@@ -3,9 +3,7 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/crossplane/core"
-	"github.com/awslabs/eksdemo/pkg/application/crossplane/ec2"
-	"github.com/awslabs/eksdemo/pkg/application/crossplane/iam"
-	"github.com/awslabs/eksdemo/pkg/application/crossplane/s3"
+	"github.com/awslabs/eksdemo/pkg/application/crossplane/provider"
 	"github.com/spf13/cobra"
 )
 
@@ -48,8 +46,8 @@ func NewUninstallCrossplaneCmd() *cobra.Command {
 func init() {
 	crossplane = []func() *application.Application{
 		core.NewApp,
-		ec2.NewApp,
-		iam.NewApp,
-		s3.NewApp,
+		provider.NewEC2,
+		provider.NewIAM,
+		provider.NewS3,
 	}
 }
