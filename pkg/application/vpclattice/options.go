@@ -1,4 +1,4 @@
-package vpc_lattice_controller
+package vpclattice
 
 import (
 	"fmt"
@@ -14,6 +14,7 @@ type GatwayApiControllerOptions struct {
 	application.ApplicationOptions
 
 	DefaultServiceNetwork  string
+	PrivateVPC             bool
 	Replicas               int
 	VpcLatticePrefixListId string
 }
@@ -24,10 +25,10 @@ func newOptions() (options *GatwayApiControllerOptions, flags cmd.Flags) {
 			Namespace:      "vpc-lattice",
 			ServiceAccount: "gateway-api-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "v1.0.4",
-				Latest:        "v1.0.4",
-				PreviousChart: "v1.0.3",
-				Previous:      "v1.0.3",
+				LatestChart:   "v1.0.6",
+				Latest:        "v1.0.6",
+				PreviousChart: "v1.0.4",
+				Previous:      "v1.0.4",
 			},
 		},
 		Replicas: 1,
@@ -40,6 +41,13 @@ func newOptions() (options *GatwayApiControllerOptions, flags cmd.Flags) {
 				Description: "name for service network to create and associate with the cluster VPC",
 			},
 			Option: &options.DefaultServiceNetwork,
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "private-vpc",
+				Description: "enables the controller to run in a private VPC",
+			},
+			Option: &options.PrivateVPC,
 		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
