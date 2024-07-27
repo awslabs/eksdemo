@@ -1,4 +1,4 @@
-package linkerd_control_plane
+package linkerd-control-plane
 
 import (
 	"fmt"
