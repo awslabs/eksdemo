@@ -1,16 +1,16 @@
-package kms_key
+package key
 
 import (
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/resource"
 )
 
-type KmsKeyOptions struct {
+type Options struct {
 	resource.CommonOptions
 }
 
-func newOptions() (options *KmsKeyOptions, getFlags cmd.Flags) {
-	options = &KmsKeyOptions{
+func newOptions() (options *Options, getFlags cmd.Flags) {
+	options = &Options{
 		CommonOptions: resource.CommonOptions{
 			ClusterFlagDisabled: true,
 		},

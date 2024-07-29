@@ -1,4 +1,4 @@
-package kms_key
+package key
 
 import (
 	"fmt"

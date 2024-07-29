@@ -28,7 +28,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/iam_policy"
 	"github.com/awslabs/eksdemo/pkg/resource/iam_role"
 	"github.com/awslabs/eksdemo/pkg/resource/internet_gateway"
-	"github.com/awslabs/eksdemo/pkg/resource/kms_key"
+	kmskey "github.com/awslabs/eksdemo/pkg/resource/kms/key"
 	"github.com/awslabs/eksdemo/pkg/resource/listener"
 	"github.com/awslabs/eksdemo/pkg/resource/listener_rule"
 	"github.com/awslabs/eksdemo/pkg/resource/load_balancer"
@@ -100,7 +100,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(iam_policy.NewResource().NewGetCmd())
 	cmd.AddCommand(iam_role.NewResource().NewGetCmd())
 	cmd.AddCommand(internet_gateway.NewResource().NewGetCmd())
-	cmd.AddCommand(kms_key.NewResource().NewGetCmd())
+	cmd.AddCommand(kmskey.NewResource().NewGetCmd())
 	cmd.AddCommand(listener.NewResource().NewGetCmd())
 	cmd.AddCommand(listener_rule.NewResource().NewGetCmd())
 	cmd.AddCommand(load_balancer.NewResource().NewGetCmd())

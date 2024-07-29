@@ -10,6 +10,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/dns_record"
 	"github.com/awslabs/eksdemo/pkg/resource/ec2/instance"
 	"github.com/awslabs/eksdemo/pkg/resource/fargate_profile"
+	kmskey "github.com/awslabs/eksdemo/pkg/resource/kms/key"
 	"github.com/awslabs/eksdemo/pkg/resource/log_group"
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/resource/organization"
@@ -44,6 +45,7 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(dns_record.NewResource().NewCreateCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewCreateCmd())
 	cmd.AddCommand(instance.NewResource().NewCreateCmd())
+	cmd.AddCommand(kmskey.NewResource().NewCreateCmd())
 	cmd.AddCommand(NewKyvernoCmd())
 	cmd.AddCommand(NewCreateAliasCmds(kyvernoPolicies, "kyverno-")...)
 	cmd.AddCommand(log_group.NewResource().NewCreateCmd())
