@@ -13,13 +13,13 @@ import (
 type AppOptions struct {
 	application.ApplicationOptions
 
-	trustAnchor string
-	issuerCert string
-	issuerKey string
+	trustAnchor  string
+	issuerCert   string
+	issuerKey    string
 
-	caPEM string
-	crtPEM string
-	keyPEM string
+	CAPEM        string
+	CRTPEM       string
+	KEYPEM       string
 }
 
 
@@ -29,6 +29,8 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 			DefaultVersion: &application.LatestPrevious{
 				LatestChart:   "2024.7.3",
 				PreviousChart: "2024.7.2",
+				Latest:        "edge-24.7.3",
+				Previous:      "edge-24.7.2",
 			},
 			Namespace: "linkerd",
 		},
@@ -72,8 +74,8 @@ Trust anchor certificate
                         "certificate",
                         "create",
                         "root.linkerd.cluster.local",
-                        "./pkg/application/linkerd/linkerd_control_plane/ca.crt",
-                        "./pkg/application/linkerd/linkerd_control_plane/ca.key",
+                        "./pkg/application/linkerd/controlPlane/ca.crt",
+                        "./pkg/application/linkerd/controlPlane/ca.key",
                         "--profile",
                         "root-ca",
                         "--no-password",
@@ -87,12 +89,11 @@ Trust anchor certificate
                 if stdout != nil {
                         fmt.Println(string(stdout))
                 }
-                caPEMBytes, err := os.ReadFile("./pkg/application/linkerd/linkerd_control_plane/ca.crt")
+                caPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlPlane/ca.crt")
                 if err != nil {
                         fmt.Println(err.Error())
                         return err
                 }
-                //caPEM := string(caPEMBytes)
                 caPEM := strings.Join( strings.Split( string(caPEMBytes),"\n")[:],"\n  " )
 
 /*
@@ -102,8 +103,8 @@ Issuer certificate and key
                         "certificate",
                         "create",
                         "identity.linkerd.cluster.local",
-                        "./pkg/application/linkerd/linkerd_control_plane/issuer.crt",
-                        "./pkg/application/linkerd/linkerd_control_plane/issuer.key",
+                        "./pkg/application/linkerd/controlPlane/issuer.crt",
+                        "./pkg/application/linkerd/controlPlane/issuer.key",
                         "--profile",
                         "intermediate-ca",
                         "--not-after",
@@ -111,9 +112,9 @@ Issuer certificate and key
                         "--no-password",
                         "--insecure",
                         "--ca",
-                        "./pkg/application/linkerd/linkerd_control_plane/ca.crt",
+                        "./pkg/application/linkerd/controlPlane/ca.crt",
                         "--ca-key",
-                        "./pkg/application/linkerd/linkerd_control_plane/ca.key",
+                        "./pkg/application/linkerd/controlPlane/ca.key",
                         "--force" )
                 stdout, err = tlsCmd.Output()
                 if err != nil {
@@ -124,14 +125,14 @@ Issuer certificate and key
                         fmt.Println(string(stdout))
                 }
 
-                crtPEMBytes, err := os.ReadFile("./pkg/application/linkerd/linkerd_control_plane/issuer.crt")
+                crtPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlPlane/issuer.crt")
                 if err != nil {
                         fmt.Println(err.Error())
                         return err
                 }
                 crtPEM := strings.Join( strings.Split( string(crtPEMBytes),"\n")[:],"\n              " )
 
-                keyPEMBytes, err := os.ReadFile("./pkg/application/linkerd/linkerd_control_plane/issuer.key")
+                keyPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlPlane/issuer.key")
                 if err != nil {
                         fmt.Println(err.Error())
                         return err
@@ -141,8 +142,8 @@ Issuer certificate and key
 End mTLS Certificates
 */
 
-	options.caPEM = caPEM
-	options.crtPEM = crtPEM
-	options.keyPEM = keyPEM
+	options.CAPEM  = caPEM
+	options.CRTPEM = crtPEM
+	options.KEYPEM = keyPEM
         return nil
 }
