@@ -49,7 +49,7 @@ func (m *Manager) Create(options resource.Options) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("done\nCreated AMP Workspace Id: %s\n", *result.WorkspaceId)
+	fmt.Printf("done\nCreated AMP Workspace Id: %s\n", awssdk.ToString(result.WorkspaceId))
 
 	return nil
 }

@@ -1,4 +1,4 @@
-package kms_key
+package key
 
 import (
 	"github.com/awslabs/eksdemo/pkg/cmd"
@@ -6,18 +6,23 @@ import (
 )
 
 func NewResource() *resource.Resource {
-	res := &resource.Resource{
+	options, getFlags := newOptions()
+
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "kms-key",
 			Description: "KMS Key",
 			Aliases:     []string{"kms-keys", "kmskeys", "kmskey", "kms"},
 			Args:        []string{"ALIAS"},
+			CreateArgs:  []string{"ALIAS"},
 		},
 
+		GetFlags: getFlags,
+
 		Getter: &Getter{},
+
+		Manager: &Manager{},
+
+		Options: options,
 	}
-
-	res.Options, res.GetFlags = newOptions()
-
-	return res
 }

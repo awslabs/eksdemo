@@ -1,8 +1,9 @@
-package kms_key
+package key
 
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/kms/types"
@@ -31,7 +32,7 @@ func (g *Getter) Init() {
 }
 
 func (g *Getter) Get(alias string, output printer.Output, options resource.Options) error {
-	kmsOptions, ok := options.(*KmsKeyOptions)
+	kmsOptions, ok := options.(*Options)
 	if !ok {
 		return fmt.Errorf("internal error, unable to cast options to KmsKeyOptions")
 	}
@@ -85,6 +86,11 @@ func (g *Getter) GetAllKeys() ([]*KMSKey, error) {
 		keys = append(keys, key)
 	}
 
+	// Show recently created Keys at the end of the list
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i].Key.CreationDate.Before(awssdk.ToTime(keys[j].Key.CreationDate))
+	})
+
 	return keys, nil
 }
 
@@ -109,7 +115,7 @@ func (g *Getter) GetByAlias(aliasName string) (*KMSKey, error) {
 		return &KMSKey{filterAliasesByKeyId(aliases, keyId), key}, nil
 	}
 
-	return nil, resource.NotFoundError(fmt.Sprintf("kms-key alias %q not found", aliasName))
+	return nil, &resource.NotFoundByError{Type: "kms-key", Name: "alias", Value: aliasName}
 }
 
 func filterAliasesByKeyId(aliases []types.AliasListEntry, id string) []types.AliasListEntry {

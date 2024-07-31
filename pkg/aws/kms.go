@@ -16,6 +16,39 @@ func NewKMSClient() *KMSClient {
 	return &KMSClient{kms.NewFromConfig(GetConfig())}
 }
 
+func (c *KMSClient) CreateAlias(aliasName, keyID string) error {
+	_, err := c.Client.CreateAlias(context.Background(), &kms.CreateAliasInput{
+		AliasName:   aws.String(aliasName),
+		TargetKeyId: aws.String(keyID),
+	})
+
+	return err
+}
+
+func (c *KMSClient) CreateKey() (*types.KeyMetadata, error) {
+	result, err := c.Client.CreateKey(context.Background(), &kms.CreateKeyInput{
+		KeySpec: types.KeySpecSymmetricDefault,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.KeyMetadata, nil
+}
+
+func (c *KMSClient) DescribeKey(keyID string) (*types.KeyMetadata, error) {
+	result, err := c.Client.DescribeKey(context.Background(), &kms.DescribeKeyInput{
+		KeyId: aws.String(keyID),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result.KeyMetadata, nil
+}
+
 func (c *KMSClient) ListAliases() ([]types.AliasListEntry, error) {
 	keys := []types.AliasListEntry{}
 	pageNum := 0
@@ -50,16 +83,4 @@ func (c *KMSClient) ListKeys() ([]types.KeyListEntry, error) {
 	}
 
 	return keys, nil
-}
-
-func (c *KMSClient) DescribeKey(keyId string) (*types.KeyMetadata, error) {
-	result, err := c.Client.DescribeKey(context.Background(), &kms.DescribeKeyInput{
-		KeyId: aws.String(keyId),
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result.KeyMetadata, nil
 }
