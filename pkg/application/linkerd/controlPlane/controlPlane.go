@@ -1,10 +1,6 @@
 package controlPlane
 
 import (
-	"fmt"
-//	"os/exec"
-//	"os"
-//	"strings"
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/installer"
@@ -17,8 +13,6 @@ Begin Helm App
 */
 
 	options, flags := newOptions()
-	helmValues := fmt.Sprintf(valuesTemplate, options.caPEM, options.crtPEM, options.keyPEM)
-
 
 	app := &application.Application{
 		Command: cmd.Command{
@@ -26,18 +20,13 @@ Begin Helm App
 			Name:        "linkerd-control-plane",
 			Description: "Linkerd Service Mesh Custom Resource Definitions",
 		},
-
-                Options: &application.ApplicationOptions{
-                        Namespace: "linkerd",
-                },
-
+                Options: options,
 		Installer: &installer.HelmInstaller{
 			ChartName:     "linkerd-control-plane",
 			ReleaseName:   "linkerd-control-plane",
 			RepositoryURL: "https://helm.linkerd.io/edge",
 			ValuesTemplate: &template.TextTemplate{
-				//Template: valuesTemplate,
-				Template: helmValues,
+				Template: valuesTemplate,
 			},
 		},
 	}
@@ -50,13 +39,13 @@ Begin Helm App
 // https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
 const valuesTemplate = `---
 identityTrustAnchorsPEM: |
-  %s
+  {{ .CAPEM }}
 identity:
     scheme: linkerd.io/tls
     issuer:
         tls:
             crtPEM: |
-              %s
+              {{ .CRTPEM }}
             keyPEM: |
-              %s
+              {{ .KEYPEM }}
 `
