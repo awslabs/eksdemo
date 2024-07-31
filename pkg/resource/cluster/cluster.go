@@ -76,6 +76,11 @@ kubernetesNetworkConfig:
 privateCluster:
   enabled: true
 {{- end }}
+{{- if .KMSKeyArn }}
+
+secretsEncryption:
+  keyARN: {{ .KMSKeyArn }}
+{{- end }}
 
 vpc:
   cidr: {{ .VpcCidr }}

@@ -18,6 +18,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/cloudformation_stack"
 	"github.com/awslabs/eksdemo/pkg/resource/irsa"
+	"github.com/awslabs/eksdemo/pkg/resource/kms/key"
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/template"
 	"github.com/spf13/cobra"
@@ -32,6 +33,8 @@ type ClusterOptions struct {
 	Fargate              bool
 	HostnameType         string
 	IPv6                 bool
+	KMSKeyAlias          string
+	KMSKeyArn            string
 	Kubeconfig           string
 	NoRoles              bool
 	PrefixAssignment     bool
@@ -99,6 +102,24 @@ func addOptions(res *resource.Resource) *resource.Resource {
 			},
 			Option: &options.DisableNetworkPolicy,
 		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "encrypt-secrets",
+				Description: "alias of KMS key to encrypt secrets",
+				Validate: func(_ *cobra.Command, _ []string) error {
+					if options.KMSKeyAlias == "" {
+						return nil
+					}
+					key, err := key.NewGetter(aws.NewKMSClient()).GetByAlias(options.KMSKeyAlias)
+					if err != nil {
+						return err
+					}
+					options.KMSKeyArn = awssdk.ToString(key.Key.Arn)
+					return nil
+				},
+			},
+			Option: &options.KMSKeyAlias,
+		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "fargate",
@@ -126,7 +147,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 			CommandFlag: cmd.CommandFlag{
 				Name:        "kubeconfig",
 				Description: "path to write kubeconfig",
-				Validate: func(cmd *cobra.Command, args []string) error {
+				Validate: func(_ *cobra.Command, _ []string) error {
 					// Set the KUBECONFIG environment variable to configure eksctl
 					_ = os.Setenv("KUBECONFIG", options.Kubeconfig)
 					return nil
@@ -172,7 +193,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		&cmd.StringSliceFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "zones",
-				Description: "Specify comma delimited AZs to use. ie. us-east-1a,us-east-1b,us-east-1c",
+				Description: "list of AZs to use. ie. us-east-1a,us-east-1b,us-east-1c",
 			},
 			Option: &options.Zones,
 		},

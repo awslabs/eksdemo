@@ -3,14 +3,13 @@
 `eksdemo` can manage applications in any EKS cluster and the cluster doesn’t have to be created by `eksdemo`. You can use `eksctl` to create the cluster and then manage application using `eksdemo`. However, there are a number of benefits to using `eksdemo` to create your cluster:
 * Cluster logging is enabled by default
 * OIDC is enabled by default so IAM Roles for Service Accounts (IRSA) works out of the box
-* The Managed Node Group ASG max is set to 10 so cluster autoscaling can work out of the box
+* The Managed Node Group ASG max is set to 10 so Cluster Autoscaler can work out of the box
 * Private networking for nodes is set by default
-* VPC CNI is configured as a Managed Add-on and configured with IRSA by default
+* VPC CNI is configured as a Managed Add-on and configured with IRSA, with network policy enabled
 * t3.large instances used by default instead of m5.large for cost savings, but can be easily changed with the `--instance` flag or the shorthand `-i`
-* To use containerd as the CRI on Amazon EKS optimized Amazon Linux AMIs is as easy as using the `--containerd` boolean flag
 * To create a Fargate profile that selects workloads in the “fargate” namespace, use the `--fargate` boolean flag
-* Choose a supported EKS version with the `--version` flag or the shorthand `-v` like `-v 1.21`
-* Using a different OS like Bottlerocket or Ubuntu is as easy as `--os bottlerocket` or `--os ubuntu`
+* Choose a supported EKS version with the `--version` flag or the shorthand `-v` like `-v 1.29`
+* Using a different OS like Bottlerocket or AL2023 is as easy as `--os bottlerocket` or `--os amazonlinux2023`
 * To use IPv6 networking, set the `--ipv6` boolean flag
 * If you need to further customize the config, add the `--dry-run` flag and it will output the eksctl YAML config file and you can copy/paste it into a file, make your edits and run `eksctl create cluster -f cluster.yaml`
 
@@ -27,19 +26,26 @@ Aliases:
   cluster, clusters
 
 Flags:
-      --containerd        use containerd runtime
-      --dry-run           don't create, just print out all creation steps
-      --fargate           create a Fargate profile
-  -h, --help              help for cluster
-  -i, --instance string   instance type (default "t3.large")
-      --ipv6              use IPv6 networking
-      --max int           max nodes (default 10)
-      --min int           min nodes
-      --no-roles          don't create IAM roles
-  -N, --nodes int         desired number of nodes (default 2)
-      --os string         Operating System (default "AmazonLinux2")
-      --private           private cluster (includes ECR, S3, and other VPC endpoints)
-  -v, --version string    Kubernetes version (default "1.24")
+      --disable-network-policy   don't enable network policy for Amazon VPC CNI
+      --dry-run                  don't create, just print out all creation steps
+      --encrypt-secrets string   alias of KMS key to encrypt secrets
+      --fargate                  create a Fargate profile
+  -h, --help                     help for cluster
+  -H, --hostname-type string     type of hostname to use for EC2 instances (default "resource-name")
+  -i, --instance string          instance type (default "t3.large")
+      --ipv6                     use IPv6 networking
+      --kubeconfig string        path to write kubeconfig (default "/Users/jsmith/.kube/config")
+      --max int                  max nodes (default 10)
+      --min int                  min nodes
+      --no-roles                 don't create IAM roles
+      --no-taints                don't taint nodes with GPUs or Neuron cores
+  -N, --nodes int                desired number of nodes (default 2)
+      --os string                Operating System (default "AmazonLinux2")
+      --prefix-assignment        configure VPC CNI for prefix assignment
+      --private                  private cluster (includes ECR, S3, and other VPC endpoints)
+  -v, --version string           Kubernetes version (default "1.30")
+      --vpc-cidr string          CIDR to use for EKS Cluster VPC (default "192.168.0.0/16")
+      --zones strings            list of AZs to use. ie. us-east-1a,us-east-1b,us-east-1c
 
 Global Flags:
       --profile string   use the specific profile from your credential file
@@ -68,10 +74,15 @@ kind: ClusterConfig
 metadata:
   name: blue
   region: us-west-2
-  version: "1.24"
+  version: "1.30"
 
 addons:
 - name: vpc-cni
+  version: latest
+  configurationValues: |-
+    enableNetworkPolicy: "true"
+    env:
+      ENABLE_PREFIX_DELEGATION: "false"
 
 cloudWatch:
   clusterLogging:
@@ -88,12 +99,12 @@ iam:
     attachPolicy:
       <snip>
   - metadata:
-      name: cluster-autoscaler
+      name: ebs-csi-controller-sa
       namespace: kube-system
-    roleName: eksdemo.blue.kube-system.cluster-autoscaler
+    roleName: eksdemo.blue.kube-system.ebs-csi-controller-sa
     roleOnly: true
-    attachPolicy:
-      <snip>
+    attachPolicyARNs:
+    - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
   - metadata:
       name: external-dns
       namespace: external-dns
@@ -109,9 +120,14 @@ iam:
     attachPolicy:
       <snip>
 
+vpc:
+  cidr: 192.168.0.0/16
+  hostnameType: resource-name
+
 managedNodeGroups:
 - name: main
   amiFamily: Bottlerocket
+  desiredCapacity: 3
   iam:
     attachPolicyARNs:
     - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
@@ -119,7 +135,6 @@ managedNodeGroups:
     - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
   instanceType: t3.xlarge
   minSize: 0
-  desiredCapacity: 3
   maxSize: 10
   privateNetworking: true
   spot: false
@@ -131,36 +146,37 @@ After reviewing the output above, go ahead and create your cluster.
 
 ```
 » eksdemo create cluster blue --os bottlerocket -i t3.xlarge -N 3
-2023-01-25 09:04:24 [ℹ]  eksctl version 0.126.0
-2023-01-25 09:04:24 [ℹ]  using region us-west-2
-2023-01-25 09:04:24 [ℹ]  setting availability zones to [us-west-2d us-west-2b us-west-2a]
-2023-01-25 09:04:24 [ℹ]  subnets for us-west-2d - public:192.168.0.0/19 private:192.168.96.0/19
-2023-01-25 09:04:24 [ℹ]  subnets for us-west-2b - public:192.168.32.0/19 private:192.168.128.0/19
-2023-01-25 09:04:24 [ℹ]  subnets for us-west-2a - public:192.168.64.0/19 private:192.168.160.0/19
-2023-01-25 09:04:24 [ℹ]  nodegroup "main" will use "" [Bottlerocket/1.24]
-2023-01-25 09:04:24 [ℹ]  using Kubernetes version 1.24
-2023-01-25 09:04:24 [ℹ]  creating EKS cluster "blue" in "us-west-2" region with managed nodes
-2023-01-25 09:04:24 [ℹ]  1 nodegroup (main) was included (based on the include/exclude rules)
+2024-07-30 18:52:39 [ℹ]  eksctl version 0.180.0
+2024-07-30 18:52:39 [ℹ]  using region us-west-2
+2024-07-30 18:52:39 [ℹ]  setting availability zones to [us-west-2c us-west-2a us-west-2d]
+2024-07-30 18:52:39 [ℹ]  subnets for us-west-2c - public:192.168.0.0/19 private:192.168.96.0/19
+2024-07-30 18:52:39 [ℹ]  subnets for us-west-2a - public:192.168.32.0/19 private:192.168.128.0/19
+2024-07-30 18:52:39 [ℹ]  subnets for us-west-2d - public:192.168.64.0/19 private:192.168.160.0/19
+2024-07-30 18:52:39 [ℹ]  nodegroup "main" will use "" [Bottlerocket/1.30]
+2024-07-30 18:52:39 [ℹ]  using Kubernetes version 1.30
+2024-07-30 18:52:39 [ℹ]  creating EKS cluster "blue" in "us-west-2" region with managed nodes
+2024-07-30 18:52:39 [ℹ]  1 nodegroup (main) was included (based on the include/exclude rules)
 <snip>
-2023-01-25 09:23:26 [ℹ]  waiting for CloudFormation stack "eksctl-blue-nodegroup-main"
-2023-01-25 09:23:26 [ℹ]  waiting for the control plane to become ready
-2023-01-25 09:23:28 [✔]  saved kubeconfig as "/Users/awsuser/.kube/config"
-2023-01-25 09:23:28 [ℹ]  no tasks
-2023-01-25 09:23:28 [✔]  all EKS cluster resources for "blue" have been created
-2023-01-25 09:23:29 [ℹ]  kubectl command should work with "/Users/awsuser/.kube/config", try 'kubectl get nodes'
-2023-01-25 09:23:29 [✔]  EKS cluster "blue" in "us-west-2" region is ready
+2024-07-30 19:09:37 [ℹ]  waiting for CloudFormation stack "eksctl-blue-nodegroup-main"
+2024-07-30 19:09:37 [ℹ]  waiting for the control plane to become ready
+2024-07-30 19:09:38 [✔]  saved kubeconfig as "/Users/awsuser/.kube/config"
+2024-07-30 19:09:38 [ℹ]  no tasks
+2024-07-30 19:09:38 [✔]  all EKS cluster resources for "blue" have been created
+2024-07-30 19:09:38 [✔]  created 1 managed nodegroup(s) in cluster "blue"
+2024-07-30 19:09:40 [ℹ]  kubectl command should work with "/Users/awsuser/.kube/config", try 'kubectl get nodes'
+2024-07-30 19:09:40 [✔]  EKS cluster "awsuser" in "us-west-2" region is ready
 ```
 
 To view the status and info about your cluster you can run the **`eksdemo get cluster`** command.
 
 ```
 » eksdemo get cluster
-+------------+--------+---------+---------+----------+----------+---------+
-|    Age     | Status | Cluster | Version | Platform | Endpoint | Logging |
-+------------+--------+---------+---------+----------+----------+---------+
-| 3 weeks    | ACTIVE | green   |    1.23 | eks.5    | Public   | true    |
-| 20 minutes | ACTIVE | *blue   |    1.24 | eks.3    | Public   | true    |
-+------------+--------+---------+---------+----------+----------+---------+
++------------+--------+---------+---------+----------+----------+
+|    Age     | Status | Cluster | Version | Platform | Endpoint |
++------------+--------+---------+---------+----------+----------+
+| 3 weeks    | ACTIVE | green   |    1.28 | eks.16   | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.30 | eks.5    | Public   |
++------------+--------+---------+---------+----------+----------+
 * Indicates current context in local kubeconfig
 ```
 
@@ -171,7 +187,7 @@ To view detail on the node group, use the **`eksdemo get nodegroup`** command. F
 +-----------+--------+------+-------+-----+-----+-----------------+-----------+-------------+
 |    Age    | Status | Name | Nodes | Min | Max |     Version     |   Type    | Instance(s) |
 +-----------+--------+------+-------+-----+-----+-----------------+-----------+-------------+
-| 5 minutes | ACTIVE | main |     3 |   0 |  10 | 1.11.1-104f8e0f | ON_DEMAND | t3.xlarge   |
+| 5 minutes | ACTIVE | main |     3 |   0 |  10 | 1.20.5-a3e8bda1 | ON_DEMAND | t3.xlarge   |
 +-----------+--------+------+-------+-----+-----+-----------------+-----------+-------------+
 ```
 
@@ -179,13 +195,13 @@ To view detail on the nodes, use the **`eksdemo get node`** command. Here we’l
 
 ```
 » eksdemo get node -c blue
-+-----------+----------------------+---------------------+-----------+------------+-----------+
-|    Age    |         Name         |     Instance Id     |   Type    |    Zone    | Nodegroup |
-+-----------+----------------------+---------------------+-----------+------------+-----------+
-| 5 minutes | ip-192-168-112-160.* | i-01049dccf2e58d265 | t3.xlarge | us-west-2d | main      |
-| 5 minutes | ip-192-168-141-119.* | i-003139b73a29ff1b7 | t3.xlarge | us-west-2b | main      |
-| 5 minutes | ip-192-168-186-156.* | i-0583cab4366088ac2 | t3.xlarge | us-west-2a | main      |
-+-----------+----------------------+---------------------+-----------+------------+-----------+
++-----------+-----------------------+---------------------+-----------+------------+-----------+
+|    Age    |         Name          |     Instance Id     |   Type    |    Zone    | Nodegroup |
++-----------+-----------------------+---------------------+-----------+------------+-----------+
+| 5 minutes | i-058de3c37e4d56968.* | i-058de3c37e4d56968 | t3.xlarge | us-west-2b | main      |
+| 5 minutes | i-05e74a812e705a2b4.* | i-05e74a812e705a2b4 | t3.xlarge | us-west-2c | main      |
+| 5 minutes | i-0d14753576296c6e0.* | i-0d14753576296c6e0 | t3.xlarge | us-west-2a | main      |
++-----------+-----------------------+---------------------+-----------+------------+-----------+
 * Names end with "us-west-2.compute.internal"
 ```
 
