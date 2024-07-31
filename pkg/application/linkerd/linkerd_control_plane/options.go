@@ -1,4 +1,4 @@
-package linkerd_control_plane
+package linkerdControlPlane
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"

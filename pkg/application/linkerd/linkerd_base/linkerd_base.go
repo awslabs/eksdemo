@@ -1,4 +1,4 @@
-package linkerd-base
+package linkerdBase
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
