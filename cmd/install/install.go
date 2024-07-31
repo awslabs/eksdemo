@@ -79,10 +79,8 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds(kubePrometheusApps, "kube-prometheus-")...)
 	cmd.AddCommand(NewInstallAliasCmds(kubePrometheusApps, "kprom-")...)
 	cmd.AddCommand(kube_state_metrics.NewApp().NewInstallCmd())
-// linkerd
 	cmd.AddCommand(NewInstallLinkerdCmd())
 	cmd.AddCommand(NewInstallAliasCmds(linkerdApps, "linkerd-")...)
-//
 	cmd.AddCommand(NewInstallKubecostCmd())
 	cmd.AddCommand(NewInstallAliasCmds(kubecostApps, "kubecost-")...)
 	cmd.AddCommand(metrics_server.NewApp().NewInstallCmd())
