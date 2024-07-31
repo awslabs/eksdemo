@@ -168,7 +168,7 @@ To validate installation you can run the **`eksdemo version`** command and confi
 
 ```
 » eksdemo version
-eksdemo version info: cmd.Version{Version:"0.14.0", Date:"2024-06-09T22:58:50Z", Commit:"0c99d42"}
+eksdemo version info: cmd.Version{Version:"0.15.0", Date:"2024-07-31T19:25:27Z", Commit:"236fd68"}
 ```
 
 To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
@@ -179,7 +179,7 @@ To validate the AWS region is set, you can run **`eksdemo get cluster`** which w
 |    Age     | Status | Cluster | Version | Platform | Endpoint |
 +------------+--------+---------+---------+----------+----------+
 | 3 weeks    | ACTIVE | green   |    1.27 | eks.17   | Public   |
-| 20 minutes | ACTIVE | *blue   |    1.30 | eks.2    | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.30 | eks.5    | Public   |
 +------------+--------+---------+---------+----------+----------+
 * Indicates current context in local kubeconfig
 ```
@@ -229,6 +229,8 @@ The application catalog includes:
 * `core-dump-handler` - Automatically saves core dumps to S3
 * `crossplane` — The Cloud Native Control Plane
     * `core` — Crossplane Core Components
+    * `ec2-provider` — Crossplane EC2 Provider
+    * `iam-provider` — Crossplane IAM Provider
     * `s3-provider` — Crossplane S3 Provider
 * `example` — Example Applications
     * `eks-workshop` — EKS Workshop Example Microservices
