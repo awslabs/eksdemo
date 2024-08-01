@@ -3,7 +3,7 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/linkerd/base"
-	"github.com/awslabs/eksdemo/pkg/application/linkerd/controlPlane"
+	"github.com/awslabs/eksdemo/pkg/application/linkerd/controlplane"
 	"github.com/spf13/cobra"
 )
 
@@ -44,6 +44,6 @@ func NewUninstallLinkerdCmd() *cobra.Command {
 func init() {
 	linkerdApps = []func() *application.Application{
 		base.NewApp,
-		controlPlane.NewApp,
+		controlplane.NewApp,
 	}
 }

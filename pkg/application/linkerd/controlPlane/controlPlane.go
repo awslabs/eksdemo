@@ -1,4 +1,4 @@
-package controlPlane
+package controlplane
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
