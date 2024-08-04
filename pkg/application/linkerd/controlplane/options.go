@@ -2,8 +2,8 @@ package controlplane
 
 import (
 	"fmt"
-	"os/exec"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -13,15 +13,14 @@ import (
 type AppOptions struct {
 	application.ApplicationOptions
 
-	trustAnchor  string
-	issuerCert   string
-	issuerKey    string
+	trustAnchor string
+	issuerCert  string
+	issuerKey   string
 
-	CAPEM        string
-	CRTPEM       string
-	KEYPEM       string
+	CAPEM  string
+	CRTPEM string
+	KEYPEM string
 }
-
 
 func newOptions() (options *AppOptions, flags cmd.Flags) {
 	options = &AppOptions{
@@ -63,87 +62,87 @@ func newOptions() (options *AppOptions, flags cmd.Flags) {
 }
 
 func (options *AppOptions) PreInstall() error {
-/*
-Begin mTLS Certificates
-*/
+	/*
+	   Begin mTLS Certificates
+	*/
 
-/*
-Trust anchor certificate
-*/
-                tlsCmd := exec.Command( "step",
-                        "certificate",
-                        "create",
-                        "root.linkerd.cluster.local",
-                        "./pkg/application/linkerd/controlplane/ca.crt",
-                        "./pkg/application/linkerd/controlplane/ca.key",
-                        "--profile",
-                        "root-ca",
-                        "--no-password",
-                        "--insecure",
-                        "--force" )
-                stdout, err := tlsCmd.Output()
-                if err != nil {
-                        fmt.Println(err.Error())
-                        return err
-                }
-                if stdout != nil {
-                        fmt.Println(string(stdout))
-                }
-                caPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/ca.crt")
-                if err != nil {
-                        fmt.Println(err.Error())
-                        return err
-                }
-                caPEM := strings.Join( strings.Split( string(caPEMBytes),"\n")[:],"\n  " )
+	/*
+	   Trust anchor certificate
+	*/
+	tlsCmd := exec.Command("step",
+		"certificate",
+		"create",
+		"root.linkerd.cluster.local",
+		"./pkg/application/linkerd/controlplane/ca.crt",
+		"./pkg/application/linkerd/controlplane/ca.key",
+		"--profile",
+		"root-ca",
+		"--no-password",
+		"--insecure",
+		"--force")
+	stdout, err := tlsCmd.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	if stdout != nil {
+		fmt.Println(string(stdout))
+	}
+	caPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/ca.crt")
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	caPEM := strings.Join(strings.Split(string(caPEMBytes), "\n")[:], "\n  ")
 
-/*
-Issuer certificate and key
-*/
-                tlsCmd = exec.Command( "step",
-                        "certificate",
-                        "create",
-                        "identity.linkerd.cluster.local",
-                        "./pkg/application/linkerd/controlplane/issuer.crt",
-                        "./pkg/application/linkerd/controlplane/issuer.key",
-                        "--profile",
-                        "intermediate-ca",
-                        "--not-after",
-                        "8760h",
-                        "--no-password",
-                        "--insecure",
-                        "--ca",
-                        "./pkg/application/linkerd/controlplane/ca.crt",
-                        "--ca-key",
-                        "./pkg/application/linkerd/controlplane/ca.key",
-                        "--force" )
-                stdout, err = tlsCmd.Output()
-                if err != nil {
-                        fmt.Println(err.Error())
-                        return err
-                }
-                if stdout != nil {
-                        fmt.Println(string(stdout))
-                }
+	/*
+	   Issuer certificate and key
+	*/
+	tlsCmd = exec.Command("step",
+		"certificate",
+		"create",
+		"identity.linkerd.cluster.local",
+		"./pkg/application/linkerd/controlplane/issuer.crt",
+		"./pkg/application/linkerd/controlplane/issuer.key",
+		"--profile",
+		"intermediate-ca",
+		"--not-after",
+		"8760h",
+		"--no-password",
+		"--insecure",
+		"--ca",
+		"./pkg/application/linkerd/controlplane/ca.crt",
+		"--ca-key",
+		"./pkg/application/linkerd/controlplane/ca.key",
+		"--force")
+	stdout, err = tlsCmd.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	if stdout != nil {
+		fmt.Println(string(stdout))
+	}
 
-                crtPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/issuer.crt")
-                if err != nil {
-                        fmt.Println(err.Error())
-                        return err
-                }
-                crtPEM := strings.Join( strings.Split( string(crtPEMBytes),"\n")[:],"\n              " )
+	crtPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/issuer.crt")
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	crtPEM := strings.Join(strings.Split(string(crtPEMBytes), "\n")[:], "\n              ")
 
-                keyPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/issuer.key")
-                if err != nil {
-                        fmt.Println(err.Error())
-                        return err
-                }
-                keyPEM := strings.Join( strings.Split( string(keyPEMBytes),"\n")[:],"\n              " )
-/*
-End mTLS Certificates
-*/
+	keyPEMBytes, err := os.ReadFile("./pkg/application/linkerd/controlplane/issuer.key")
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	keyPEM := strings.Join(strings.Split(string(keyPEMBytes), "\n")[:], "\n              ")
+	/*
+	   End mTLS Certificates
+	*/
 
-	options.CAPEM  = caPEM
+	options.CAPEM = caPEM
 	options.CRTPEM = crtPEM
 	options.KEYPEM = keyPEM
-        return nil
+	return nil
 }

@@ -8,9 +8,9 @@ import (
 )
 
 func NewApp() *application.Application {
-/*
-Begin Helm App
-*/
+	/*
+	   Begin Helm App
+	*/
 
 	options, flags := newOptions()
 
@@ -20,7 +20,7 @@ Begin Helm App
 			Name:        "linkerd-control-plane",
 			Description: "Linkerd Service Mesh Custom Resource Definitions",
 		},
-                Options: options,
+		Options: options,
 		Installer: &installer.HelmInstaller{
 			ChartName:     "linkerd-control-plane",
 			ReleaseName:   "linkerd-control-plane",
@@ -31,7 +31,7 @@ Begin Helm App
 		},
 	}
 
-        app.Flags = flags
+	app.Flags = flags
 
 	return app
 }
