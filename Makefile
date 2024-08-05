@@ -1,7 +1,7 @@
 COMMIT = $(shell git rev-parse --short HEAD)
 DATE = $(shell date -u "+%FT%TZ")
 VERSION = $(shell git describe --tags --always --dirty=dev)
-VERSION_PKG := github.com/awslabs/eksdemo/cmd
+VERSION_PKG := github.com/awslabs/eksdemo/pkg/version
 
 LDFLAGS += -s -w
 LDFLAGS += -X $(VERSION_PKG).date=$(DATE)
