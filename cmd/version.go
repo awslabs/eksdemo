@@ -3,32 +3,15 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/awslabs/eksdemo/pkg/version"
 	"github.com/spf13/cobra"
 )
-
-var (
-	version string
-	commit  string
-	date    string
-)
-
-type Version struct {
-	Version string
-	Date    string
-	Commit  string
-}
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version and build information for eksdemo",
 	Run: func(cmd *cobra.Command, args []string) {
-		eksdemoVersion := Version{
-			Version: version,
-			Date:    date,
-			Commit:  commit,
-		}
-
-		fmt.Printf("eksdemo version info: %#v\n", eksdemoVersion)
+		fmt.Printf("eksdemo: %#v\n", version.GetVersionInfo())
 	},
 }
 
