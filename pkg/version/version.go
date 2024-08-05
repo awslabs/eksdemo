@@ -19,3 +19,7 @@ func GetVersionInfo() Info {
 		Commit:  commit,
 	}
 }
+
+func GetVersion() string {
+	return version
+}

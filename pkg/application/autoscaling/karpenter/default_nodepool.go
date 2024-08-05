@@ -76,6 +76,8 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         aws:eks:cluster-name: {{ .ClusterName }}
+  tags:
+    eksdemo.io/version: {{ .EksdemoVersion }}
 {{- if .AMISelectorIDs }}
   amiSelectorTerms:
   {{- range .AMISelectorIDs }}
