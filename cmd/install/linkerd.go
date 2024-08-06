@@ -2,8 +2,8 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/linkerd/base"
 	"github.com/awslabs/eksdemo/pkg/application/linkerd/controlplane"
+	"github.com/awslabs/eksdemo/pkg/application/linkerd/crds"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func NewInstallLinkerdCmd() *cobra.Command {
 	cmd.DisableFlagParsing = true
 
 	for _, i := range linkerdApps {
-		cmd.AddCommand( i().NewInstallCmd() )
+		cmd.AddCommand(i().NewInstallCmd())
 	}
 
 	return cmd
@@ -43,7 +43,7 @@ func NewUninstallLinkerdCmd() *cobra.Command {
 
 func init() {
 	linkerdApps = []func() *application.Application{
-		base.NewApp,
 		controlplane.NewApp,
+		crds.NewApp,
 	}
 }

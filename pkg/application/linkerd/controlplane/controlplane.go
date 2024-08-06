@@ -8,19 +8,16 @@ import (
 )
 
 func NewApp() *application.Application {
-	/*
-	   Begin Helm App
-	*/
+	options := newOptions()
 
-	options, flags := newOptions()
-
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "linkerd",
-			Name:        "linkerd-control-plane",
-			Description: "Linkerd Service Mesh Custom Resource Definitions",
+			Name:        "control-plane",
+			Description: "Linkerd Service Mesh Control Plane",
+			Aliases:     []string{"controlplane", "cp"},
 		},
-		Options: options,
+
 		Installer: &installer.HelmInstaller{
 			ChartName:     "linkerd-control-plane",
 			ReleaseName:   "linkerd-control-plane",
@@ -29,23 +26,21 @@ func NewApp() *application.Application {
 				Template: valuesTemplate,
 			},
 		},
+
+		Options: options,
 	}
-
-	app.Flags = flags
-
-	return app
 }
 
 // https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
 const valuesTemplate = `---
 identityTrustAnchorsPEM: |
-  {{ .CAPEM }}
+  {{- .TrustAnchor | trim | nindent 2 }}
 identity:
-    scheme: linkerd.io/tls
-    issuer:
-        tls:
-            crtPEM: |
-              {{ .CRTPEM }}
-            keyPEM: |
-              {{ .KEYPEM }}
+  scheme: linkerd.io/tls
+  issuer:
+    tls:
+      crtPEM: |
+        {{- .IssuerCert | trim | nindent 8 }}
+      keyPEM: |
+        {{- .IssuerKey | trim | nindent 8 }}
 `

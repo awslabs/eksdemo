@@ -1,4 +1,4 @@
-package base
+package crds
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -8,16 +8,13 @@ import (
 )
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "linkerd",
-			Name:        "linkerd-crds",
+			Name:        "crds",
 			Description: "Linkerd Service Mesh Custom Resource Definitions",
+			Aliases:     []string{"crd"},
 		},
-
-                Options: &application.ApplicationOptions{
-                        Namespace: "linkerd",
-                },
 
 		Installer: &installer.HelmInstaller{
 			ChartName:     "linkerd-crds",
@@ -27,10 +24,16 @@ func NewApp() *application.Application {
 				Template: valuesTemplate,
 			},
 		},
+
+		Options: &application.ApplicationOptions{
+			DefaultVersion: &application.LatestPrevious{
+				LatestChart:   "2024.7.3",
+				PreviousChart: "2024.7.3",
+			},
+			Namespace: "linkerd",
+		},
 	}
-	app.Options, app.Flags = newOptions()
-	return app
 }
 
-// https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-control-plane/values.yaml
+// https://github.com/linkerd/linkerd2/blob/main/charts/linkerd-crds/values.yaml
 const valuesTemplate = ``
