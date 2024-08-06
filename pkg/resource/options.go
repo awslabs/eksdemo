@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/eks/types"
 	"github.com/awslabs/eksdemo/pkg/cmd"
+	"github.com/awslabs/eksdemo/pkg/version"
 	"github.com/spf13/cobra"
 )
 
@@ -122,6 +123,10 @@ func (o *CommonOptions) AddUpdateFlags(cobraCmd *cobra.Command, flags cmd.Flags)
 
 func (o *CommonOptions) Common() *CommonOptions {
 	return o
+}
+
+func (o *CommonOptions) EksdemoVersion() string {
+	return version.GetVersion()
 }
 
 func (o *CommonOptions) PostCreate() error {

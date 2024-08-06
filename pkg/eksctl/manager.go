@@ -19,6 +19,8 @@ metadata:
 {{- if .KubernetesVersion }}
   version: {{ .KubernetesVersion | printf "%q" }}
 {{- end }}
+  tags:
+    eksdemo.io/version: {{ .EksdemoVersion }}
 `
 
 type ResourceManager struct {
