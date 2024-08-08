@@ -21,7 +21,7 @@ func NewApp() *application.Application {
 			Parent:      "secrets",
 			Name:        "store-csi-driver",
 			Description: "Integrates secrets stores with K8s via a CSI volume",
-			Aliases:     []string{"store-csi", "csi-driver", "csi"},
+			Aliases:     []string{"store-csi", "store", "csi-driver", "csi"},
 		},
 
 		Flags: flags,
