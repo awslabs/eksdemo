@@ -2,6 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
+	"github.com/awslabs/eksdemo/pkg/application/example/ascp"
 	"github.com/awslabs/eksdemo/pkg/application/example/eks_workshop"
 	"github.com/awslabs/eksdemo/pkg/application/example/game_2048"
 	"github.com/awslabs/eksdemo/pkg/application/example/ghost"
@@ -49,6 +50,7 @@ func NewUninstallExampleCmd() *cobra.Command {
 
 func init() {
 	exampleApps = []func() *application.Application{
+		ascp.NewApp,
 		eks_workshop.NewApp,
 		game_2048.NewApp,
 		ghost.New,
