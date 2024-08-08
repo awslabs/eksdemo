@@ -3,6 +3,7 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/csi/secretsstore"
+	"github.com/awslabs/eksdemo/pkg/application/csi/secretsstore/provideraws"
 	"github.com/spf13/cobra"
 )
 
@@ -44,6 +45,7 @@ func NewUninstallSecretsCmd() *cobra.Command {
 
 func init() {
 	secrets = []func() *application.Application{
+		provideraws.NewApp,
 		secretsstore.NewApp,
 	}
 }
