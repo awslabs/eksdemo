@@ -75,6 +75,8 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallIstioCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(istioApps, "istio-")...)
 	cmd.AddCommand(keycloak_amg.NewApp().NewUninstallCmd())
+	cmd.AddCommand(NewUninstallLinkerdCmd())
+	cmd.AddCommand(NewUninstallAliasCmds(linkerdApps, "linkerd-")...)
 	cmd.AddCommand(NewUninstallKubePrometheusCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(kubePrometheusApps, "kube-prometheus-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(kubePrometheusApps, "kprom-")...)
