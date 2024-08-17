@@ -6,6 +6,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/example/eks_workshop"
 	"github.com/awslabs/eksdemo/pkg/application/example/game_2048"
 	"github.com/awslabs/eksdemo/pkg/application/example/ghost"
+	"github.com/awslabs/eksdemo/pkg/application/example/inflate"
 	"github.com/awslabs/eksdemo/pkg/application/example/kube_ops_view"
 	"github.com/awslabs/eksdemo/pkg/application/example/podinfo"
 	"github.com/awslabs/eksdemo/pkg/application/example/wordpress"
@@ -54,6 +55,7 @@ func init() {
 		eks_workshop.NewApp,
 		game_2048.NewApp,
 		ghost.New,
+		inflate.NewApp,
 		kube_ops_view.NewApp,
 		podinfo.NewApp,
 		wordpress.NewApp,

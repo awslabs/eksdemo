@@ -206,16 +206,16 @@ Creating EC2NodeClass "default"
 The test of automatic node provisioning is identical to the [6. Scale up deployment](https://karpenter.sh/docs/getting-started/getting-started-with-karpenter/#6-scale-up-deployment) Getting Started instructions. `eksdemo` uses the same Deployment manifest but uses Helm to install it so it can be managed and uninstalled. Additionally there are a few options. Let's review the help.
 
 ```
-» eksdemo install autoscaling-inflate -h
-Install autoscaling-inflate
+» eksdemo install example-inflate -h
+Install example-inflate
 
 Usage:
-  eksdemo install autoscaling-inflate [flags]
+  eksdemo install example-inflate [flags]
 
 Flags:
   -c, --cluster string     cluster to install application (required)
       --dry-run            don't install, just print out all installation steps
-  -h, --help               help for autoscaling-inflate
+  -h, --help               help for example-inflate
   -n, --namespace string   namespace to install (default "inflate")
       --on-demand          request on-demand instances using karpenter node selector
       --replicas int       number of replicas for the deployment (default 0)
@@ -229,7 +229,7 @@ The Inflate specific flags are:
 Let's test autoscaling with 10 replicas and spread across AZs. We will first review the manifest with the `--dry-run` flag. Replace `<cluster-name>` with the name of your EKS cluster.
 
 ```
-» eksdemo install autoscaling-inflate -c <cluster-name> --replicas 10 --spread --dry-run
+» eksdemo install example-inflate -c <cluster-name> --replicas 10 --spread --dry-run
 
 Manifest Installer Dry Run:
 ---
@@ -249,12 +249,18 @@ spec:
         app: inflate
     spec:
       terminationGracePeriodSeconds: 0
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
       containers:
-        - name: inflate
-          image: public.ecr.aws/eks-distro/kubernetes/pause:3.7
-          resources:
-            requests:
-              cpu: 1
+      - name: inflate
+        image: public.ecr.aws/eks-distro/kubernetes/pause:3.7
+        resources:
+          requests:
+            cpu: 1
+        securityContext:
+          allowPrivilegeEscalation: false
       topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: topology.kubernetes.io/zone
@@ -267,11 +273,11 @@ spec:
 Now, remove the `--dry-run` flag and install the Inflate app to trigger an autoscaling event.
 
 ```
-» eksdemo install autoscaling-inflate -c <cluster-name> --replicas 10 --spread
+» eksdemo install example-inflate -c <cluster-name> --replicas 10 --spread
 Helm installing...
 2024/06/06 16:31:26 creating 1 resource(s)
 2024/06/06 16:31:26 creating 1 resource(s)
-Using chart version "n/a", installed "autoscaling-inflate" version "n/a" in namespace "inflate"
+Using chart version "n/a", installed "example-inflate" version "n/a" in namespace "inflate"
 ```
 
 [Optional] If you want an interactive way of watching the workload changes, install the EKS Node Viewer from here: https://github.com/awslabs/eks-node-viewer

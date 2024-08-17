@@ -13,7 +13,7 @@ type InflateOptions struct {
 	Spread   bool
 }
 
-func NewOptions() (options *InflateOptions, flags cmd.Flags) {
+func newOptions() (options *InflateOptions, flags cmd.Flags) {
 	options = &InflateOptions{
 		ApplicationOptions: application.ApplicationOptions{
 			DisableServiceAccountFlag: true,
