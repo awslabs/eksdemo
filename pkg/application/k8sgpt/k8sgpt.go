@@ -4,6 +4,8 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 	"github.com/awslabs/eksdemo/pkg/installer"
+	"github.com/awslabs/eksdemo/pkg/resource"
+	"github.com/awslabs/eksdemo/pkg/resource/irsa"
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
@@ -11,7 +13,7 @@ import (
 // GitHub:  https://github.com/k8sgpt-ai/k8sgpt-operator
 // Helm:    https://github.com/k8sgpt-ai/k8sgpt-operator/tree/main/chart/operator
 // Repo:    ghcr.io/k8sgpt-ai/k8sgpt-operator
-// Version: Latest is v0.1.2 (as of 3/31/24)
+// Version: Latest is v0.1.7 (as of 8/17/24)
 
 func NewApp() *application.Application {
 	return &application.Application{
@@ -21,20 +23,17 @@ func NewApp() *application.Application {
 			Aliases:     []string{"k8sgpt"},
 		},
 
-		// K8sGPT Operator doesn't yet support IRSA
-		// Open Issue: https://github.com/k8sgpt-ai/k8sgpt-operator/issues/398
-
-		// Dependencies: []*resource.Resource{
-		// 	irsa.NewResourceWithOptions(&irsa.IrsaOptions{
-		// 		CommonOptions: resource.CommonOptions{
-		// 			Name: "k8sgpt-irsa",
-		// 		},
-		// 		PolicyType: irsa.PolicyDocument,
-		// 		PolicyDocTemplate: &template.TextTemplate{
-		// 			Template: policyDocument,
-		// 		},
-		// 	}),
-		// },
+		Dependencies: []*resource.Resource{
+			irsa.NewResourceWithOptions(&irsa.IrsaOptions{
+				CommonOptions: resource.CommonOptions{
+					Name: "k8sgpt-operator-irsa",
+				},
+				PolicyType: irsa.PolicyDocument,
+				PolicyDocTemplate: &template.TextTemplate{
+					Template: policyDocument,
+				},
+			}),
+		},
 
 		Installer: &installer.HelmInstaller{
 			ChartName:     "k8sgpt-operator",
@@ -46,33 +45,36 @@ func NewApp() *application.Application {
 		},
 
 		Options: &application.ApplicationOptions{
-			// The name of the Operator SA is hard coded in the helm chartpkg/application/k8sgpt/k8sgpt.go
-			DisableServiceAccountFlag: true,
-			Namespace:                 "k8sgpt",
+			Namespace: "k8sgpt",
 			// This isn't the SA of the operator, it's the SA of the k8sgpt instance created by the operator
 			// This is for IRSA to give permission to the k8sgpt instance to access Bedrock APIs
 			ServiceAccount: "k8sgpt",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "0.1.2",
-				Latest:        "v0.1.2",
-				PreviousChart: "0.1.2",
-				Previous:      "v0.1.2",
+				LatestChart:   "0.1.7",
+				Latest:        "v0.1.7",
+				PreviousChart: "0.1.6",
+				Previous:      "v0.1.6",
 			},
 		},
 	}
 }
 
-// const policyDocument = `
-// Version: '2012-10-17'
-// Statement:
-// - Effect: Allow
-//   Action:
-//   - bedrock:InvokeModel
-//   Resource: "*"
-// `
+const policyDocument = `
+Version: '2012-10-17'
+Statement:
+- Effect: Allow
+  Action:
+  - bedrock:InvokeModel
+  Resource: "*"
+`
 
 // https://github.com/k8sgpt-ai/k8sgpt-operator/blob/main/chart/operator/values.yaml
 const valuesTemplate = `---
+serviceAccount:
+  name: {{ .ServiceAccount }}
+  # -- Annotations for the managed k8sgpt workload service account
+  annotations:
+    {{ .IrsaAnnotation }}
 controllerManager:
   manager:
     image:
