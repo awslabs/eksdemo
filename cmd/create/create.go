@@ -45,6 +45,8 @@ func NewCreateCmd() *cobra.Command {
 	cmd.AddCommand(dns_record.NewResource().NewCreateCmd())
 	cmd.AddCommand(fargate_profile.NewResource().NewCreateCmd())
 	cmd.AddCommand(instance.NewResource().NewCreateCmd())
+	cmd.AddCommand(NewK8sGPTCmd())
+	cmd.AddCommand(NewCreateAliasCmds(k8sgpt, "k8sgpt-")...)
 	cmd.AddCommand(kmskey.NewResource().NewCreateCmd())
 	cmd.AddCommand(NewKyvernoCmd())
 	cmd.AddCommand(NewCreateAliasCmds(kyvernoPolicies, "kyverno-")...)
