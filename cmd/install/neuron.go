@@ -2,39 +2,38 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
 	"github.com/awslabs/eksdemo/pkg/application/neuron/deviceplugin"
 	"github.com/spf13/cobra"
 )
 
-var aiApps []func() *application.Application
+var neuron []func() *application.Application
 
-func NewInstallAICmd() *cobra.Command {
+func NewInstallNeuronCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "ai",
-		Short: "AI/ML Applications for Kubernetes",
+		Use:   "neuron",
+		Short: "AWS Neuron for Inferentia and Trainium Support",
 	}
 
 	// Don't show flag errors for `install ai` without a subcommand
 	cmd.DisableFlagParsing = true
 
-	for _, a := range aiApps {
+	for _, a := range neuron {
 		cmd.AddCommand(a().NewInstallCmd())
 	}
 
 	return cmd
 }
 
-func NewUninstallAICmd() *cobra.Command {
+func NewUninstallNeuronCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "ai",
-		Short: "AI/ML Applications for Kubernetes",
+		Use:   "neuron",
+		Short: "AWS Neuron for Inferentia and Trainium Support",
 	}
 
 	// Don't show flag errors for `uninstall ai` without a subcommand
 	cmd.DisableFlagParsing = true
 
-	for _, a := range aiApps {
+	for _, a := range neuron {
 		cmd.AddCommand(a().NewUninstallCmd())
 	}
 
@@ -42,8 +41,7 @@ func NewUninstallAICmd() *cobra.Command {
 }
 
 func init() {
-	aiApps = []func() *application.Application{
+	neuron = []func() *application.Application{
 		deviceplugin.NewApp,
-		k8sgpt.NewApp,
 	}
 }

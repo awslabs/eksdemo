@@ -12,11 +12,12 @@ import (
 // Version: Latest is Neuron SDK 2.14.0, Plugin version 2.16.18.0 (as of 9/18/23)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
-			Name:        "neuron-device-plugin",
+			Parent:      "neuron",
+			Name:        "device-plugin",
 			Description: "Neuron SDK Device Plugin",
-			Aliases:     []string{"ndp"},
+			Aliases:     []string{"dp"},
 		},
 
 		Options: &application.ApplicationOptions{
@@ -30,11 +31,10 @@ func NewApp() *application.Application {
 		},
 
 		Installer: &installer.ManifestInstaller{
-			AppName: "ai-neuron-device-plugin",
+			AppName: "neuron-device-plugin",
 			ResourceTemplate: &template.TextTemplate{
 				Template: daemonsetTemplate + rbacTemplate,
 			},
 		},
 	}
-	return app
 }
