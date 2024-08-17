@@ -9,7 +9,7 @@ import (
 
 // Docs:    https://awsdocs-neuron.readthedocs-hosted.com/en/latest/containers/tutorials/k8s-setup.html
 // Repo:    gallery.ecr.aws/neuron/neuron-device-plugin
-// Version: Latest is Neuron SDK 2.14.0, Plugin version 2.16.18.0 (as of 9/18/23)
+// Version: Latest is Neuron SDK 2.19.1, Plugin version 2.21.14.0 (as of 8/17/24)
 
 func NewApp() *application.Application {
 	return &application.Application{
@@ -25,7 +25,7 @@ func NewApp() *application.Application {
 			Namespace:                 "kube-system",
 			ServiceAccount:            "neuron-device-plugin",
 			DefaultVersion: &application.LatestPrevious{
-				Latest:   "2.16.18.0",
+				Latest:   "2.21.14.0",
 				Previous: "2.16.18.0",
 			},
 		},
