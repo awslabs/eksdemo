@@ -17,6 +17,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/headlamp"
+	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
@@ -41,8 +42,6 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAckCmd())
 	cmd.AddCommand(NewInstallAliasCmds(ack, "ack-")...)
 	cmd.AddCommand(adot_operator.NewApp().NewInstallCmd())
-	cmd.AddCommand(NewInstallAICmd())
-	cmd.AddCommand(NewInstallAliasCmds(aiApps, "ai-")...)
 	cmd.AddCommand(appmesh_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallArgoCmd())
 	cmd.AddCommand(NewInstallAliasCmds(argoApps, "argo-")...)
@@ -74,16 +73,19 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds(ingressControllers, "ingress-")...)
 	cmd.AddCommand(NewInstallIstioCmd())
 	cmd.AddCommand(NewInstallAliasCmds(istioApps, "istio-")...)
+	cmd.AddCommand(k8sgpt.NewApp().NewInstallCmd())
 	cmd.AddCommand(keycloak_amg.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallKubePrometheusCmd())
 	cmd.AddCommand(NewInstallAliasCmds(kubePrometheusApps, "kube-prometheus-")...)
 	cmd.AddCommand(NewInstallAliasCmds(kubePrometheusApps, "kprom-")...)
 	cmd.AddCommand(kube_state_metrics.NewApp().NewInstallCmd())
-	cmd.AddCommand(NewInstallLinkerdCmd())
-	cmd.AddCommand(NewInstallAliasCmds(linkerdApps, "linkerd-")...)
 	cmd.AddCommand(NewInstallKubecostCmd())
 	cmd.AddCommand(NewInstallAliasCmds(kubecostApps, "kubecost-")...)
+	cmd.AddCommand(NewInstallLinkerdCmd())
+	cmd.AddCommand(NewInstallAliasCmds(linkerdApps, "linkerd-")...)
 	cmd.AddCommand(metrics_server.NewApp().NewInstallCmd())
+	cmd.AddCommand(NewInstallNeuronCmd())
+	cmd.AddCommand(NewInstallAliasCmds(neuron, "neuron-")...)
 	cmd.AddCommand(NewInstallPolicyCmd())
 	cmd.AddCommand(NewInstallAliasCmds(policyApps, "policy-")...)
 	cmd.AddCommand(prometheus_node_exporter.NewApp().NewInstallCmd())
