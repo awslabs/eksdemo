@@ -15,6 +15,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
+	"github.com/awslabs/eksdemo/pkg/application/goldilocks"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/headlamp"
 	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
@@ -67,6 +68,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(falco.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallFluxCmd())
 	cmd.AddCommand(NewInstallAliasCmds(fluxApps, "flux-")...)
+	cmd.AddCommand(goldilocks.NewApp().NewInstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewInstallCmd())
 	cmd.AddCommand(headlamp.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallIngressCmd())

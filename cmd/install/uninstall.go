@@ -15,6 +15,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
+	"github.com/awslabs/eksdemo/pkg/application/goldilocks"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/headlamp"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
@@ -66,6 +67,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(falco.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallFluxCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(fluxApps, "flux-")...)
+	cmd.AddCommand(goldilocks.NewApp().NewUninstallCmd())
 	cmd.AddCommand(harbor.NewApp().NewUninstallCmd())
 	cmd.AddCommand(headlamp.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallIngressCmd())

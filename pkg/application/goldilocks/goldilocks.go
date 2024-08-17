@@ -11,45 +11,38 @@ import (
 // GitHub:  https://github.com/FairwindsOps/goldilocks
 // Helm:    https://github.com/FairwindsOps/charts/tree/master/stable/goldilocks
 // Repo:    us-docker.pkg.dev/fairwinds-ops/oss/goldilocks
-// Version: Latest is chart 6.1.4, app v4.3.3 (as of 07/26/22)
+// Version: Latest is chart 8.0.2, app v4.13.0 (as of 8/17/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	options, flags := newOptions()
+
+	return &application.Application{
 		Command: cmd.Command{
-			Parent:      "autoscaling",
 			Name:        "goldilocks",
 			Description: "Get your resource requests \"Just Right\"",
 		},
 
+		Flags: flags,
+
 		Installer: &installer.HelmInstaller{
 			ChartName:     "goldilocks",
-			ReleaseName:   "autoscaling-goldilocks",
+			ReleaseName:   "goldilocks",
 			RepositoryURL: "https://charts.fairwinds.com/stable",
 			ValuesTemplate: &template.TextTemplate{
 				Template: valuesTemplate,
 			},
 		},
 
-		Options: &application.ApplicationOptions{
-			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "6.1.4",
-				Latest:        "v4.3.3",
-				PreviousChart: "6.1.4",
-				Previous:      "v4.3.3",
-			},
-			DisableServiceAccountFlag:    true,
-			ExposeIngressAndLoadBalancer: true,
-			Namespace:                    "goldilocks",
-		},
+		Options: options,
 	}
-
-	return app
 }
 
+// https://github.com/FairwindsOps/charts/blob/master/stable/goldilocks/values.yaml
 const valuesTemplate = `---
+vpa:
+  enabled: {{ not .NoVPA }}
 image:
   tag: {{ .Version }}
-fullnameOverride: goldilocks
 dashboard:
   replicaCount: 1
   service:
