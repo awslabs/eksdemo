@@ -6,7 +6,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
 	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
-	"github.com/awslabs/eksdemo/pkg/application/autoscaling/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
@@ -18,6 +17,8 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/goldilocks"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/headlamp"
+	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
+	"github.com/awslabs/eksdemo/pkg/application/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
@@ -74,6 +75,8 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds(ingressControllers, "ingress-")...)
 	cmd.AddCommand(NewUninstallIstioCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(istioApps, "istio-")...)
+	cmd.AddCommand(k8sgpt.NewApp().NewUninstallCmd())
+	cmd.AddCommand(karpenter.NewApp().NewUninstallCmd())
 	cmd.AddCommand(keycloak_amg.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallKubePrometheusCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(kubePrometheusApps, "kube-prometheus-")...)
@@ -102,7 +105,6 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{cluster_autoscaler.NewApp}, "")...)
 	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{ebs_csi.NewApp}, "")...)
-	cmd.AddCommand(NewUninstallAliasCmds([]func() *application.Application{karpenter.NewApp}, "")...)
 
 	return cmd
 }

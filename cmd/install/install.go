@@ -6,7 +6,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
 	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
-	"github.com/awslabs/eksdemo/pkg/application/autoscaling/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
 	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
@@ -19,6 +18,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
 	"github.com/awslabs/eksdemo/pkg/application/headlamp"
 	"github.com/awslabs/eksdemo/pkg/application/k8sgpt"
+	"github.com/awslabs/eksdemo/pkg/application/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/keycloak_amg"
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
@@ -76,6 +76,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallIstioCmd())
 	cmd.AddCommand(NewInstallAliasCmds(istioApps, "istio-")...)
 	cmd.AddCommand(k8sgpt.NewApp().NewInstallCmd())
+	cmd.AddCommand(karpenter.NewApp().NewInstallCmd())
 	cmd.AddCommand(keycloak_amg.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallKubePrometheusCmd())
 	cmd.AddCommand(NewInstallAliasCmds(kubePrometheusApps, "kube-prometheus-")...)
@@ -104,7 +105,6 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{cluster_autoscaler.NewApp}, "")...)
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{ebs_csi.NewApp}, "")...)
-	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{karpenter.NewApp}, "")...)
 
 	return cmd
 }

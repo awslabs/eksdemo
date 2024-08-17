@@ -30,7 +30,7 @@ func karpenterDefaultNodePool(o *KarpenterOptions) *resource.Resource {
 }
 
 const yamlTemplate = `---
-apiVersion: karpenter.sh/v1beta1
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: default
@@ -54,16 +54,17 @@ spec:
           operator: Gt
           values: ["2"]
       nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
+        group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: default
+      expireAfter: {{ .ExpireAfter }}
   limits:
     cpu: 1000
   disruption:
-    consolidationPolicy: WhenUnderutilized
-    expireAfter: {{ .ExpireAfter }}
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: {{ .ConsolidateAfter }}
 ---
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: default

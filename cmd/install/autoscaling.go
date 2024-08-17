@@ -3,7 +3,6 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
-	"github.com/awslabs/eksdemo/pkg/application/autoscaling/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/keda"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/vpa"
 	"github.com/spf13/cobra"
@@ -48,7 +47,6 @@ func NewUninstallAutoscalingCmd() *cobra.Command {
 func init() {
 	autoscalingApps = []func() *application.Application{
 		cluster_autoscaler.NewApp,
-		karpenter.NewApp,
 		keda.NewApp,
 		vpa.NewApp,
 	}

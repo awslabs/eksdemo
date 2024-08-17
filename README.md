@@ -35,14 +35,14 @@ The easy button for learning, testing, and demoing Amazon EKS:
 ## Why `eksdemo`?
 While creating an EKS cluster is fairly easy thanks to [`eksctl`](https://eksctl.io/), manually installing and configuring applications on EKS is complex, time consuming and error-prone. One of the most powerful feature of `eksdemo` is its extensive application catalog. An application can be installed (including dependencies) with a single command.
 
-For example, the command: **`eksdemo install autoscaling-karpenter -c <cluster-name>`** will:
+For example, the command: **`eksdemo install karpenter -c <cluster-name>`** will:
 1. Create the EC2 Spot Service Linked Role (if it doesn't already exist)
 2. Create the Karpenter Controller IAM Role (IRSA)
 3. Create the Karpenter Node IAM Role
 4. Create an SQS Queue and EventBridge rules for native Spot Termination Handling
 5. Add an entry to the `aws-auth` ConfigMap for the Karpenter Node IAM Role
 6. Install the Karpenter Helm Chart
-7. Create default Karpenter `Provisioner` and `AWSNodeTemplate` Custom Resources
+7. Create default Karpenter `NodePool` and `EC2NodeClass` Custom Resources
 
 ### No Magic
 Application installs are:
