@@ -22,7 +22,6 @@ func NewApp() *application.Application {
 
 	return &application.Application{
 		Command: cmd.Command{
-			Parent:      "autoscaling",
 			Name:        "karpenter",
 			Description: "Karpenter Node Autoscaling",
 		},
@@ -62,7 +61,7 @@ func NewApp() *application.Application {
 
 		Installer: &installer.HelmInstaller{
 			ChartName:     "karpenter",
-			ReleaseName:   "autoscaling-karpenter",
+			ReleaseName:   "karpenter",
 			RepositoryURL: "oci://public.ecr.aws/karpenter/karpenter",
 			ValuesTemplate: &template.TextTemplate{
 				Template: valuesTemplate,
@@ -118,6 +117,7 @@ Statement:
   Condition:
     StringEquals:
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/eks:eks-cluster-name: {{ .ClusterName }}
     StringLike:
       aws:RequestTag/karpenter.sh/nodepool: "*"
 - Sid: AllowScopedResourceCreationTagging
@@ -133,6 +133,7 @@ Statement:
   Condition:
     StringEquals:
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/eks:eks-cluster-name: {{ .ClusterName }}
       ec2:CreateAction:
       - RunInstances
       - CreateFleet
@@ -148,8 +149,11 @@ Statement:
       aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
     StringLike:
       aws:ResourceTag/karpenter.sh/nodepool: "*"
+    StringEqualsIfExists:
+      aws:RequestTag/eks:eks-cluster-name: {{ .ClusterName }}
     ForAllValues:StringEquals:
       aws:TagKeys:
+      - eks:eks-cluster-name
       - karpenter.sh/nodeclaim
       - Name
 - Sid: AllowScopedDeletion
@@ -207,18 +211,19 @@ Statement:
       iam:PassedToService: ec2.amazonaws.com
 - Sid: AllowScopedInstanceProfileCreationActions
   Effect: Allow
-  Resource: "*"
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:instance-profile/*
   Action:
   - iam:CreateInstanceProfile
   Condition:
     StringEquals:
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/eks:eks-cluster-name: {{ .ClusterName }}
       aws:RequestTag/topology.kubernetes.io/region: "{{ .Region }}"
     StringLike:
       aws:RequestTag/karpenter.k8s.aws/ec2nodeclass: "*"
 - Sid: AllowScopedInstanceProfileTagActions
   Effect: Allow
-  Resource: "*"
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:instance-profile/*
   Action:
   - iam:TagInstanceProfile
   Condition:
@@ -226,13 +231,14 @@ Statement:
       aws:ResourceTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
       aws:ResourceTag/topology.kubernetes.io/region: "{{ .Region }}"
       aws:RequestTag/kubernetes.io/cluster/{{ .ClusterName }}: owned
+      aws:RequestTag/eks:eks-cluster-name: {{ .ClusterName }}
       aws:RequestTag/topology.kubernetes.io/region: "{{ .Region }}"
     StringLike:
       aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass: "*"
       aws:RequestTag/karpenter.k8s.aws/ec2nodeclass: "*"
 - Sid: AllowScopedInstanceProfileActions
   Effect: Allow
-  Resource: "*"
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:instance-profile/*
   Action:
   - iam:AddRoleToInstanceProfile
   - iam:RemoveRoleFromInstanceProfile
@@ -245,7 +251,7 @@ Statement:
       aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass: "*"
 - Sid: AllowInstanceProfileReadActions
   Effect: Allow
-  Resource: "*"
+  Resource: arn:{{ .Partition }}:iam::{{ .Account }}:instance-profile/*
   Action: iam:GetInstanceProfile
 - Sid: AllowAPIServerEndpointDiscovery
   Effect: Allow
@@ -255,7 +261,6 @@ Statement:
 
 // https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/values.yaml
 const valuesTemplate = `---
-fullnameOverride: karpenter
 serviceAccount:
   name: {{ .ServiceAccount }}
   annotations:
@@ -272,10 +277,6 @@ settings:
   clusterName: {{ .ClusterName }}
   interruptionQueue: karpenter-{{ .ClusterName }}
   featureGates:
-    # -- drift is in BETA and is enabled by default.
-    # Setting drift to false disables the drift disruption method to watch for drift between currently deployed nodes
-    # and the desired state of nodes set in provisioners and node templates
-    drift: {{ not .DisableDrift }}
     # -- spotToSpotConsolidation is ALPHA and is disabled by default.
     # Setting this to true will enable spot replacement consolidation for both single and multi-node consolidation.
     spotToSpotConsolidation: {{ .EnableSpotToSpot }}

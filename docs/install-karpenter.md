@@ -33,37 +33,37 @@ See the [Create Cluster documentation](/docs/create-cluster.md) for configuratio
 
 ## Install Karpenter Autoscaler
 
-In this section we walk through the process of installing the Karpenter Autoscaler. The command for performing the installation is: `eksdemo install autoscaling-karpenter -c <cluster-name>`
+In this section we walk through the process of installing the Karpenter Autoscaler. The command for performing the installation is: `eksdemo install karpenter -c <cluster-name>`
 
 Let’s explore the command and its options by using the -h help shorthand flag.
 
 ```
-» eksdemo install autoscaling-karpenter -h
-Install autoscaling-karpenter
+» eksdemo install karpenter -h
+Install karpenter
 
 Usage:
-  eksdemo install autoscaling-karpenter [flags]
+  eksdemo install karpenter [flags]
 
 Flags:
-  -a, --ami-family string        node class AMI family (default "AL2")
-      --chart-version string     chart version (default "0.37.0")
-  -c, --cluster string           cluster to install application (required)
-      --disable-drift            disables the drift feature
-      --dry-run                  don't install, just print out all installation steps
-      --enable-spottospot        enables the spottospot consolidation feature
-      --expire-after string      duration the controller will wait before terminating a node (default "720h")
-  -h, --help                     help for autoscaling-karpenter
-  -n, --namespace string         namespace to install (default "karpenter")
-      --replicas int             number of replicas for the controller deployment (default 1)
-      --service-account string   service account name (default "karpenter")
-      --set strings              set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
-      --use-previous             use previous working chart/app versions ("0.35.2"/"0.35.2")
-  -v, --version string           application version (default "0.37.0")
+  -a, --ami-family string          node class AMI family (default "AL2")
+      --chart-version string       chart version (default "1.0.0")
+  -c, --cluster string             cluster to install application (required)
+      --consolidate-after string   time after a pod is scheduled/removed before considering the node consolidatable (default "1m")
+      --dry-run                    don't install, just print out all installation steps
+      --enable-spottospot          enables the spot to spot consolidation feature
+      --expire-after string        time a node can live on the cluster before being deleted (default "720h")
+  -h, --help                       help for karpenter
+  -n, --namespace string           namespace to install (default "karpenter")
+      --replicas int               number of replicas for the controller deployment (default 1)
+      --service-account string     service account name (default "karpenter")
+      --set strings                set chart values (can specify multiple or separate values with commas: key1=val1,key2=val2)
+      --use-previous               use previous working chart/app versions ("1.0.0"/"1.0.0")
+  -v, --version string             application version (default "1.0.0")
 ```
 
 The Karpenter specific flags are:
-* `--ami-family` -- This sets the AMI family on the default `EC2NodeClass`. Options include AL2, AL2023, Bottlerocket and Ubuntu.
-* `--disable-drift` -- As of v0.33.x, [Drift](https://karpenter.sh/docs/concepts/disruption/#drift) is in BETA and enabled by default. This flag disables this feature.
+* `--ami-family` -- This sets the AMI family on the default `EC2NodeClass`. Options include AL2, AL2023, and Bottlerocket.
+* `--consolidate-after` -- This indicate how long Karpenter should wait after a pod schedules or is removed from the node before considering the node consolidatable.
 * `--enable-spottospot` -- As of v0.34.x, [SpotToSpotConsolidation](https://karpenter.sh/docs/concepts/disruption/#spot-consolidation) is in ALPHA and disabled by default. This flag enables this feature.
 * `--expire-after` -- Karpenter will mark nodes as expired and disrupt them after they have lived a set number of seconds. The default of 720 hours is 30 days.
 * `--replicas` -- `eksdemo` defaults to only 1 replica for easier log viewing in a demo environment. You can use this flag to increase to the default Karpenter Helm chart value of 2 replicas for high availability.
@@ -82,23 +82,22 @@ The `eksdemo` install of Karpenter is identical to the [Getting Started with eks
 Optionally, if you want to see details about all the prerequisite items that are created when you install Karpenter, you can run the Karpenter install command with the `--dry-run` flag to first inspect all the actions that will be performed. Replace `<cluster-name>` with the name of your EKS cluster.
 
 ```
-» eksdemo install autoscaling-karpenter -c <cluster-name> --dry-run
-Creating 5 dependencies for autoscaling-karpenter
+» eksdemo install karpenter -c <cluster-name> --dry-run
+Creating 5 dependencies for karpenter
 <snip>
 Helm Installer Dry Run:
 +---------------------+------------------------------------------+
-| Application Version | 0.37.0                                   |
-| Chart Version       | 0.37.0                                   |
+| Application Version | 1.0.0                                    |
+| Chart Version       | 1.0.0                                    |
 | Chart Repository    | oci://public.ecr.aws/karpenter/karpenter |
 | Chart Name          | karpenter                                |
-| Release Name        | autoscaling-karpenter                    |
+| Release Name        | karpenter                                |
 | Namespace           | karpenter                                |
 | Wait                | true                                     |
 +---------------------+------------------------------------------+
 Set Values: []
 Values File:
 ---
-fullnameOverride: karpenter
 serviceAccount:
   name: karpenter
   annotations:
@@ -106,7 +105,7 @@ serviceAccount:
 replicas: 1
 controller:
   image:
-    tag: 0.37.0
+    tag: 1.0.0
   resources:
     requests:
       cpu: "1"
@@ -115,20 +114,16 @@ settings:
   clusterName: blue
   interruptionQueue: karpenter-blue
   featureGates:
-    # -- drift is in BETA and is enabled by default.
-    # Setting drift to false disables the drift disruption method to watch for drift between currently deployed nodes
-    # and the desired state of nodes set in provisioners and node templates
-    drift: true
     # -- spotToSpotConsolidation is ALPHA and is disabled by default.
     # Setting this to true will enable spot replacement consolidation for both single and multi-node consolidation.
     spotToSpotConsolidation: false
 
-Creating 1 post-install resources for autoscaling-karpenter
+Creating 1 post-install resources for karpenter
 Creating post-install resource: karpenter-default-nodepool
 
 Kubernetes Resource Manager Dry Run:
 ---
-apiVersion: karpenter.sh/v1beta1
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: default
@@ -152,16 +147,17 @@ spec:
           operator: Gt
           values: ["2"]
       nodeClassRef:
-        apiVersion: karpenter.k8s.aws/v1beta1
+        group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: default
+      expireAfter: 720h
   limits:
     cpu: 1000
   disruption:
-    consolidationPolicy: WhenUnderutilized
-    expireAfter: 720h
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 1m
 ---
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: default
@@ -174,27 +170,31 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         aws:eks:cluster-name: blue
+  tags:
+    eksdemo.io/version: v0.16.0
   amiSelectorTerms:
-    - id: ami-0ca1408e5bc9f6901
-    - id: ami-0c6246ca7b2855fb0
+    - id: ami-0d6c6ac554d62a745
+    - id: ami-0eb2ae1eda347f8cf
 ```
 
 Now, install Karpenter.
 ```
-» eksdemo install autoscaling-karpenter -c <cluster-name>
-Creating 5 dependencies for autoscaling-karpenter
+» eksdemo install karpenter -c <cluster-name>
+Creating 5 dependencies for karpenter
 <snip>
-Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:0.37.0
+Downloading Chart: oci://public.ecr.aws/karpenter/karpenter:1.0.0
 Helm installing...
-2024/06/06 15:29:20 creating 1 resource(s)
-2024/06/06 15:29:20 creating 1 resource(s)
-2024/06/06 15:29:20 creating 1 resource(s)
-2024/06/06 15:29:20 Clearing discovery cache
-2024/06/06 15:29:20 beginning wait for 3 resources with timeout of 1m0s
-2024/06/06 15:29:22 creating 1 resource(s)
-2024/06/06 15:29:22 creating 15 resource(s)
-2024/06/06 15:29:23 beginning wait for 15 resources with timeout of 5m0s
-Using chart version "0.37.0", installed "autoscaling-karpenter" version "0.37.0" in namespace "karpenter"
+2024/08/17 17:45:41 creating 1 resource(s)
+2024/08/17 17:45:42 creating 1 resource(s)
+2024/08/17 17:45:42 creating 1 resource(s)
+2024/08/17 17:45:42 beginning wait for 3 resources with timeout of 1m0s
+2024/08/17 17:45:43 Clearing REST mapper cache
+2024/08/17 17:45:45 creating 1 resource(s)
+2024/08/17 17:45:46 creating 16 resource(s)
+2024/08/17 17:45:47 beginning wait for 16 resources with timeout of 5m0s
+<snip>
+2024/08/17 17:46:02 beginning wait for 1 resources to be deleted with timeout of 5m0s
+Using chart version "1.0.0", installed "karpenter" version "1.0.0" in namespace "karpenter"
 Creating 1 post-install resources for karpenter
 Creating post-install resource: karpenter-default-nodepool
 Creating NodePool "default"
@@ -390,224 +390,13 @@ InlinePolicies:
                 "Resource": [
                     "arn:aws:ec2:us-west-2::image/*",
                     "arn:aws:ec2:us-west-2::snapshot/*",
-                    "arn:aws:ec2:us-west-2:*:spot-instances-request/*",
                     "arn:aws:ec2:us-west-2:*:security-group/*",
-                    "arn:aws:ec2:us-west-2:*:subnet/*",
-                    "arn:aws:ec2:us-west-2:*:launch-template/*"
+                    "arn:aws:ec2:us-west-2:*:subnet/*"
                 ],
                 "Effect": "Allow",
-                "Sid": "AllowScopedEC2InstanceActions"
+                "Sid": "AllowScopedEC2InstanceAccessActions"
             },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:RequestTag/kubernetes.io/cluster/blue": "owned"
-                    },
-                    "StringLike": {
-                        "aws:RequestTag/karpenter.sh/nodepool": "*"
-                    }
-                },
-                "Action": [
-                    "ec2:RunInstances",
-                    "ec2:CreateFleet",
-                    "ec2:CreateLaunchTemplate"
-                ],
-                "Resource": [
-                    "arn:aws:ec2:us-west-2:*:fleet/*",
-                    "arn:aws:ec2:us-west-2:*:instance/*",
-                    "arn:aws:ec2:us-west-2:*:volume/*",
-                    "arn:aws:ec2:us-west-2:*:network-interface/*",
-                    "arn:aws:ec2:us-west-2:*:launch-template/*"
-                ],
-                "Effect": "Allow",
-                "Sid": "AllowScopedEC2InstanceActionsWithTags"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:RequestTag/kubernetes.io/cluster/blue": "owned",
-                        "ec2:CreateAction": [
-                            "RunInstances",
-                            "CreateFleet",
-                            "CreateLaunchTemplate"
-                        ]
-                    },
-                    "StringLike": {
-                        "aws:RequestTag/karpenter.sh/nodepool": "*"
-                    }
-                },
-                "Action": "ec2:CreateTags",
-                "Resource": [
-                    "arn:aws:ec2:us-west-2:*:fleet/*",
-                    "arn:aws:ec2:us-west-2:*:instance/*",
-                    "arn:aws:ec2:us-west-2:*:volume/*",
-                    "arn:aws:ec2:us-west-2:*:network-interface/*",
-                    "arn:aws:ec2:us-west-2:*:launch-template/*"
-                ],
-                "Effect": "Allow",
-                "Sid": "AllowScopedResourceCreationTagging"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/kubernetes.io/cluster/blue": "owned"
-                    },
-                    "StringLike": {
-                        "aws:ResourceTag/karpenter.sh/nodepool": "*"
-                    },
-                    "ForAllValues:StringEquals": {
-                        "aws:TagKeys": [
-                            "karpenter.sh/nodeclaim",
-                            "Name"
-                        ]
-                    }
-                },
-                "Action": "ec2:CreateTags",
-                "Resource": "arn:aws:ec2:us-west-2:*:instance/*",
-                "Effect": "Allow",
-                "Sid": "AllowScopedResourceTagging"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/kubernetes.io/cluster/blue": "owned"
-                    },
-                    "StringLike": {
-                        "aws:ResourceTag/karpenter.sh/nodepool": "*"
-                    }
-                },
-                "Action": [
-                    "ec2:TerminateInstances",
-                    "ec2:DeleteLaunchTemplate"
-                ],
-                "Resource": [
-                    "arn:aws:ec2:us-west-2:*:instance/*",
-                    "arn:aws:ec2:us-west-2:*:launch-template/*"
-                ],
-                "Effect": "Allow",
-                "Sid": "AllowScopedDeletion"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:RequestedRegion": "us-west-2"
-                    }
-                },
-                "Action": [
-                    "ec2:DescribeAvailabilityZones",
-                    "ec2:DescribeImages",
-                    "ec2:DescribeInstances",
-                    "ec2:DescribeInstanceTypeOfferings",
-                    "ec2:DescribeInstanceTypes",
-                    "ec2:DescribeLaunchTemplates",
-                    "ec2:DescribeSecurityGroups",
-                    "ec2:DescribeSpotPriceHistory",
-                    "ec2:DescribeSubnets"
-                ],
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowRegionalReadActions"
-            },
-            {
-                "Action": [
-                    "ssm:GetParameter"
-                ],
-                "Resource": "arn:aws:ssm:us-west-2::parameter/aws/service/*",
-                "Effect": "Allow",
-                "Sid": "AllowSSMReadActions"
-            },
-            {
-                "Action": [
-                    "pricing:GetProducts"
-                ],
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowPricingReadActions"
-            },
-            {
-                "Action": [
-                    "sqs:DeleteMessage",
-                    "sqs:GetQueueAttributes",
-                    "sqs:GetQueueUrl",
-                    "sqs:ReceiveMessage"
-                ],
-                "Resource": "arn:aws:sqs:us-west-2:123456789012:karpenter-blue",
-                "Effect": "Allow",
-                "Sid": "AllowInterruptionQueueActions"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "iam:PassedToService": "ec2.amazonaws.com"
-                    }
-                },
-                "Action": "iam:PassRole",
-                "Resource": "arn:aws:iam::123456789012:role/KarpenterNodeRole-blue",
-                "Effect": "Allow",
-                "Sid": "AllowPassingInstanceRole"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:RequestTag/kubernetes.io/cluster/blue": "owned",
-                        "aws:RequestTag/topology.kubernetes.io/region": "us-west-2"
-                    },
-                    "StringLike": {
-                        "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass": "*"
-                    }
-                },
-                "Action": [
-                    "iam:CreateInstanceProfile"
-                ],
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowScopedInstanceProfileCreationActions"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/kubernetes.io/cluster/blue": "owned",
-                        "aws:ResourceTag/topology.kubernetes.io/region": "us-west-2",
-                        "aws:RequestTag/kubernetes.io/cluster/blue": "owned",
-                        "aws:RequestTag/topology.kubernetes.io/region": "us-west-2"
-                    },
-                    "StringLike": {
-                        "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass": "*",
-                        "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass": "*"
-                    }
-                },
-                "Action": [
-                    "iam:TagInstanceProfile"
-                ],
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowScopedInstanceProfileTagActions"
-            },
-            {
-                "Condition": {
-                    "StringEquals": {
-                        "aws:ResourceTag/kubernetes.io/cluster/blue": "owned",
-                        "aws:ResourceTag/topology.kubernetes.io/region": "us-west-2"
-                    },
-                    "StringLike": {
-                        "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass": "*"
-                    }
-                },
-                "Action": [
-                    "iam:AddRoleToInstanceProfile",
-                    "iam:RemoveRoleFromInstanceProfile",
-                    "iam:DeleteInstanceProfile"
-                ],
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowScopedInstanceProfileActions"
-            },
-            {
-                "Action": "iam:GetInstanceProfile",
-                "Resource": "*",
-                "Effect": "Allow",
-                "Sid": "AllowInstanceProfileReadActions"
-            },
+            <snip>
             {
                 "Action": "eks:DescribeCluster",
                 "Resource": "arn:aws:eks:us-west-2:123456789012:cluster/blue",
@@ -678,12 +467,12 @@ To view all the attributes of the SQS queue use the `-o yaml` output option. Rep
     ApproximateNumberOfMessages: "0"
     ApproximateNumberOfMessagesDelayed: "0"
     ApproximateNumberOfMessagesNotVisible: "0"
-    CreatedTimestamp: "1674667831"
+    CreatedTimestamp: "1723941870"
     DelaySeconds: "0"
-    LastModifiedTimestamp: "1674667907"
+    LastModifiedTimestamp: "1723941871"
     MaximumMessageSize: "262144"
     MessageRetentionPeriod: "300"
-    Policy: '{"Version":"2008-10-17","Id":"EC2InterruptionPolicy","Statement":[{"Effect":"Allow","Principal":{"Service":["events.amazonaws.com","sqs.amazonaws.com"]},"Action":"sqs:SendMessage","Resource":"arn:aws:sqs:us-west-2:123456789012:karpenter-blue"}]}'
+    Policy: '{"Version":"2008-10-17","Id":"EC2InterruptionPolicy","Statement":[{"Effect":"Allow","Principal":{"Service":["events.amazonaws.com","sqs.amazonaws.com"]},"Action":"sqs:SendMessage","Resource":"arn:aws:sqs:us-west-2:123456789012:karpenter-blue"},{"Sid":"DenyHTTP","Effect":"Deny","Principal":"*","Action":"sqs:*","Resource":"arn:aws:sqs:us-west-2:123456789012:karpenter-blue","Condition":{"Bool":{"aws:SecureTransport":"false"}}}]}'
     QueueArn: arn:aws:sqs:us-west-2:123456789012:karpenter-blue
     ReceiveMessageWaitTimeSeconds: "0"
     SqsManagedSseEnabled: "true"

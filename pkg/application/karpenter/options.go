@@ -16,7 +16,7 @@ type KarpenterOptions struct {
 
 	AMIFamily        string
 	AMISelectorIDs   []string
-	DisableDrift     bool
+	ConsolidateAfter string
 	EnableSpotToSpot bool
 	ExpireAfter      string
 	Replicas         int
@@ -28,15 +28,16 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 			Namespace:      "karpenter",
 			ServiceAccount: "karpenter",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "0.37.0",
-				Latest:        "0.37.0",
-				PreviousChart: "0.35.2",
-				Previous:      "0.35.2",
+				LatestChart:   "1.0.0",
+				Latest:        "1.0.0",
+				PreviousChart: "1.0.0",
+				Previous:      "1.0.0",
 			},
 		},
-		AMIFamily:   "AL2",
-		ExpireAfter: "720h",
-		Replicas:    1,
+		AMIFamily:        "AL2",
+		ConsolidateAfter: "1m",
+		ExpireAfter:      "720h",
+		Replicas:         1,
 	}
 
 	flags = cmd.Flags{
@@ -84,22 +85,18 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 						options.AMIFamily = "Bottlerocket"
 						return nil
 					}
-					if strings.EqualFold(options.AMIFamily, "Ubuntu") {
-						options.AMIFamily = "Ubuntu"
-						return nil
-					}
 					return nil
 				},
 			},
 			Option:  &options.AMIFamily,
-			Choices: []string{"AL2", "AL2023", "Bottlerocket", "Ubuntu"},
+			Choices: []string{"AL2", "AL2023", "Bottlerocket"},
 		},
-		&cmd.BoolFlag{
+		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
-				Name:        "disable-drift",
-				Description: "disables the drift feature",
+				Name:        "consolidate-after",
+				Description: "time after a pod is scheduled/removed before considering the node consolidatable",
 			},
-			Option: &options.DisableDrift,
+			Option: &options.ConsolidateAfter,
 		},
 		&cmd.BoolFlag{
 			CommandFlag: cmd.CommandFlag{
@@ -111,7 +108,7 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 		&cmd.StringFlag{
 			CommandFlag: cmd.CommandFlag{
 				Name:        "expire-after",
-				Description: "duration the controller will wait before terminating a node",
+				Description: "time a node can live on the cluster before being deleted",
 			},
 			Option: &options.ExpireAfter,
 		},
