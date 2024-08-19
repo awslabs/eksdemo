@@ -4,7 +4,7 @@
 
 The easy button for learning, testing, and demoing Amazon EKS:
 * Install complex applications and dependencies with a single command
-* Extensive application catalog (over 50 CNCF, open source and related projects)
+* Extensive application catalog with over 70 options (includes CNCF, open source and related projects)
 * Customize application installs easily with simple command line flags
 * Query and search AWS resources with over 60 kubectl-like get commands
 
@@ -168,7 +168,7 @@ To validate installation you can run the **`eksdemo version`** command and confi
 
 ```
 » eksdemo version
-eksdemo version info: cmd.Version{Version:"0.15.0", Date:"2024-07-31T19:25:27Z", Commit:"236fd68"}
+eksdemo: version.Info{Version:"0.16.0", Date:"2024-08-19T17:41:55Z", Commit:"74fc767"}
 ```
 
 To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
@@ -179,7 +179,7 @@ To validate the AWS region is set, you can run **`eksdemo get cluster`** which w
 |    Age     | Status | Cluster | Version | Platform | Endpoint |
 +------------+--------+---------+---------+----------+----------+
 | 3 weeks    | ACTIVE | green   |    1.27 | eks.17   | Public   |
-| 20 minutes | ACTIVE | *blue   |    1.30 | eks.5    | Public   |
+| 20 minutes | ACTIVE | *blue   |    1.30 | eks.6    | Public   |
 +------------+--------+---------+---------+----------+----------+
 * Indicates current context in local kubeconfig
 ```
@@ -194,7 +194,7 @@ To install applications under a group, you can use either a space or a hyphen. F
 
 The application catalog includes:
 
-* `ack` — AWS Operators for Kubernetes (ACK)
+* `ack` — AWS Controllers for Kubernetes (ACK)
     * `apigatewayv2-controller` — ACK API Gateway v2 Controller
     * `ec2-controller` — ACK EC2 Controller
     * `ecr-controller` — ACK ECR Controller
@@ -202,27 +202,23 @@ The application catalog includes:
     * `iam-controller` — ACK IAM Controller
     * `prometheusservice-controller` — ACK Prometheus Service Controller
     * `s3-controller` — ACK S3 Controller
-* `adot-operator` — AWS Distro for OpenTelemetry Operator
-* `ai` — AI/ML Applications for Kubernetes
-    * `k8sgpt-operator` — K8sGPT Operator
-    * `neuron-device-plugin` — Neuron SDK Device Plugin
+* `adot-operator` — AWS Distro for OpenTelemetry (ADOT) Operator
 * `appmesh-controller` — AWS App Mesh Controller
 * `argo` — Get stuff done with Kubernetes!
     * `cd` — Declarative continuous deployment for Kubernetes
     * `workflows` — Workflow engine for Kubernetes
+    * `workflows-cognito` — Workflow engine for Kubernetes using Cognito for authentication
 * `autoscaling` — Kubernetes Autoscaling Applications
     * `cluster-autoscaler` — Kubernetes Cluster Autoscaler
-    * `goldilocks` — Get your resource requests "Just Right"
-    * `inflate` — Example App to Demonstrate Autoscaling
-    * `karpenter` — Karpenter Node Autoscaling
     * `keda` — Kubernetes-based Event Driven Autoscaling
     * `vpa` — Vertical Pod Autoscaler
 * `aws-fluent-bit` — AWS Fluent Bit
 * `aws-lb-controller` — AWS Load Balancer Controller
 * `cert-manager` — Cloud Native Certificate Management
 * `cilium` — eBPF-based Networking, Observability, Security
+* `consul` — HashiCorp Consul Service-Mesh
 * `container-insights` — CloudWatch Container Insights
-    * `adot-collector` — Container Insights ADOT Metrics
+    * `adot-collector` — Container Insights ADOT Collector Metrics
     * `cloudwatch-agent` — Container Insights CloudWatch Agent Metrics
     * `fluent-bit` — Container Insights Fluent Bit Logs
     * `prometheus` — CloudWatch Container Insights monitoring for Prometheus
@@ -233,9 +229,11 @@ The application catalog includes:
     * `iam-provider` — Crossplane IAM Provider
     * `s3-provider` — Crossplane S3 Provider
 * `example` — Example Applications
+    * `ascp` — Example for AWS Secrets Manager and Config Provider for Secret Store CSI Driver
     * `eks-workshop` — EKS Workshop Example Microservices
     * `game-2048` — Example Game 2048
     * `ghost` — Turn your audience into a business
+    * `inflate` — Example App to Demonstrate Autoscaling
     * `kube-ops-view` — Kubernetes Operational View
     * `podinfo` — Go app w/microservices best practices
     * `wordpress` — WordPress Blog
@@ -244,6 +242,7 @@ The application catalog includes:
 * `flux` — GitOps family of projects
     * `controllers` — Flux Controllers
     * `sync` — Flux GitRepository to sync with
+* `goldilocks` — Get your resource requests "Just Right"
 * `harbor` — Cloud Native Registry
 * `headlamp` — An easy-to-use and extensible Kubernetes web UI
 * `ingress` — Ingress Controllers
@@ -253,6 +252,8 @@ The application catalog includes:
 * `istio` — Istio Service Mesh
     * `base` — Istio Base (includes CRDs)
     * `istiod` — Istio Control Plane
+* `k8sgpt-operator` — K8sGPT Operator
+* `karpenter` — Karpenter Node Autoscaling
 * `keycloak-amg` — Keycloak SAML iDP for Amazon Managed Grafana
 * `kube-prometheus` — End-to-end Cluster Monitoring with Prometheus
     * `karpenter-dashboards` — Karpenter Dashboards and ServiceMonitor
@@ -264,15 +265,21 @@ The application catalog includes:
     * `eks-amp` — EKS optimized Kubecost using Amazon Managed Prometheus
     * `vendor` — Vendor distribution of Kubecost
 * `metrics-server` — Kubernetes Metric Server
+* `neuron` — AWS Neuron for Inferentia and Trainium Support
+    * `neuron-device-plugin` — Neuron SDK Device Plugin
 * `policy` — Kubernetes Policy Controllers
     * `kyverno` — Kubernetes Native Policy Management
     * `opa-gatekeeper` — Policy Controller for Kubernetes
 * `prometheus-node-exporter` — Prometheus Node Exporter
+* `secrets` — Secrets Management Solutions for Kubernetes
+    * `store-csi-driver` — Integrates secrets stores with K8s via a CSI volume
+    * `store-csi-driver-provider-aws` — AWS Secrets Manager and Config Provider for Secret Store CSI Driver
 * `storage` — Kubernetes Storage Solutions
     * `ebs-csi` — Amazon EBS CSI driver
     * `efs-csi` — Amazon EFS CSI driver
     * `fsx-lustre-csi` — Amazon FSx for Lustre CSI Driver
     * `openebs` — Kubernetes storage simplified
+* `vault` — HashiCorp Vault Secrets and Encryption Management System
 * `velero` — Backup and Migrate Kubernetes Applications
 * `vpc-lattice-controller` — Amazon VPC Lattice (Gateway API) Controller
 
@@ -297,6 +304,10 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 * `cloudtrail-event` — CloudTrail Event History
 * `cloudtrail-trail` — CloudTrail Trail
 * `cluster` — EKS Cluster
+* `cognito` — Amazon Cognito Resources
+    * `app-client` — Cognito User Pool App Client
+    * `domain` — Cognito User Pool Domain
+    * `user-pool` — Cognito User Pool
 * `dns-record` — Route53 Resource Record Set
 * `ec2-instance` — EC2 Instance
 * `ecr-repository` — ECR Repository
