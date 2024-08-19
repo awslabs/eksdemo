@@ -12,6 +12,8 @@ import (
 //
 
 func NewApp() *application.Application {
+	options, flags := newOptions()
+
 	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "example",
@@ -31,6 +33,8 @@ func NewApp() *application.Application {
 			}),
 		},
 
+		Flags: flags,
+
 		Installer: &installer.ManifestInstaller{
 			AppName: "example-ascp",
 			ResourceTemplate: &template.TextTemplate{
@@ -38,12 +42,7 @@ func NewApp() *application.Application {
 			},
 		},
 
-		Options: &application.ApplicationOptions{
-			DisableServiceAccountFlag: true,
-			DisableVersionFlag:        true,
-			Namespace:                 "ascp",
-			ServiceAccount:            "nginx-deployment-sa",
-		},
+		Options: options,
 	}
 }
 

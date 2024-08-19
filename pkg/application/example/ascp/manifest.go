@@ -1,6 +1,6 @@
 package ascp
 
-// https://github.com/aws/secrets-store-csi-driver-provider-aws/blob/main/examples/ExampleDeployment.yaml
+// https://github.com/aws/secrets-store-csi-driver-provider-aws/blob/main/examples/ExampleSecretProviderClass.yaml
 const secretsProviderClassTemplate = `---
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
@@ -10,8 +10,30 @@ spec:
   provider: aws
   parameters:
     objects: |
-        - objectName: "MySecret"
-          objectType: "secretsmanager"
+      - objectName: "MySecret"
+        objectType: "secretsmanager"
+{{- if .JSONFormat }}
+        jmesPath:
+          - path: "username"
+            objectAlias: "dbuser"
+          - path: "password"
+            objectAlias: "dbpass"
+{{- end }}
+{{- if .K8sSecret }}
+  secretObjects:
+  - data:
+  {{- if .JSONFormat }}
+    - key: dbuser
+      objectName: dbuser
+    - key: dbpass
+      objectName: dbpass
+  {{- else }}
+    - key: mysecret
+      objectName: MySecret
+  {{- end}}
+    secretName: nginx-deployment-aws-secrets
+    type: Opaque
+{{- end }}
 `
 
 const serviceAccountTemplate = `---
