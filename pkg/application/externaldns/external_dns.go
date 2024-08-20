@@ -1,4 +1,4 @@
-package external_dns
+package externaldns
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/external-dns
 // Helm:    https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns
 // Repo:    registry.k8s.io/external-dns/external-dns
-// Version: Latest is Chart 1.13.1, App v0.13.6 (as of 10/2/23)
+// Version: Latest is Chart 1.14.5, App v0.14.2 (as of 8/20/24)
 
 func New() *application.Application {
 	return &application.Application{
@@ -39,10 +39,10 @@ func New() *application.Application {
 			Namespace:      "external-dns",
 			ServiceAccount: "external-dns",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.13.1",
-				Latest:        "v0.13.6",
-				PreviousChart: "1.12.2",
-				Previous:      "v0.13.4",
+				LatestChart:   "1.14.5",
+				Latest:        "v0.14.2",
+				PreviousChart: "1.13.1",
+				Previous:      "v0.13.6",
 			},
 		},
 
