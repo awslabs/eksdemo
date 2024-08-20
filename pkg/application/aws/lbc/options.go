@@ -1,4 +1,4 @@
-package aws_lb_controller
+package lbc
 
 import (
 	"strings"
@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type AWSLBControllerOptions struct {
+type Options struct {
 	application.ApplicationOptions
 
 	DefaultIngressClass bool
@@ -17,16 +17,16 @@ type AWSLBControllerOptions struct {
 	Replicas            int
 }
 
-func newOptions() (options *AWSLBControllerOptions, flags cmd.Flags) {
-	options = &AWSLBControllerOptions{
+func newOptions() (options *Options, flags cmd.Flags) {
+	options = &Options{
 		ApplicationOptions: application.ApplicationOptions{
 			Namespace:      "awslb",
 			ServiceAccount: "aws-load-balancer-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.8.1",
-				Latest:        "v2.8.1",
-				PreviousChart: "1.7.0",
-				Previous:      "v2.7.0",
+				LatestChart:   "1.8.2",
+				Latest:        "v2.8.2",
+				PreviousChart: "1.8.1",
+				Previous:      "v2.8.1",
 			},
 		},
 		DefaultTargetType: "ip",
