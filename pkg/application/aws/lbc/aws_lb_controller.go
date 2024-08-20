@@ -1,4 +1,4 @@
-package aws_lb_controller
+package lbc
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -16,7 +16,9 @@ import (
 // Version: Latest is v2.8.1 (as of 6/4/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	options, flags := newOptions()
+
+	return &application.Application{
 		Command: cmd.Command{
 			Name:        "aws-lb-controller",
 			Description: "AWS Load Balancer Controller",
@@ -35,6 +37,8 @@ func NewApp() *application.Application {
 			}),
 		},
 
+		Flags: flags,
+
 		Installer: &installer.HelmInstaller{
 			ChartName:     "aws-load-balancer-controller",
 			ReleaseName:   "aws-lb-controller",
@@ -43,10 +47,9 @@ func NewApp() *application.Application {
 				Template: valuesTemplate,
 			},
 		},
-	}
-	app.Options, app.Flags = newOptions()
 
-	return app
+		Options: options,
+	}
 }
 
 // https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/main/docs/install/iam_policy.json

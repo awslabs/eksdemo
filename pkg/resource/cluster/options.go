@@ -9,7 +9,7 @@ import (
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
+	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
 	"github.com/awslabs/eksdemo/pkg/application/external_dns"
 	"github.com/awslabs/eksdemo/pkg/application/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
@@ -62,7 +62,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		VpcCidr:          "192.168.0.0/16",
 
 		appsForIrsa: []*application.Application{
-			aws_lb_controller.NewApp(),
+			awslbc.NewApp(),
 			ebs_csi.NewApp(),
 			external_dns.New(),
 			karpenter.NewApp(),

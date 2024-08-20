@@ -6,8 +6,8 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
 	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
+	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
-	"github.com/awslabs/eksdemo/pkg/application/aws_lb_controller"
 	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
@@ -50,7 +50,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAliasCmds(autoscalingApps, "autoscaling-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(autoscalingApps, "as-")...)
 	cmd.AddCommand(aws_fluent_bit.NewApp().NewUninstallCmd())
-	cmd.AddCommand(aws_lb_controller.NewApp().NewUninstallCmd())
+	cmd.AddCommand(awslbc.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cert_manager.NewApp().NewUninstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewUninstallCmd())
 	cmd.AddCommand(consul.NewApp().NewUninstallCmd())
