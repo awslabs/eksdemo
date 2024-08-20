@@ -12,7 +12,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
-	"github.com/awslabs/eksdemo/pkg/application/external_dns"
+	"github.com/awslabs/eksdemo/pkg/application/externaldns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/goldilocks"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
@@ -64,7 +64,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallExampleCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(exampleApps, "ex-")...)
-	cmd.AddCommand(external_dns.New().NewUninstallCmd())
+	cmd.AddCommand(externaldns.New().NewUninstallCmd())
 	cmd.AddCommand(falco.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallFluxCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(fluxApps, "flux-")...)

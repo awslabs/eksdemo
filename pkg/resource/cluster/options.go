@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/awslabs/eksdemo/pkg/application"
 	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
-	"github.com/awslabs/eksdemo/pkg/application/external_dns"
+	"github.com/awslabs/eksdemo/pkg/application/externaldns"
 	"github.com/awslabs/eksdemo/pkg/application/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/aws"
@@ -64,7 +64,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		appsForIrsa: []*application.Application{
 			awslbc.NewApp(),
 			ebs_csi.NewApp(),
-			external_dns.New(),
+			externaldns.New(),
 			karpenter.NewApp(),
 		},
 		IrsaTemplate: &template.TextTemplate{

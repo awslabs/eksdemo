@@ -12,7 +12,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
-	"github.com/awslabs/eksdemo/pkg/application/external_dns"
+	"github.com/awslabs/eksdemo/pkg/application/externaldns"
 	"github.com/awslabs/eksdemo/pkg/application/falco"
 	"github.com/awslabs/eksdemo/pkg/application/goldilocks"
 	"github.com/awslabs/eksdemo/pkg/application/harbor"
@@ -64,7 +64,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallExampleCmd())
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "example-")...)
 	cmd.AddCommand(NewInstallAliasCmds(exampleApps, "ex-")...)
-	cmd.AddCommand(external_dns.New().NewInstallCmd())
+	cmd.AddCommand(externaldns.New().NewInstallCmd())
 	cmd.AddCommand(falco.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallFluxCmd())
 	cmd.AddCommand(NewInstallAliasCmds(fluxApps, "flux-")...)
