@@ -1,4 +1,4 @@
-package karpenter_dashboards
+package karpenter
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
