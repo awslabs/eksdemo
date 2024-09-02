@@ -1,17 +1,17 @@
-package karpenter_dashboards
+package karpenter
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/cmd"
 )
 
-type KarpenterDashboardOptions struct {
+type Options struct {
 	*application.ApplicationOptions
 	KarpenterNamespace string
 }
 
-func newOptions() (options *KarpenterDashboardOptions, flags cmd.Flags) {
-	options = &KarpenterDashboardOptions{
+func newOptions() (options *Options, flags cmd.Flags) {
+	options = &Options{
 		ApplicationOptions: &application.ApplicationOptions{
 			DisableServiceAccountFlag: true,
 			DisableVersionFlag:        true,

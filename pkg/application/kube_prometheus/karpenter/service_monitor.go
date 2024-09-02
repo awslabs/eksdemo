@@ -1,4 +1,4 @@
-package karpenter_dashboards
+package karpenter
 
 // Manifest: https://github.com/aws/karpenter-provider-aws/blob/main/charts/karpenter/templates/servicemonitor.yaml
 const serviceMonitorTemplate = `---
@@ -15,6 +15,6 @@ spec:
     - {{ .KarpenterNamespace }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: autoscaling-karpenter
+      app.kubernetes.io/instance: karpenter
       app.kubernetes.io/name: karpenter
 `

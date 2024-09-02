@@ -2,7 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/kube_prometheus/karpenter_dashboards"
+	"github.com/awslabs/eksdemo/pkg/application/kube_prometheus/karpenter"
 	"github.com/awslabs/eksdemo/pkg/application/kube_prometheus/kube_prometheus_stack"
 	"github.com/awslabs/eksdemo/pkg/application/kube_prometheus/kube_prometheus_stack_amp"
 	"github.com/spf13/cobra"
@@ -46,7 +46,7 @@ func NewUninstallKubePrometheusCmd() *cobra.Command {
 
 func init() {
 	kubePrometheusApps = []func() *application.Application{
-		karpenter_dashboards.NewApp,
+		karpenter.NewApp,
 		kube_prometheus_stack.NewApp,
 		kube_prometheus_stack_amp.NewApp,
 	}
