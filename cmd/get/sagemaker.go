@@ -3,6 +3,7 @@ package get
 import (
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/sagemaker/domain"
+	"github.com/awslabs/eksdemo/pkg/resource/sagemaker/userprofile"
 	"github.com/spf13/cobra"
 )
 
@@ -28,5 +29,6 @@ func NewGetSageMakerCmd() *cobra.Command {
 func init() {
 	sagemaker = []func() *resource.Resource{
 		domain.New,
+		userprofile.New,
 	}
 }
