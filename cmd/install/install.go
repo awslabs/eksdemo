@@ -23,6 +23,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
 	"github.com/awslabs/eksdemo/pkg/application/prometheus_node_exporter"
+	sparkoperator "github.com/awslabs/eksdemo/pkg/application/spark"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/application/vault"
 	"github.com/awslabs/eksdemo/pkg/application/velero"
@@ -95,6 +96,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallSecretsCmd())
 	cmd.AddCommand(NewInstallAliasCmds(secrets, "secret-")...)
 	cmd.AddCommand(NewInstallAliasCmds(secrets, "secrets-")...)
+	cmd.AddCommand(sparkoperator.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallStorageCmd())
 	cmd.AddCommand(NewInstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(vault.NewApp().NewInstallCmd())
