@@ -9,6 +9,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/example/inflate"
 	"github.com/awslabs/eksdemo/pkg/application/example/kube_ops_view"
 	"github.com/awslabs/eksdemo/pkg/application/example/podinfo"
+	"github.com/awslabs/eksdemo/pkg/application/example/sparkpi"
 	"github.com/awslabs/eksdemo/pkg/application/example/wordpress"
 	"github.com/spf13/cobra"
 )
@@ -58,6 +59,7 @@ func init() {
 		inflate.NewApp,
 		kube_ops_view.NewApp,
 		podinfo.NewApp,
+		sparkpi.NewApp,
 		wordpress.NewApp,
 	}
 }
