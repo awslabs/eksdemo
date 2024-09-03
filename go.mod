@@ -29,6 +29,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.25.1
 	github.com/aws/aws-sdk-go-v2/service/route53 v1.40.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.1
+	github.com/aws/aws-sdk-go-v2/service/sagemaker v1.154.0
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.31.1
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.49.1
 	github.com/aws/aws-sdk-go-v2/service/sts v1.28.1
@@ -76,7 +77,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.3.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.17.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sagemaker v1.154.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.20.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.23.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect

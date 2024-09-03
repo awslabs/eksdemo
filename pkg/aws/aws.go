@@ -22,7 +22,7 @@ func FormatError(err error) error {
 func FormatErrorAsMessageOnly(err error) error {
 	var ae smithy.APIError
 	if err != nil && errors.As(err, &ae) {
-		return fmt.Errorf(ae.ErrorMessage())
+		return fmt.Errorf("%s", ae.ErrorMessage())
 	}
 	return err
 }
