@@ -274,6 +274,7 @@ The application catalog includes:
 * `secrets` — Secrets Management Solutions for Kubernetes
     * `store-csi-driver` — Integrates secrets stores with K8s via a CSI volume
     * `store-csi-driver-provider-aws` — AWS Secrets Manager and Config Provider for Secret Store CSI Driver
+* `spark-operator` — Kubeflow Spark Operator
 * `storage` — Kubernetes Storage Solutions
     * `ebs-csi` — Amazon EBS CSI driver
     * `efs-csi` — Amazon EFS CSI driver

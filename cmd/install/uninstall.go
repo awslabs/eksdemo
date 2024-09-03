@@ -23,6 +23,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/kube_state_metrics"
 	"github.com/awslabs/eksdemo/pkg/application/metrics_server"
 	"github.com/awslabs/eksdemo/pkg/application/prometheus_node_exporter"
+	sparkoperator "github.com/awslabs/eksdemo/pkg/application/spark"
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/application/vault"
 	"github.com/awslabs/eksdemo/pkg/application/velero"
@@ -95,6 +96,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallSecretsCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(secrets, "secret-")...)
 	cmd.AddCommand(NewUninstallAliasCmds(secrets, "secrets-")...)
+	cmd.AddCommand(sparkoperator.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallStorageCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(storageApps, "storage-")...)
 	cmd.AddCommand(vault.NewApp().NewUninstallCmd())
