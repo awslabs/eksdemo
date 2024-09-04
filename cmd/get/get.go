@@ -19,6 +19,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/ec2/ami"
 	"github.com/awslabs/eksdemo/pkg/resource/ec2/instance"
 	"github.com/awslabs/eksdemo/pkg/resource/ecr_repository"
+	efsfilesystem "github.com/awslabs/eksdemo/pkg/resource/efs/filesystem"
 	"github.com/awslabs/eksdemo/pkg/resource/eks/accessentry"
 	"github.com/awslabs/eksdemo/pkg/resource/elastic_ip"
 	"github.com/awslabs/eksdemo/pkg/resource/event_rule"
@@ -91,6 +92,7 @@ func NewGetCmd() *cobra.Command {
 	cmd.AddCommand(NewGetAliasCmds(cognitoResources, "cognito-")...)
 	cmd.AddCommand(dns_record.NewResource().NewGetCmd())
 	cmd.AddCommand(instance.NewResource().NewGetCmd())
+	cmd.AddCommand(efsfilesystem.NewResource().NewGetCmd())
 	cmd.AddCommand(ecr_repository.NewResource().NewGetCmd())
 	cmd.AddCommand(elastic_ip.NewResource().NewGetCmd())
 	cmd.AddCommand(event_rule.NewResource().NewGetCmd())

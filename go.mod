@@ -7,7 +7,7 @@ toolchain go1.21.10
 require (
 	github.com/Masterminds/goutils v1.1.1
 	github.com/Masterminds/sprig/v3 v3.2.3
-	github.com/aws/aws-sdk-go-v2 v1.30.4
+	github.com/aws/aws-sdk-go-v2 v1.30.5
 	github.com/aws/aws-sdk-go-v2/config v1.27.4
 	github.com/aws/aws-sdk-go-v2/service/acm v1.25.1
 	github.com/aws/aws-sdk-go-v2/service/amp v1.25.1
@@ -19,6 +19,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider v1.35.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.149.2
 	github.com/aws/aws-sdk-go-v2/service/ecr v1.27.1
+	github.com/aws/aws-sdk-go-v2/service/efs v1.31.5
 	github.com/aws/aws-sdk-go-v2/service/eks v1.41.0
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing v1.24.1
 	github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.30.1
@@ -36,6 +37,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/vpclattice v1.7.1
 	github.com/aws/session-manager-plugin v0.0.0-20221012155945-c523002ee02c
 	github.com/aws/smithy-go v1.20.4
+	github.com/dustin/go-humanize v1.0.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/uuid v1.3.0
 	github.com/hako/durafmt v0.0.0-20210608085754-5c1018a4e16b
@@ -69,8 +71,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.4 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.15.2 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.16 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.16 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.17 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.17 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.11.1 // indirect
