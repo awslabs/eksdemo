@@ -16,6 +16,15 @@ func NewSageMakerClient() *SageMakerClient {
 	return &SageMakerClient{sagemaker.NewFromConfig(GetConfig())}
 }
 
+func (c *SageMakerClient) DeleteUserProfile(domainID, userProfileName string) error {
+	_, err := c.Client.DeleteUserProfile(context.Background(), &sagemaker.DeleteUserProfileInput{
+		DomainId:        aws.String(domainID),
+		UserProfileName: aws.String(userProfileName),
+	})
+
+	return err
+}
+
 func (c *SageMakerClient) DescribeDomain(id string) (*sagemaker.DescribeDomainOutput, error) {
 	result, err := c.Client.DescribeDomain(context.Background(), &sagemaker.DescribeDomainInput{
 		DomainId: aws.String(id),
