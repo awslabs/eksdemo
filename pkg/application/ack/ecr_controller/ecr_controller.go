@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/ecr-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/ecr-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/ecr-controller
-// Version: Latest is v1.0.4 (as of 6/11/23)
+// Version: Latest is v1.0.18 (as of 9/5/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "ecr-controller",
@@ -41,10 +41,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-ecr-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.0.4",
-				Latest:        "1.0.4",
-				PreviousChart: "v0.1.7",
-				Previous:      "v0.1.7",
+				LatestChart:   "1.0.18",
+				Latest:        "1.0.18",
+				PreviousChart: "1.0.4",
+				Previous:      "1.0.4",
 			},
 		},
 
@@ -56,9 +56,9 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
+// https://github.com/aws-controllers-k8s/ecr-controller/blob/main/helm/values.yaml
 const valuesTemplate = `---
 image:
   tag: {{ .Version }}
