@@ -18,7 +18,7 @@ import (
 // Version: Latest is v1.0.16 (as of 9/5/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "apigatewayv2-controller",
@@ -59,7 +59,6 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
 // https://github.com/aws-controllers-k8s/apigatewayv2-controller/blob/main/helm/values.yaml
