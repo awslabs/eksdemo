@@ -6,7 +6,7 @@ import (
 )
 
 func New() *resource.Resource {
-	options, getFlags := newOptions()
+	options, deleteFlags, getFlags := newOptions()
 
 	return &resource.Resource{
 		Command: cmd.Command{
@@ -16,9 +16,12 @@ func New() *resource.Resource {
 			Args:        []string{"USER_PROFILE_NAME"},
 		},
 
-		GetFlags: getFlags,
+		DeleteFlags: deleteFlags,
+		GetFlags:    getFlags,
 
 		Getter: &Getter{},
+
+		Manager: &Manager{},
 
 		Options: options,
 	}

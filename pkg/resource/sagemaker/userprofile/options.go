@@ -9,15 +9,26 @@ import (
 type Options struct {
 	resource.CommonOptions
 
-	// Get
+	// Get, Delete
 	DomainID string
 }
 
-func newOptions() (options *Options, getFlags cmd.Flags) {
+func newOptions() (options *Options, deleteFlags, getFlags cmd.Flags) {
 	options = &Options{
 		CommonOptions: resource.CommonOptions{
 			Name:                "sagemaker-domain",
 			ClusterFlagDisabled: true,
+		},
+	}
+
+	deleteFlags = cmd.Flags{
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "domain-id",
+				Description: "id of the sagemaker domain",
+				Shorthand:   "D",
+			},
+			Option: &options.DomainID,
 		},
 	}
 
