@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/ec2-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/ec2-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/ec2-controller
-// Version: Latest is v1.0.3 (as of 6/11/23)
+// Version: Latest is v1.2.20 (as of 9/4/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "ec2-controller",
@@ -41,10 +41,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-ec2-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.0.3",
-				Latest:        "1.0.3",
-				PreviousChart: "v0.0.21",
-				Previous:      "v0.0.21",
+				LatestChart:   "1.2.20",
+				Latest:        "1.2.20",
+				PreviousChart: "1.0.3",
+				Previous:      "1.0.3",
 			},
 		},
 
@@ -56,9 +56,9 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
+// https://github.com/aws-controllers-k8s/ec2-controller/blob/main/helm/values.yaml
 const valuesTemplate = `---
 image:
   tag: {{ .Version }}
