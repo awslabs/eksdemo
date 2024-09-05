@@ -9,15 +9,34 @@ import (
 type Options struct {
 	resource.CommonOptions
 
-	// Get
+	// Get, Delete
 	DomainID string
 }
 
-func newOptions() (options *Options, getFlags cmd.Flags) {
+func newOptions() (options *Options, deleteFlags, getFlags cmd.Flags) {
 	options = &Options{
 		CommonOptions: resource.CommonOptions{
-			Name:                "sagemaker-domain",
-			ClusterFlagDisabled: true,
+			ClusterFlagDisabled:    true,
+			DeleteArgumentOptional: true,
+		},
+	}
+
+	deleteFlags = cmd.Flags{
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "id",
+				Description: "delete by id instead of name",
+				Validate: func(_ *cobra.Command, args []string) error {
+					if len(args) == 0 && options.DomainID == "" {
+						return &cmd.MustIncludeEitherArgumentOrFlag{Arg: "DOMAIN_NAME", Flag: "--id"}
+					}
+					if options.DomainID != "" && len(args) > 0 {
+						return &cmd.ArgumentAndFlagCantBeUsedTogetherError{Arg: "DOMAIN_NAME", Flag: "--id"}
+					}
+					return nil
+				},
+			},
+			Option: &options.DomainID,
 		},
 	}
 
