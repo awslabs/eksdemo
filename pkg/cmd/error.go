@@ -19,3 +19,12 @@ type FlagRequiresFlagError struct {
 func (e *FlagRequiresFlagError) Error() string {
 	return fmt.Sprintf("%q flag requires %q flag", e.Flag1, e.Flag2)
 }
+
+type MustIncludeEitherArgumentOrFlag struct {
+	Arg  string
+	Flag string
+}
+
+func (e *MustIncludeEitherArgumentOrFlag) Error() string {
+	return fmt.Sprintf("must include either %q argument or %q flag", e.Arg, e.Flag)
+}
