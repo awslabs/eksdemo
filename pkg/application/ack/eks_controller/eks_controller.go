@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/eks-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/eks-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/eks-controller
-// Version: Latest is v1.0.2 (as of 6/11/23)
+// Version: Latest is v1.4.5 (as of 9/5/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "eks-controller",
@@ -32,7 +32,6 @@ func NewApp() *application.Application {
 				CommonOptions: resource.CommonOptions{
 					Name: "ack-eks-controller-irsa",
 				},
-				// https://github.com/aws-controllers-k8s/eks-controller/blob/main/config/iam/recommended-inline-policy
 				PolicyType: irsa.PolicyDocument,
 				PolicyDocTemplate: &template.TextTemplate{
 					Template: policyDocTemplate,
@@ -44,10 +43,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-eks-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.0.2",
-				Latest:        "1.0.2",
-				PreviousChart: "v0.1.7",
-				Previous:      "v0.1.7",
+				LatestChart:   "1.4.5",
+				Latest:        "1.4.5",
+				PreviousChart: "1.0.2",
+				Previous:      "1.0.2",
 			},
 		},
 
@@ -59,9 +58,9 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
+// https://github.com/aws-controllers-k8s/eks-controller/blob/main/config/iam/recommended-inline-policy
 const policyDocTemplate = `
 Version: '2012-10-17'
 Statement:
