@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/iam-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/iam-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/iam-controller
-// Version: Latest is v1.2.1 (as of 6/11/23)
+// Version: Latest is v1.3.12 (as of 9/5/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "iam-controller",
@@ -42,8 +42,8 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-iam-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.2.1",
-				Latest:        "1.2.1",
+				LatestChart:   "1.3.12",
+				Latest:        "1.3.12",
 				PreviousChart: "1.2.1",
 				Previous:      "1.2.1",
 			},
@@ -57,7 +57,6 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
 // https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/iam/recommended-inline-policy
@@ -129,6 +128,7 @@ Statement:
   Resource: "*"
 `
 
+// https://github.com/aws-controllers-k8s/iam-controller/blob/main/helm/values.yaml
 const valuesTemplate = `---
 image:
   tag: {{ .Version }}
