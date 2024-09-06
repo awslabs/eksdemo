@@ -43,7 +43,7 @@ func (r *Resource) NewCreateCmd() *cobra.Command {
 
 	if len(r.CreateArgs) > 0 && r.Common().CreateArgumentOptional {
 		use += " " + "[" + r.Args[0] + "]"
-	} else if len(r.Args) > 0 {
+	} else if len(r.CreateArgs) > 0 {
 		use += " " + strings.Join(r.CreateArgs, " ")
 	}
 
