@@ -52,14 +52,14 @@ func NewRDSController() *application.Application {
 			ReleaseName:   "ack-rds-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-controllers-k8s/rds-chart",
 			ValuesTemplate: &template.TextTemplate{
-				Template: valuesTemplate,
+				Template: rdsValuesTemplate,
 			},
 		},
 	}
 }
 
 // https://github.com/aws-controllers-k8s/rds-controller/blob/main/helm/values.yaml
-const valuesTemplate = `---
+const rdsValuesTemplate = `---
 image:
   tag: {{ .Version }}
 fullnameOverride: ack-rds-controller

@@ -1,4 +1,4 @@
-package eks_controller
+package ack
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
@@ -8,7 +8,7 @@ import (
 )
 
 func fargatePodExecutionRole() *resource.Resource {
-	res := &resource.Resource{
+	return &resource.Resource{
 		Options: &resource.CommonOptions{
 			Name: "fargate-pod-execution-role",
 		},
@@ -20,7 +20,6 @@ func fargatePodExecutionRole() *resource.Resource {
 			},
 		},
 	}
-	return res
 }
 
 const cloudFormationTemplate = `

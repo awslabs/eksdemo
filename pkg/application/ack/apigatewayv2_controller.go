@@ -1,4 +1,4 @@
-package apigatewayv2_controller
+package ack
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -17,7 +17,7 @@ import (
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/apigatewayv2-controller
 // Version: Latest is v1.0.16 (as of 9/5/24)
 
-func NewApp() *application.Application {
+func NewAPIGatewayv2Controller() *application.Application {
 	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
@@ -55,14 +55,14 @@ func NewApp() *application.Application {
 			ReleaseName:   "ack-apigatewayv2-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-controllers-k8s/apigatewayv2-chart",
 			ValuesTemplate: &template.TextTemplate{
-				Template: valuesTemplate,
+				Template: apiGatewayv2ValuesTemplate,
 			},
 		},
 	}
 }
 
 // https://github.com/aws-controllers-k8s/apigatewayv2-controller/blob/main/helm/values.yaml
-const valuesTemplate = `---
+const apiGatewayv2ValuesTemplate = `---
 image:
   tag: {{ .Version }}
 fullnameOverride: ack-apigatewayv2-controller
