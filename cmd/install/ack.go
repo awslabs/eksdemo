@@ -45,6 +45,7 @@ func init() {
 		ack.NewAPIGatewayv2Controller,
 		ack.NewEC2Controller,
 		ack.NewECRController,
+		ack.NewEFSController,
 		ack.NewEKSController,
 		ack.NewIAMController,
 		ack.NewPrometheusServiceController,
