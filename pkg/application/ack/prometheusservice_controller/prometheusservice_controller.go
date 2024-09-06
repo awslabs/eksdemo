@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/prometheusservice-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/prometheusservice-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/prometheusservice-controller
-// Version: Latest is v1.2.3 (as of 6/11/23)
+// Version: Latest is v1.2.13 (as of 9/6/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "prometheusservice-controller",
@@ -42,10 +42,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-prometheusservice-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.2.3",
-				Latest:        "1.2.3",
-				PreviousChart: "v0.1.1",
-				Previous:      "v0.1.1",
+				LatestChart:   "1.2.13",
+				Latest:        "1.2.13",
+				PreviousChart: "1.2.3",
+				Previous:      "1.2.3",
 			},
 		},
 
@@ -57,7 +57,6 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
 // https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/iam/recommended-inline-policy
@@ -74,6 +73,7 @@ Statement:
   Resource: "*"
 `
 
+// https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/helm/values.yaml
 const valuesTemplate = `---
 image:
   tag: {{ .Version }}
