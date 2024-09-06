@@ -2,6 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
+	"github.com/awslabs/eksdemo/pkg/application/ack"
 	"github.com/awslabs/eksdemo/pkg/application/ack/apigatewayv2_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/ec2_controller"
 	"github.com/awslabs/eksdemo/pkg/application/ack/ecr_controller"
@@ -12,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var ack []func() *application.Application
+var ackControllers []func() *application.Application
 
 func NewInstallAckCmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -23,7 +24,7 @@ func NewInstallAckCmd() *cobra.Command {
 	// Don't show flag errors for `install ack` without a subcommand
 	cmd.DisableFlagParsing = true
 
-	for _, a := range ack {
+	for _, a := range ackControllers {
 		cmd.AddCommand(a().NewInstallCmd())
 	}
 
@@ -39,7 +40,7 @@ func NewUninstallAckCmd() *cobra.Command {
 	// Don't show flag errors for `uninstall ack` without a subcommand
 	cmd.DisableFlagParsing = true
 
-	for _, a := range ack {
+	for _, a := range ackControllers {
 		cmd.AddCommand(a().NewUninstallCmd())
 	}
 
@@ -47,13 +48,14 @@ func NewUninstallAckCmd() *cobra.Command {
 }
 
 func init() {
-	ack = []func() *application.Application{
+	ackControllers = []func() *application.Application{
 		apigatewayv2_controller.NewApp,
 		ec2_controller.NewApp,
 		ecr_controller.NewApp,
 		eks_controller.NewApp,
 		iam_controller.NewApp,
 		prometheusservice_controller.NewApp,
+		ack.NewRDSController,
 		s3_controller.NewApp,
 	}
 }

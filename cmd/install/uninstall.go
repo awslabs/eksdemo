@@ -42,7 +42,7 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.DisableFlagParsing = true
 
 	cmd.AddCommand(NewUninstallAckCmd())
-	cmd.AddCommand(NewUninstallAliasCmds(ack, "ack-")...)
+	cmd.AddCommand(NewUninstallAliasCmds(ackControllers, "ack-")...)
 	cmd.AddCommand(adot_operator.NewApp().NewUninstallCmd())
 	cmd.AddCommand(appmesh_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallArgoCmd())
