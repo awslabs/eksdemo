@@ -42,7 +42,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.DisableFlagParsing = true
 
 	cmd.AddCommand(NewInstallAckCmd())
-	cmd.AddCommand(NewInstallAliasCmds(ack, "ack-")...)
+	cmd.AddCommand(NewInstallAliasCmds(ackControllers, "ack-")...)
 	cmd.AddCommand(adot_operator.NewApp().NewInstallCmd())
 	cmd.AddCommand(appmesh_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallArgoCmd())
