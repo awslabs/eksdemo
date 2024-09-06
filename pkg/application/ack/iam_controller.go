@@ -1,4 +1,4 @@
-package iam_controller
+package ack
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -17,7 +17,7 @@ import (
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/iam-controller
 // Version: Latest is v1.3.12 (as of 9/5/24)
 
-func NewApp() *application.Application {
+func NewIAMController() *application.Application {
 	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
@@ -33,7 +33,7 @@ func NewApp() *application.Application {
 				},
 				PolicyType: irsa.PolicyDocument,
 				PolicyDocTemplate: &template.TextTemplate{
-					Template: policyDocTemplate,
+					Template: iamPolicyDocTemplate,
 				},
 			}),
 		},
@@ -53,14 +53,14 @@ func NewApp() *application.Application {
 			ReleaseName:   "ack-iam-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-controllers-k8s/iam-chart",
 			ValuesTemplate: &template.TextTemplate{
-				Template: valuesTemplate,
+				Template: iamValuesTemplate,
 			},
 		},
 	}
 }
 
 // https://github.com/aws-controllers-k8s/iam-controller/blob/main/config/iam/recommended-inline-policy
-const policyDocTemplate = `
+const iamPolicyDocTemplate = `
 Version: '2012-10-17'
 Statement:
 - Effect: Allow
@@ -129,7 +129,7 @@ Statement:
 `
 
 // https://github.com/aws-controllers-k8s/iam-controller/blob/main/helm/values.yaml
-const valuesTemplate = `---
+const iamValuesTemplate = `---
 image:
   tag: {{ .Version }}
 fullnameOverride: ack-iam-controller

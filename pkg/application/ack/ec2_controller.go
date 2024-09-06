@@ -1,4 +1,4 @@
-package ec2_controller
+package ack
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -17,7 +17,7 @@ import (
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/ec2-controller
 // Version: Latest is v1.2.20 (as of 9/4/24)
 
-func NewApp() *application.Application {
+func NewEC2Controller() *application.Application {
 	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
@@ -52,14 +52,14 @@ func NewApp() *application.Application {
 			ReleaseName:   "ack-ec2-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-controllers-k8s/ec2-chart",
 			ValuesTemplate: &template.TextTemplate{
-				Template: valuesTemplate,
+				Template: ec2ValuesTemplate,
 			},
 		},
 	}
 }
 
 // https://github.com/aws-controllers-k8s/ec2-controller/blob/main/helm/values.yaml
-const valuesTemplate = `---
+const ec2ValuesTemplate = `---
 image:
   tag: {{ .Version }}
 fullnameOverride: ack-ec2-controller

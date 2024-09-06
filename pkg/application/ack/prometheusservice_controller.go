@@ -1,4 +1,4 @@
-package prometheusservice_controller
+package ack
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -17,7 +17,7 @@ import (
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/prometheusservice-controller
 // Version: Latest is v1.2.13 (as of 9/6/24)
 
-func NewApp() *application.Application {
+func NewPrometheusServiceController() *application.Application {
 	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
@@ -33,7 +33,7 @@ func NewApp() *application.Application {
 				},
 				PolicyType: irsa.PolicyDocument,
 				PolicyDocTemplate: &template.TextTemplate{
-					Template: policyDocTemplate,
+					Template: ampPolicyDocTemplate,
 				},
 			}),
 		},
@@ -53,14 +53,14 @@ func NewApp() *application.Application {
 			ReleaseName:   "ack-prometheusservice-controller",
 			RepositoryURL: "oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart",
 			ValuesTemplate: &template.TextTemplate{
-				Template: valuesTemplate,
+				Template: ampValuesTemplate,
 			},
 		},
 	}
 }
 
 // https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/config/iam/recommended-inline-policy
-const policyDocTemplate = `
+const ampPolicyDocTemplate = `
 Version: '2012-10-17'
 Statement:
 - Effect: Allow
@@ -74,7 +74,7 @@ Statement:
 `
 
 // https://github.com/aws-controllers-k8s/prometheusservice-controller/blob/main/helm/values.yaml
-const valuesTemplate = `---
+const ampValuesTemplate = `---
 image:
   tag: {{ .Version }}
 fullnameOverride: ack-prometheusservice-controller

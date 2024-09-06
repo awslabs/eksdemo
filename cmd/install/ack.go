@@ -3,13 +3,6 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/ack"
-	"github.com/awslabs/eksdemo/pkg/application/ack/apigatewayv2_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/ec2_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/ecr_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/eks_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/iam_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/prometheusservice_controller"
-	"github.com/awslabs/eksdemo/pkg/application/ack/s3_controller"
 	"github.com/spf13/cobra"
 )
 
@@ -49,13 +42,13 @@ func NewUninstallAckCmd() *cobra.Command {
 
 func init() {
 	ackControllers = []func() *application.Application{
-		apigatewayv2_controller.NewApp,
-		ec2_controller.NewApp,
-		ecr_controller.NewApp,
-		eks_controller.NewApp,
-		iam_controller.NewApp,
-		prometheusservice_controller.NewApp,
+		ack.NewAPIGatewayv2Controller,
+		ack.NewEC2Controller,
+		ack.NewECRController,
+		ack.NewEKSController,
+		ack.NewIAMController,
+		ack.NewPrometheusServiceController,
 		ack.NewRDSController,
-		s3_controller.NewApp,
+		ack.NewS3Controller,
 	}
 }
