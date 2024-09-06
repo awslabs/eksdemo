@@ -15,10 +15,10 @@ import (
 // Helm:    https://github.com/aws-controllers-k8s/s3-controller/tree/main/helm
 // Chart:   https://gallery.ecr.aws/aws-controllers-k8s/s3-chart
 // Repo:    https://gallery.ecr.aws/aws-controllers-k8s/s3-controller
-// Version: Latest is v1.0.4 (as of 6/10/23)
+// Version: Latest is v1.0.16 (as of 9/6/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Parent:      "ack",
 			Name:        "s3-controller",
@@ -41,10 +41,10 @@ func NewApp() *application.Application {
 			Namespace:      "ack-system",
 			ServiceAccount: "ack-s3-controller",
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "1.0.4",
-				Latest:        "1.0.4",
-				PreviousChart: "v0.1.5",
-				Previous:      "v0.1.5",
+				LatestChart:   "1.0.16",
+				Latest:        "1.0.16",
+				PreviousChart: "1.0.4",
+				Previous:      "1.0.4",
 			},
 		},
 
@@ -56,7 +56,6 @@ func NewApp() *application.Application {
 			},
 		},
 	}
-	return app
 }
 
 const valuesTemplate = `---
