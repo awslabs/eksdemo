@@ -13,21 +13,6 @@ type RoleOptions struct {
 }
 
 func NewRoleResource() *resource.Resource {
-	res := &resource.Resource{
-		Command: cmd.Command{
-			Name:        "iam-role",
-			Description: "ECR Repository",
-			Aliases:     []string{"role"},
-			CreateArgs:  []string{"NAME"},
-		},
-
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: yamlTemplate,
-			},
-		},
-	}
-
 	options := &RoleOptions{
 		CommonOptions: resource.CommonOptions{
 			Name:          "ack-iam-role",
@@ -37,20 +22,32 @@ func NewRoleResource() *resource.Resource {
 		Description: "ACK test role",
 	}
 
-	flags := cmd.Flags{
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "description",
-				Description: "role description",
-			},
-			Option: &options.Description,
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "iam-role",
+			Description: "IAM Role",
+			Aliases:     []string{"role"},
+			CreateArgs:  []string{"NAME"},
 		},
+
+		CreateFlags: cmd.Flags{
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "description",
+					Description: "role description",
+				},
+				Option: &options.Description,
+			},
+		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: yamlTemplate,
+			},
+		},
+
+		Options: options,
 	}
-
-	res.Options = options
-	res.CreateFlags = flags
-
-	return res
 }
 
 const yamlTemplate = `---

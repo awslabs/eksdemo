@@ -13,21 +13,6 @@ type VpcOptions struct {
 }
 
 func NewVpcResource() *resource.Resource {
-	res := &resource.Resource{
-		Command: cmd.Command{
-			Name:        "vpc",
-			Description: "Virtual Private Cloud (VPC)",
-			Aliases:     []string{"vpcs"},
-			CreateArgs:  []string{"NAME"},
-		},
-
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: vpcYamlTemplate,
-			},
-		},
-	}
-
 	options := &VpcOptions{
 		CommonOptions: resource.CommonOptions{
 			Name:          "ack-ec2-vpc",
@@ -37,20 +22,32 @@ func NewVpcResource() *resource.Resource {
 		CidrBlocks: []string{"10.0.0.0/16"},
 	}
 
-	flags := cmd.Flags{
-		&cmd.StringSliceFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "cidrs",
-				Description: "list of IPv4 CIDR blocks for your VPC",
-			},
-			Option: &options.CidrBlocks,
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "vpc",
+			Description: "Virtual Private Cloud (VPC)",
+			Aliases:     []string{"vpcs"},
+			CreateArgs:  []string{"NAME"},
 		},
+
+		CreateFlags: cmd.Flags{
+			&cmd.StringSliceFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "cidrs",
+					Description: "list of IPv4 CIDR blocks for your VPC",
+				},
+				Option: &options.CidrBlocks,
+			},
+		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: vpcYamlTemplate,
+			},
+		},
+
+		Options: options,
 	}
-
-	res.Options = options
-	res.CreateFlags = flags
-
-	return res
 }
 
 const vpcYamlTemplate = `---

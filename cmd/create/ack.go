@@ -39,10 +39,10 @@ func init() {
 		ec2.NewSubnetResource,
 		ec2.NewVpcResource,
 		efs.NewFileSystemResource,
-		ecr.NewResource,
+		ecr.NewRepositoryResource,
 		iam.NewRoleResource,
 		eks.NewFargateProfileResource,
 		rds.NewDatabaseInstanceResource,
-		s3.NewResource,
+		s3.NewBucketResource,
 	}
 }

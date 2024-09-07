@@ -15,21 +15,6 @@ type SubnetOptions struct {
 }
 
 func NewSubnetResource() *resource.Resource {
-	res := &resource.Resource{
-		Command: cmd.Command{
-			Name:        "subnet",
-			Description: "EC2 Subnet",
-			Aliases:     []string{"subnets"},
-			CreateArgs:  []string{"NAME"},
-		},
-
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: subnetYamlTemplate,
-			},
-		},
-	}
-
 	options := &SubnetOptions{
 		CommonOptions: resource.CommonOptions{
 			Name:          "ack-ec2-subnet",
@@ -38,28 +23,40 @@ func NewSubnetResource() *resource.Resource {
 		},
 	}
 
-	flags := cmd.Flags{
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "cidr",
-				Description: "ipv4 network range for the VPC, in CIDR notation",
-				Required:    true,
-			},
-			Option: &options.CidrBlock,
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "subnet",
+			Description: "EC2 Subnet",
+			Aliases:     []string{"subnets"},
+			CreateArgs:  []string{"NAME"},
 		},
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "vpc-id",
-				Description: "ip of the VPC to create the subnet (defaults to cluster VPC)",
+
+		CreateFlags: cmd.Flags{
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "cidr",
+					Description: "ipv4 network range for the VPC, in CIDR notation",
+					Required:    true,
+				},
+				Option: &options.CidrBlock,
 			},
-			Option: &options.VpcId,
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "vpc-id",
+					Description: "ip of the VPC to create the subnet (defaults to cluster VPC)",
+				},
+				Option: &options.VpcId,
+			},
 		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: subnetYamlTemplate,
+			},
+		},
+
+		Options: options,
 	}
-
-	res.Options = options
-	res.CreateFlags = flags
-
-	return res
 }
 
 func (o *SubnetOptions) PreCreate() error {

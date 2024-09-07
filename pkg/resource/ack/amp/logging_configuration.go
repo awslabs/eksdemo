@@ -19,21 +19,6 @@ type LoggingConfigurationOptions struct {
 }
 
 func NewLoggingConfigurationResource() *resource.Resource {
-	res := &resource.Resource{
-		Command: cmd.Command{
-			Name:        "amp-logging-configuration",
-			Description: "AMP Logging Configuration",
-			Aliases:     []string{"amp-logging-config", "amp-logging", "amp-log"},
-			CreateArgs:  []string{"NAME"},
-		},
-
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: loggingYamlTemplate,
-			},
-		},
-	}
-
 	options := &LoggingConfigurationOptions{
 		CommonOptions: resource.CommonOptions{
 			Name:          "ack-amp-logging-configuration",
@@ -42,29 +27,41 @@ func NewLoggingConfigurationResource() *resource.Resource {
 		},
 	}
 
-	flags := cmd.Flags{
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "alias",
-				Description: "workspace alias to configure logging",
-				Required:    true,
-			},
-			Option: &options.Alias,
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "amp-logging-configuration",
+			Description: "AMP Logging Configuration",
+			Aliases:     []string{"amp-logging-config", "amp-logging", "amp-log"},
+			CreateArgs:  []string{"NAME"},
 		},
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "log-group",
-				Description: "name of CloudWatch Log Group",
-				Required:    true,
+
+		CreateFlags: cmd.Flags{
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "alias",
+					Description: "workspace alias to configure logging",
+					Required:    true,
+				},
+				Option: &options.Alias,
 			},
-			Option: &options.LogGroupName,
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "log-group",
+					Description: "name of CloudWatch Log Group",
+					Required:    true,
+				},
+				Option: &options.LogGroupName,
+			},
 		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: loggingYamlTemplate,
+			},
+		},
+
+		Options: options,
 	}
-
-	res.Options = options
-	res.CreateFlags = flags
-
-	return res
 }
 
 func (o *LoggingConfigurationOptions) PreCreate() error {
