@@ -8,6 +8,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/ack/efs"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/eks"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/iam"
+	"github.com/awslabs/eksdemo/pkg/resource/ack/rds"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/s3"
 	"github.com/spf13/cobra"
 )
@@ -41,6 +42,7 @@ func init() {
 		ecr.NewResource,
 		iam.NewRoleResource,
 		eks.NewFargateProfileResource,
+		rds.NewDatabaseInstanceResource,
 		s3.NewResource,
 	}
 }
