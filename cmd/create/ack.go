@@ -5,6 +5,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/ack/amp"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/ec2"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/ecr"
+	"github.com/awslabs/eksdemo/pkg/resource/ack/efs"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/eks"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/iam"
 	"github.com/awslabs/eksdemo/pkg/resource/ack/s3"
@@ -36,6 +37,7 @@ func init() {
 		ec2.NewSecurityGroupResource,
 		ec2.NewSubnetResource,
 		ec2.NewVpcResource,
+		efs.NewFileSystemResource,
 		ecr.NewResource,
 		iam.NewRoleResource,
 		eks.NewFargateProfileResource,
