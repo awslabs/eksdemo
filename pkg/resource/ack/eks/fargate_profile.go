@@ -19,21 +19,6 @@ type FargateProfileOptions struct {
 }
 
 func NewFargateProfileResource() *resource.Resource {
-	res := &resource.Resource{
-		Command: cmd.Command{
-			Name:        "eks-fargate-profile",
-			Description: "Fargate Profile",
-			Aliases:     []string{"eks-fargate", "fargate-profile", "fargate", "fp"},
-			CreateArgs:  []string{"NAME"},
-		},
-
-		Manager: &manifest.ResourceManager{
-			Template: &template.TextTemplate{
-				Template: subnetYamlTemplate,
-			},
-		},
-	}
-
 	options := &FargateProfileOptions{
 		CommonOptions: resource.CommonOptions{
 			Name:          "ack-eks-fargate-profile",
@@ -43,27 +28,39 @@ func NewFargateProfileResource() *resource.Resource {
 		FargateNamespace: "default",
 	}
 
-	flags := cmd.Flags{
-		&cmd.StringFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "fargate-namespace",
-				Description: "namespace selector to run pods on fargate",
-			},
-			Option: &options.FargateNamespace,
+	return &resource.Resource{
+		Command: cmd.Command{
+			Name:        "eks-fargate-profile",
+			Description: "EKS Fargate Profile",
+			Aliases:     []string{"eks-fargate", "fargate-profile", "fargate", "fp"},
+			CreateArgs:  []string{"NAME"},
 		},
-		&cmd.StringSliceFlag{
-			CommandFlag: cmd.CommandFlag{
-				Name:        "subnets",
-				Description: "subnets for fargate pods (defaults to all private subnets)",
+
+		CreateFlags: cmd.Flags{
+			&cmd.StringFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "fargate-namespace",
+					Description: "namespace selector to run pods on fargate",
+				},
+				Option: &options.FargateNamespace,
 			},
-			Option: &options.Subnets,
+			&cmd.StringSliceFlag{
+				CommandFlag: cmd.CommandFlag{
+					Name:        "subnets",
+					Description: "subnets for fargate pods (defaults to all private subnets)",
+				},
+				Option: &options.Subnets,
+			},
 		},
+
+		Manager: &manifest.ResourceManager{
+			Template: &template.TextTemplate{
+				Template: fargateProfileYamlTemplate,
+			},
+		},
+
+		Options: options,
 	}
-
-	res.Options = options
-	res.CreateFlags = flags
-
-	return res
 }
 
 func (o *FargateProfileOptions) PreCreate() error {
@@ -87,7 +84,7 @@ func (o *FargateProfileOptions) PreCreate() error {
 	return nil
 }
 
-const subnetYamlTemplate = `---
+const fargateProfileYamlTemplate = `---
 apiVersion: eks.services.k8s.aws/v1alpha1
 kind: FargateProfile
 metadata:

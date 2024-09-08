@@ -7,8 +7,8 @@ import (
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
-func NewResource() *resource.Resource {
-	res := &resource.Resource{
+func NewBucketResource() *resource.Resource {
+	return &resource.Resource{
 		Command: cmd.Command{
 			Name:        "s3-bucket",
 			Description: "Amazon S3 bucket",
@@ -18,7 +18,7 @@ func NewResource() *resource.Resource {
 
 		Manager: &manifest.ResourceManager{
 			Template: &template.TextTemplate{
-				Template: yamlTemplate,
+				Template: bucketYamlTemplate,
 			},
 		},
 
@@ -28,11 +28,9 @@ func NewResource() *resource.Resource {
 			NamespaceFlag: true,
 		},
 	}
-
-	return res
 }
 
-const yamlTemplate = `---
+const bucketYamlTemplate = `---
 apiVersion: s3.services.k8s.aws/v1alpha1
 kind: Bucket
 metadata:
