@@ -2,7 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/adot_operator"
+	"github.com/awslabs/eksdemo/pkg/application/adot"
 	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
 	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
@@ -43,7 +43,7 @@ func NewInstallCmd() *cobra.Command {
 
 	cmd.AddCommand(NewInstallAckCmd())
 	cmd.AddCommand(NewInstallAliasCmds(ackControllers, "ack-")...)
-	cmd.AddCommand(adot_operator.NewApp().NewInstallCmd())
+	cmd.AddCommand(adot.NewApp().NewInstallCmd())
 	cmd.AddCommand(appmesh_controller.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallArgoCmd())
 	cmd.AddCommand(NewInstallAliasCmds(argoApps, "argo-")...)

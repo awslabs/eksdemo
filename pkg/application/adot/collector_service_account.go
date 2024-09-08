@@ -1,4 +1,4 @@
-package adot_operator
+package adot
 
 import (
 	"github.com/awslabs/eksdemo/pkg/manifest"
