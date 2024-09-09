@@ -1,4 +1,4 @@
-package cert_manager
+package certmanager
 
 import (
 	"github.com/awslabs/eksdemo/pkg/manifest"

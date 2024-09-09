@@ -1,4 +1,4 @@
-package cert_manager
+package certmanager
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -13,10 +13,10 @@ import (
 // GitHub:  https://github.com/cert-manager/cert-manager
 // Helm:    https://github.com/cert-manager/cert-manager/tree/master/deploy/charts/cert-manager
 // Repo:    quay.io/jetstack/cert-manager-controller
-// Version: Latest is v1.12.1 (as of 5/30/23)
+// Version: Latest is v1.15.3 (as of 9/8/24)
 
 func NewApp() *application.Application {
-	app := &application.Application{
+	return &application.Application{
 		Command: cmd.Command{
 			Name:        "cert-manager",
 			Description: "Cloud Native Certificate Management",
@@ -40,10 +40,10 @@ func NewApp() *application.Application {
 			ServiceAccount: "cert-manager",
 			DefaultVersion: &application.LatestPrevious{
 				// For Helm Chart version: https://artifacthub.io/packages/helm/cert-manager/cert-manager
-				LatestChart:   "1.12.1",
-				Latest:        "v1.12.1",
-				PreviousChart: "1.11.0",
-				Previous:      "v1.11.0",
+				LatestChart:   "1.15.3",
+				Latest:        "v1.15.3",
+				PreviousChart: "1.12.1",
+				Previous:      "v1.12.1",
 			},
 		},
 
@@ -60,20 +60,22 @@ func NewApp() *application.Application {
 			clusterIssuer(),
 		},
 	}
-	return app
 }
 
+// https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
 const valuesTemplate = `---
-installCRDs: true
+crds:
+  enabled: true
 replicaCount: 1
+image:
+  tag: {{ .Version }}
 serviceAccount:
   name: {{ .ServiceAccount }}
   annotations:
     {{ .IrsaAnnotation }}
-image:
-  tag: {{ .Version }}
 `
 
+// https://github.com/cert-manager/website/blob/master/content/docs/configuration/acme/dns01/route53.md#set-up-an-iam-role
 const policyDocument = `
 Version: '2012-10-17'
 Statement:
