@@ -1,4 +1,4 @@
-package argo_cd
+package cd
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
@@ -15,10 +15,10 @@ func newOptions() (options *ArgoCdOptions, flags cmd.Flags) {
 	options = &ArgoCdOptions{
 		ApplicationOptions: application.ApplicationOptions{
 			DefaultVersion: &application.LatestPrevious{
-				LatestChart:   "5.37.0",
-				Latest:        "v2.7.7",
-				PreviousChart: "4.9.14",
-				Previous:      "v2.4.6",
+				LatestChart:   "7.5.2",
+				Latest:        "v2.12.3",
+				PreviousChart: "7.5.2",
+				Previous:      "v2.12.3",
 			},
 			DisableServiceAccountFlag:    true,
 			ExposeIngressAndLoadBalancer: true,

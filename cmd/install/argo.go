@@ -2,7 +2,7 @@ package install
 
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
-	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
+	"github.com/awslabs/eksdemo/pkg/application/argo/cd"
 	"github.com/awslabs/eksdemo/pkg/application/argo/workflows"
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func NewUninstallArgoCmd() *cobra.Command {
 
 func init() {
 	argoApps = []func() *application.Application{
-		argo_cd.NewApp,
+		cd.NewApp,
 		workflows.NewApp,
 		workflows.NewAppWithCognito,
 	}

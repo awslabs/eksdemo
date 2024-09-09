@@ -3,7 +3,7 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/adot"
-	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
+	"github.com/awslabs/eksdemo/pkg/application/argo/cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
 	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
@@ -102,7 +102,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(vpclattice.NewApp().NewInstallCmd())
 
 	// Hidden commands for popular apps without using the group
-	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{argo_cd.NewApp}, "argo")...)
+	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{cd.NewApp}, "argo")...)
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{cluster_autoscaler.NewApp}, "")...)
 	cmd.AddCommand(NewInstallAliasCmds([]func() *application.Application{ebs_csi.NewApp}, "")...)
 
