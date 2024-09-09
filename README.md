@@ -203,7 +203,6 @@ The application catalog includes:
     * `prometheusservice-controller` — ACK Prometheus Service Controller
     * `s3-controller` — ACK S3 Controller
 * `adot-operator` — AWS Distro for OpenTelemetry (ADOT) Operator
-* `appmesh-controller` — AWS App Mesh Controller
 * `argo` — Get stuff done with Kubernetes!
     * `cd` — Declarative continuous deployment for Kubernetes
     * `workflows` — Workflow engine for Kubernetes

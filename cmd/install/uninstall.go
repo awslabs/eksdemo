@@ -3,7 +3,6 @@ package install
 import (
 	"github.com/awslabs/eksdemo/pkg/application"
 	"github.com/awslabs/eksdemo/pkg/application/adot"
-	"github.com/awslabs/eksdemo/pkg/application/appmesh_controller"
 	"github.com/awslabs/eksdemo/pkg/application/argo/argo_cd"
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
 	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
@@ -44,7 +43,6 @@ func NewUninstallCmd() *cobra.Command {
 	cmd.AddCommand(NewUninstallAckCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(ackControllers, "ack-")...)
 	cmd.AddCommand(adot.NewApp().NewUninstallCmd())
-	cmd.AddCommand(appmesh_controller.NewApp().NewUninstallCmd())
 	cmd.AddCommand(NewUninstallArgoCmd())
 	cmd.AddCommand(NewUninstallAliasCmds(argoApps, "argo-")...)
 	cmd.AddCommand(NewUninstallAutoscalingCmd())
