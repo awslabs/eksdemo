@@ -15,6 +15,7 @@ func NewVersionsResource() *resource.Resource {
 		Command: cmd.Command{
 			Name:        "addon-versions",
 			Description: "EKS Managed Addon Versions",
+			Aliases:     []string{"addon-version"},
 			Args:        []string{"NAME"},
 		},
 

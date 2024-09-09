@@ -7,6 +7,12 @@ import (
 	"github.com/awslabs/eksdemo/pkg/template"
 )
 
+// As of 9/8/24 this is broken, errors with:
+//
+//	Error: failed to resolve config: cannot resolve the configuration: cannot convert the confmap.Conf:
+//	environment variable "1" has invalid name: must match regex ^[a-zA-Z_][a-zA-Z0-9_]*$
+//
+// May be fixed in v0.105.0 in PR https://github.com/open-telemetry/opentelemetry-collector/pull/10560
 func NewPrometheusCloudWatchCollector() *resource.Resource {
 	return &resource.Resource{
 		Command: cmd.Command{
@@ -37,7 +43,7 @@ const cloudWatchCollectorTemplate = `---
 # Metrics pipeline with Prometheus Receiver and Amazon CloudWatch EMF Exporter sending metrics to Amazon CloudWatch
 #
 ---
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   namespace: {{ .Namespace }}
@@ -56,7 +62,7 @@ spec:
   env:
     - name: CLUSTER_NAME
       value: {{ .ClusterName }}
-  config: |
+  config:
     receivers:
       #
       # Scrape configuration for the Prometheus Receiver

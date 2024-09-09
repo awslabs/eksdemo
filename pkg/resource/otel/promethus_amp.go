@@ -17,6 +17,12 @@ type PrometheusAMPOptions struct {
 	AmpEndpoint string
 }
 
+// As of 9/8/24 this is broken, errors with:
+//
+//	Error: failed to resolve config: cannot resolve the configuration: cannot convert the confmap.Conf:
+//	environment variable "1" has invalid name: must match regex ^[a-zA-Z_][a-zA-Z0-9_]*$
+//
+// May be fixed in v0.105.0 in PR https://github.com/open-telemetry/opentelemetry-collector/pull/10560
 func NewPrometheusAMPCollector() *resource.Resource {
 	options := &PrometheusAMPOptions{
 		CommonOptions: resource.CommonOptions{
@@ -62,7 +68,7 @@ const promAMPCollectorTemplate = `---
 # Metrics pipeline with Prometheus Receiver and Prometheus Remote Write Exporter sending metrics to Amazon Managed Prometheus
 #
 ---
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   namespace: {{ .Namespace }}
@@ -78,7 +84,7 @@ spec:
       cpu: "1"
     limits:
       cpu: "1"
-  config: |
+  config:
     extensions:
       sigv4auth:
         region: {{ .Region }}
