@@ -8,7 +8,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/autoscaling/cluster_autoscaler"
 	awslbc "github.com/awslabs/eksdemo/pkg/application/aws/lbc"
 	"github.com/awslabs/eksdemo/pkg/application/aws_fluent_bit"
-	"github.com/awslabs/eksdemo/pkg/application/cert_manager"
+	"github.com/awslabs/eksdemo/pkg/application/certmanager"
 	"github.com/awslabs/eksdemo/pkg/application/cilium"
 	"github.com/awslabs/eksdemo/pkg/application/consul"
 	"github.com/awslabs/eksdemo/pkg/application/coredumphandler"
@@ -52,7 +52,7 @@ func NewInstallCmd() *cobra.Command {
 	cmd.AddCommand(NewInstallAliasCmds(autoscalingApps, "as-")...)
 	cmd.AddCommand(aws_fluent_bit.NewApp().NewInstallCmd())
 	cmd.AddCommand(awslbc.NewApp().NewInstallCmd())
-	cmd.AddCommand(cert_manager.NewApp().NewInstallCmd())
+	cmd.AddCommand(certmanager.NewApp().NewInstallCmd())
 	cmd.AddCommand(cilium.NewApp().NewInstallCmd())
 	cmd.AddCommand(consul.NewApp().NewInstallCmd())
 	cmd.AddCommand(NewInstallContainerInsightsCmd())
