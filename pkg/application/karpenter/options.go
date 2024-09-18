@@ -83,7 +83,18 @@ func newOptions() (options *KarpenterOptions, flags cmd.Flags) {
 					}
 					if strings.EqualFold(options.AMIFamily, "Bottlerocket") {
 						options.AMIFamily = "Bottlerocket"
-						return nil
+
+						bottlerocketAMI, err := ssm.GetBottlerocketAMI(eksVersion)
+						if err != nil {
+							return err
+						}
+
+						bottlerocketArm64AMI, err := ssm.GetBottlerocketArm64AMI(eksVersion)
+						if err != nil {
+							return err
+						}
+
+						options.AMISelectorIDs = append(options.AMISelectorIDs, bottlerocketAMI, bottlerocketArm64AMI)
 					}
 					return nil
 				},

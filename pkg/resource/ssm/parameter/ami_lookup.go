@@ -18,6 +18,12 @@ const eksAL2023AMI = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/x86_64
 // /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/arm64/standard/recommended/image_id
 const eksAL2023Arm64AMI = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/arm64/standard/recommended/image_id"
 
+// /aws/service/bottlerocket/aws-k8s-<eks-version>/x86_64/latest/image_id
+const bottlerocketAMI = "/aws/service/bottlerocket/aws-k8s-%s/x86_64/latest/image_id"
+
+// /aws/service/bottlerocket/aws-k8s-<eks-version>/arm64/latest/image_id
+const bottlerocketArm64AMI = "/aws/service/bottlerocket/aws-k8s-%s/arm64/latest/image_id"
+
 func (g *Getter) GetEKSOptimizedAL2AMI(eksVersion string) (string, error) {
 	return g.getEKSOptimizedAMI(eksAL2AMI, eksVersion)
 }
@@ -32,6 +38,14 @@ func (g *Getter) GetEKSOptimizedAL2023AMI(eksVersion string) (string, error) {
 
 func (g *Getter) GetEKSOptimizedAL2023Arm64AMI(eksVersion string) (string, error) {
 	return g.getEKSOptimizedAMI(eksAL2023Arm64AMI, eksVersion)
+}
+
+func (g *Getter) GetBottlerocketAMI(eksVersion string) (string, error) {
+	return g.getEKSOptimizedAMI(bottlerocketAMI, eksVersion)
+}
+
+func (g *Getter) GetBottlerocketArm64AMI(eksVersion string) (string, error) {
+	return g.getEKSOptimizedAMI(bottlerocketArm64AMI, eksVersion)
 }
 
 func (g *Getter) getEKSOptimizedAMI(paramName, eksVersion string) (string, error) {
