@@ -19,22 +19,22 @@ const eksAL2023AMI = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/x86_64
 const eksAL2023Arm64AMI = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/arm64/standard/recommended/image_id"
 
 func (g *Getter) GetEKSOptimizedAL2AMI(eksVersion string) (string, error) {
-	return g.getEKSOptmizedAMI(eksAL2AMI, eksVersion)
+	return g.getEKSOptimizedAMI(eksAL2AMI, eksVersion)
 }
 
 func (g *Getter) GetEKSOptimizedAL2Arm64AMI(eksVersion string) (string, error) {
-	return g.getEKSOptmizedAMI(eksAL2Arm64AMI, eksVersion)
+	return g.getEKSOptimizedAMI(eksAL2Arm64AMI, eksVersion)
 }
 
 func (g *Getter) GetEKSOptimizedAL2023AMI(eksVersion string) (string, error) {
-	return g.getEKSOptmizedAMI(eksAL2023AMI, eksVersion)
+	return g.getEKSOptimizedAMI(eksAL2023AMI, eksVersion)
 }
 
 func (g *Getter) GetEKSOptimizedAL2023Arm64AMI(eksVersion string) (string, error) {
-	return g.getEKSOptmizedAMI(eksAL2023Arm64AMI, eksVersion)
+	return g.getEKSOptimizedAMI(eksAL2023Arm64AMI, eksVersion)
 }
 
-func (g *Getter) getEKSOptmizedAMI(paramName, eksVersion string) (string, error) {
+func (g *Getter) getEKSOptimizedAMI(paramName, eksVersion string) (string, error) {
 	param, err := g.ssmClient.GetParameter(fmt.Sprintf(paramName, eksVersion))
 	if err != nil {
 		return "", err
