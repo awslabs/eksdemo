@@ -15,7 +15,7 @@ import (
 // GitHub:  https://github.com/awslabs/karpenter
 // Helm:    https://github.com/awslabs/karpenter/tree/main/charts/karpenter
 // Repo:    https://gallery.ecr.aws/karpenter/controller
-// Version: Latest is v0.37.0 (as of 6/6/24)
+// Version: Latest is v1.0.5 (as of 10/2/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
@@ -173,7 +173,6 @@ Statement:
   Effect: Allow
   Resource: "*"
   Action:
-  - ec2:DescribeAvailabilityZones
   - ec2:DescribeImages
   - ec2:DescribeInstances
   - ec2:DescribeInstanceTypeOfferings
@@ -208,7 +207,9 @@ Statement:
   Action: iam:PassRole
   Condition:
     StringEquals:
-      iam:PassedToService: ec2.amazonaws.com
+      iam:PassedToService:
+      - ec2.amazonaws.com
+      - ec2.amazonaws.com.cn
 - Sid: AllowScopedInstanceProfileCreationActions
   Effect: Allow
   Resource: arn:{{ .Partition }}:iam::{{ .Account }}:instance-profile/*
