@@ -13,7 +13,7 @@ import (
 // GitHub:  https://github.com/kubernetes-sigs/aws-load-balancer-controller
 // Helm:    https://github.com/aws/eks-charts/tree/master/stable/aws-load-balancer-controller
 // Repo:    https://gallery.ecr.aws/eks/aws-load-balancer-controller
-// Version: Latest is v2.8.1 (as of 6/4/24)
+// Version: Latest is v2.9.0 (as of 10/2/24)
 
 func NewApp() *application.Application {
 	options, flags := newOptions()
