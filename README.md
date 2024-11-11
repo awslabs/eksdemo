@@ -168,7 +168,7 @@ To validate installation you can run the **`eksdemo version`** command and confi
 
 ```
 » eksdemo version
-eksdemo: version.Info{Version:"0.16.0", Date:"2024-08-19T17:41:55Z", Commit:"74fc767"}
+eksdemo: version.Info{Version:"0.17.0", Date:"2024-11-11T03:14:58Z", Commit:"13e0e01"}
 ```
 
 To validate the AWS region is set, you can run **`eksdemo get cluster`** which will list running EKS clusters in the default region. If you don’t have any EKS clusters in the region, you will get the response: `No resources found.`
@@ -198,9 +198,11 @@ The application catalog includes:
     * `apigatewayv2-controller` — ACK API Gateway v2 Controller
     * `ec2-controller` — ACK EC2 Controller
     * `ecr-controller` — ACK ECR Controller
+    * `efs-controller` — ACK EFS Controller
     * `eks-controller` — ACK EKS Controller
     * `iam-controller` — ACK IAM Controller
     * `prometheusservice-controller` — ACK Prometheus Service Controller
+    * `rds-controller` — ACK RDS Controller
     * `s3-controller` — ACK S3 Controller
 * `adot-operator` — AWS Distro for OpenTelemetry (ADOT) Operator
 * `argo` — Get stuff done with Kubernetes!
@@ -235,6 +237,7 @@ The application catalog includes:
     * `inflate` — Example App to Demonstrate Autoscaling
     * `kube-ops-view` — Kubernetes Operational View
     * `podinfo` — Go app w/microservices best practices
+    * `spark-pi` — Apache Spark SparkPi Example
     * `wordpress` — WordPress Blog
 * `external-dns` — ExternalDNS
 * `falco` — Cloud Native Runtime Security
@@ -311,6 +314,7 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 * `dns-record` — Route53 Resource Record Set
 * `ec2-instance` — EC2 Instance
 * `ecr-repository` — ECR Repository
+* `efs-filesystem` — EFS File Systems
 * `elastic-ip` — Elastic IP Address
 * `event-rule` — EventBridge Rule
 * `fargate-profile` — EKS Fargate Profile
@@ -341,6 +345,9 @@ Almost all of the command have shorthand alaises to make it easier to type. For 
 * `prefix-list` — Managed Prefix List
 * `route-table` — Route Table
 * `s3-bucket` — Amazon S3 Bucket
+* `sagemaker` — Amazon SageMaker Resources
+    * `domain` — SageMaker Domain
+    * `user-profile` — SageMaker User Profile
 * `security-group` — Security Group
 * `security-group-rule` — Security Group Rule
 * `sqs-queue` — SQS Queue
