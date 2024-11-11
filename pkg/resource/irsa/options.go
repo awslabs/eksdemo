@@ -91,7 +91,7 @@ func (o *IrsaOptions) IsPolicyARN(t PolicyType) bool {
 }
 
 func (o *IrsaOptions) RoleName() string {
-	return o.TruncateUnique(64, fmt.Sprintf("eksdemo.%s.%s.%s", o.ClusterName, o.Namespace, o.ServiceAccount))
+	return o.TruncateUnique(64, fmt.Sprintf("eksdemo.%s.%s.%s.%s", o.Region, o.ClusterName, o.Namespace, o.ServiceAccount))
 }
 
 func (o *IrsaOptions) SetName(name string) {
