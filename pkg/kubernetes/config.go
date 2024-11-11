@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/eks/types"
@@ -105,4 +106,12 @@ func Kubeconfig() (*clientcmdapi.Config, error) {
 	}
 
 	return &raw, nil
+}
+
+func KubeconfigDefaultPath() string {
+	// Using the same logic as eksctl, from DefaultPath() in eksctl/pkg/utils/kubeconfig
+	if env := os.Getenv(clientcmd.RecommendedConfigPathEnvVar); len(env) > 0 {
+		return env
+	}
+	return clientcmd.RecommendedHomeFile
 }
