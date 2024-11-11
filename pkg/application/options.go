@@ -138,6 +138,7 @@ func (o *ApplicationOptions) IrsaAnnotation() string {
 			ClusterName:    o.ClusterName,
 			Namespace:      o.Namespace,
 			Partition:      o.Partition,
+			Region:         o.Region,
 			ServiceAccount: o.ServiceAccount,
 		},
 	}
@@ -151,6 +152,7 @@ func (o *ApplicationOptions) IrsaAnnotationFor(serviceAccount string) string {
 			ClusterName:    o.ClusterName,
 			Namespace:      o.Namespace,
 			Partition:      o.Partition,
+			Region:         o.Region,
 			ServiceAccount: serviceAccount,
 		},
 	}
