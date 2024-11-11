@@ -15,6 +15,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
+	"github.com/awslabs/eksdemo/pkg/kubernetes"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/cloudformation_stack"
 	"github.com/awslabs/eksdemo/pkg/resource/irsa"
@@ -22,7 +23,6 @@ import (
 	"github.com/awslabs/eksdemo/pkg/resource/nodegroup"
 	"github.com/awslabs/eksdemo/pkg/template"
 	"github.com/spf13/cobra"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 type ClusterOptions struct {
@@ -57,6 +57,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 		},
 
 		HostnameType:     string(types.HostnameTypeResourceName),
+		Kubeconfig:       kubernetes.KubeconfigDefaultPath(),
 		NodegroupOptions: ngOptions,
 		NoRoles:          false,
 		VpcCidr:          "192.168.0.0/16",
@@ -77,13 +78,6 @@ func addOptions(res *resource.Resource) *resource.Resource {
 	ngOptions.NodegroupName = "main"
 
 	res.Options = options
-
-	// To keep in sync with ekctl, using logic from from DefaultPath() in eksctl/pkg/utils/kubeconfig
-	if env := os.Getenv(clientcmd.RecommendedConfigPathEnvVar); len(env) > 0 {
-		options.Kubeconfig = env
-	} else {
-		options.Kubeconfig = clientcmd.RecommendedHomeFile
-	}
 
 	flags := cmd.Flags{
 		&cmd.StringFlag{
