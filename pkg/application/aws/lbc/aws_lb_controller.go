@@ -89,6 +89,7 @@ Statement:
   - elasticloadbalancing:DescribeTargetHealth
   - elasticloadbalancing:DescribeTags
   - elasticloadbalancing:DescribeTrustStores
+  - elasticloadbalancing:DescribeListenerAttributes
   Resource: "*"
 - Effect: Allow
   Action:
@@ -192,6 +193,7 @@ Statement:
   - elasticloadbalancing:ModifyTargetGroup
   - elasticloadbalancing:ModifyTargetGroupAttributes
   - elasticloadbalancing:DeleteTargetGroup
+  - elasticloadbalancing:ModifyListenerAttributes
   Resource: "*"
   Condition:
     'Null':
