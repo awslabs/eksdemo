@@ -53,7 +53,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 	options := &ClusterOptions{
 		CommonOptions: resource.CommonOptions{
 			ClusterFlagDisabled: true,
-			KubernetesVersion:   "1.31",
+			KubernetesVersion:   "1.32",
 		},
 
 		HostnameType:     string(types.HostnameTypeResourceName),
@@ -86,7 +86,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				Description: "Kubernetes version",
 				Shorthand:   "v",
 			},
-			Choices: []string{"1.31", "1.30", "1.29", "1.28", "1.27", "1.26", "1.25", "1.24"},
+			Choices: []string{"1.32", "1.31", "1.30", "1.29", "1.28", "1.27", "1.26", "1.25", "1.24"},
 			Option:  &options.KubernetesVersion,
 		},
 		&cmd.BoolFlag{
