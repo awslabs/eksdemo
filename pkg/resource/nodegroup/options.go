@@ -43,6 +43,8 @@ type NodegroupOptions struct {
 	SpotvCPUs        int
 	SpotMemory       int
 	Taints           []Taint
+	VolumeSize       int
+	VolumeType       string
 
 	UpdateDesired int
 	UpdateMin     int
@@ -65,6 +67,8 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 		OperatingSystem: "AmazonLinux2",
 		SpotvCPUs:       2,
 		SpotMemory:      4,
+		VolumeSize:      80,
+		VolumeType:      "gp3",
 	}
 
 	createFlags = cmd.Flags{
@@ -99,6 +103,20 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 				},
 			},
 			Option: &options.MinSize,
+		},
+		&cmd.IntFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "volume-size",
+				Description: "volume size in GiB",
+			},
+			Option: &options.VolumeSize,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "volume-type",
+				Description: "volume type (one of gp2/gp3/io1/io2/sc1/st1 etc)",
+			},
+			Option: &options.VolumeType,
 		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{

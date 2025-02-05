@@ -58,6 +58,11 @@ managedNodeGroups:
 {{- end }}
   minSize: {{ .MinSize }}
   maxSize: {{ .MaxSize }}
+  volumeSize: {{ .VolumeSize }}
+  volumeType: {{ .VolumeType }}
+{{- if eq .VolumeType "io2" }}
+  volumeIOPS: 16000
+{{- end }}
 {{- if and .AMI (ne .OperatingSystem "AmazonLinux2023") }}
   overrideBootstrapCommand: |
     #!/bin/bash
