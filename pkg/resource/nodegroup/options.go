@@ -24,6 +24,9 @@ const eksOptmizedGpuAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2-
 // /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/x86_64/standard/recommended/image_id
 const eksOptimized2023AmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/x86_64/standard/recommended/image_id"
 
+// /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/x86_64/nvidia/recommended/image_id
+const eksOptimized2023GpuAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/x86_64/nvidia/recommended/image_id"
+
 // /aws/service/eks/optimized-ami/<eks-version>/amazon-linux-2023/arm64/standard/recommended/image_id
 const eksOptimized2023ArmAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-linux-2023/arm64/standard/recommended/image_id"
 
@@ -235,10 +238,11 @@ func (o *NodegroupOptions) PreCreate() error {
 		return fmt.Errorf("%q instance type is not supported with the EKS optimized Amazon Linux AMI", "G5g")
 
 	case isNeuron, isNvidia:
+		path := eksOptmizedGpuAmiPath
 		if o.OperatingSystem == "AmazonLinux2023" {
-			return fmt.Errorf("EKS optimized Amazon Linux 2023 AMI does not support GPU(s) or Neuron devices yet")
+			path = eksOptimized2023GpuAmiPath
 		}
-		param, err := ssmClient.GetParameter(fmt.Sprintf(eksOptmizedGpuAmiPath, o.KubernetesVersion))
+		param, err := ssmClient.GetParameter(fmt.Sprintf(path, o.KubernetesVersion))
 		if err != nil {
 			return fmt.Errorf("failed to lookup EKS optimized accelerated AMI for instance type %s: %w", o.InstanceType, err)
 		}
