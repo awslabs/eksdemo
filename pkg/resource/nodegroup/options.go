@@ -34,6 +34,7 @@ type NodegroupOptions struct {
 	*resource.CommonOptions
 
 	AMI              string
+	EnableEFA        bool
 	InstanceType     string
 	IsClusterPrivate bool
 	DesiredCapacity  int
@@ -170,6 +171,13 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 			},
 			Option:  &options.OperatingSystem,
 			Choices: []string{"AmazonLinux2", "AmazonLinux2023", "Bottlerocket", "Ubuntu2004", "Ubuntu1804"},
+		},
+		&cmd.BoolFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "enable-efa",
+				Description: "Enable Elastic Fabric Adapter",
+			},
+			Option: &options.EnableEFA,
 		},
 	}
 
