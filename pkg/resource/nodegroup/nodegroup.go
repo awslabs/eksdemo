@@ -69,6 +69,9 @@ managedNodeGroups:
     /etc/eks/bootstrap.sh {{ .ClusterName }}
 {{- end }}
   privateNetworking: true
+{{- if .EnableEFA }}
+  efaEnabled: true
+{{- end }}
   spot: {{ .Spot }}
 {{- range .Taints }}
   taints:
