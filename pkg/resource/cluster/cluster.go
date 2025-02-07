@@ -46,6 +46,10 @@ addons:
 - name: coredns
 - name: kube-proxy
 {{- end }}
+{{- range .Addons }}
+- name: {{ . }}
+  version: latest
+{{- end }}
 
 cloudWatch:
   clusterLogging:

@@ -29,6 +29,7 @@ type ClusterOptions struct {
 	resource.CommonOptions
 	*nodegroup.NodegroupOptions
 
+	Addons               []string
 	DisableNetworkPolicy bool
 	Fargate              bool
 	HostnameType         string
@@ -190,6 +191,13 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				Description: "list of AZs to use. ie. us-east-1a,us-east-1b,us-east-1c",
 			},
 			Option: &options.Zones,
+		},
+		&cmd.StringSliceFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "addons",
+				Description: "list of addons to use. examples: metrics-server,eks-pod-identity-agent,aws-ebs-csi-driver",
+			},
+			Option: &options.Addons,
 		},
 	}
 
