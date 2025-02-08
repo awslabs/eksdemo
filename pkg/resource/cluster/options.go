@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
@@ -15,6 +16,7 @@ import (
 	"github.com/awslabs/eksdemo/pkg/application/storage/ebs_csi"
 	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
+	"github.com/awslabs/eksdemo/pkg/eksctl"
 	"github.com/awslabs/eksdemo/pkg/kubernetes"
 	"github.com/awslabs/eksdemo/pkg/resource"
 	"github.com/awslabs/eksdemo/pkg/resource/cloudformation_stack"
@@ -46,9 +48,10 @@ type ClusterOptions struct {
 	appsForIrsa  []*application.Application
 	IrsaTemplate *template.TextTemplate
 	IrsaRoles    []*resource.Resource
+	Timeout      time.Duration
 }
 
-func addOptions(res *resource.Resource) *resource.Resource {
+func addOptions(res *resource.Resource, resMgr *eksctl.ResourceManager) *resource.Resource {
 	ngOptions, ngFlags, _ := nodegroup.NewOptions()
 
 	options := &ClusterOptions{
@@ -175,7 +178,7 @@ func addOptions(res *resource.Resource) *resource.Resource {
 			CommandFlag: cmd.CommandFlag{
 				Name:        "vpc-cidr",
 				Description: "CIDR to use for EKS Cluster VPC",
-				Validate: func(cmd *cobra.Command, args []string) error {
+				Validate: func(_ *cobra.Command, _ []string) error {
 					_, _, err := net.ParseCIDR(options.VpcCidr)
 					if err != nil {
 						return fmt.Errorf("failed parsing --vpc-cidr, %w", err)
@@ -198,6 +201,20 @@ func addOptions(res *resource.Resource) *resource.Resource {
 				Description: "list of addons to use. examples: metrics-server,eks-pod-identity-agent,aws-ebs-csi-driver",
 			},
 			Option: &options.Addons,
+		},
+		&cmd.DurationFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "timeout",
+				Description: "maximum waiting time for any long-running operation",
+				Validate: func(_ *cobra.Command, _ []string) error {
+					if options.Timeout.Seconds() > 0 {
+						resMgr.CreateFlags = append(resMgr.CreateFlags,
+							fmt.Sprintf("--timeout=%s", options.Timeout.String()))
+					}
+					return nil
+				},
+			},
+			Option: &options.Timeout,
 		},
 	}
 

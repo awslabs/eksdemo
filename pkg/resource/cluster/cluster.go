@@ -9,6 +9,13 @@ import (
 )
 
 func NewResource() *resource.Resource {
+	resManager := &eksctl.ResourceManager{
+		Resource: "cluster",
+		ConfigTemplate: &template.TextTemplate{
+			Template: eksctl.EksctlHeader + EksctlTemplate + nodegroup.EksctlTemplate,
+		},
+		DeleteFlags: []string{"--disable-nodegroup-eviction"},
+	}
 	res := &resource.Resource{
 		Command: cmd.Command{
 			Name:        "cluster",
@@ -17,19 +24,11 @@ func NewResource() *resource.Resource {
 			CreateArgs:  []string{"NAME"},
 			Args:        []string{"NAME"},
 		},
-
-		Getter: &Getter{},
-
-		Manager: &eksctl.ResourceManager{
-			Resource: "cluster",
-			ConfigTemplate: &template.TextTemplate{
-				Template: eksctl.EksctlHeader + EksctlTemplate + nodegroup.EksctlTemplate,
-			},
-			DeleteFlags: []string{"--disable-nodegroup-eviction"},
-		},
+		Getter:  &Getter{},
+		Manager: resManager,
 	}
 
-	return addOptions(res)
+	return addOptions(res, resManager)
 }
 
 const EksctlTemplate = `
