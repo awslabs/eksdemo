@@ -47,6 +47,7 @@ type NodegroupOptions struct {
 	SpotvCPUs        int
 	SpotMemory       int
 	Taints           []Taint
+	VolumeIOPS       int
 	VolumeSize       int
 	VolumeType       string
 
@@ -121,6 +122,21 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 				Description: "volume type (one of gp2/gp3/io1/io2/sc1/st1 etc)",
 			},
 			Option: &options.VolumeType,
+		},
+		&cmd.IntFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "volume-iops",
+				Description: "IOPS for io1/io2 volumes",
+				Validate: func(_ *cobra.Command, _ []string) error {
+					if options.VolumeType == "io1" || options.VolumeType == "io2" {
+						if options.VolumeIOPS < 100 || options.VolumeIOPS > 64000 {
+							return fmt.Errorf("IOPS must be between 100 and 64000")
+						}
+					}
+					return nil
+				},
+			},
+			Option: &options.VolumeIOPS,
 		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
