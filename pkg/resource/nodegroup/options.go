@@ -1,10 +1,12 @@
 package nodegroup
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	awssdk "github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/awslabs/eksdemo/pkg/aws"
 	"github.com/awslabs/eksdemo/pkg/cmd"
@@ -33,23 +35,25 @@ const eksOptimized2023ArmAmiPath = "/aws/service/eks/optimized-ami/%s/amazon-lin
 type NodegroupOptions struct {
 	*resource.CommonOptions
 
-	AMI              string
-	EnableEFA        bool
-	InstanceType     string
-	IsClusterPrivate bool
-	DesiredCapacity  int
-	MinSize          int
-	MaxSize          int
-	NodegroupName    string
-	NoTaints         bool
-	OperatingSystem  string
-	Spot             bool
-	SpotvCPUs        int
-	SpotMemory       int
-	Taints           []Taint
-	VolumeIOPS       int
-	VolumeSize       int
-	VolumeType       string
+	AMI                   string
+	CapacityReservationID string
+	IsCapacityBlockforML  bool
+	EnableEFA             bool
+	InstanceType          string
+	IsClusterPrivate      bool
+	DesiredCapacity       int
+	MinSize               int
+	MaxSize               int
+	NodegroupName         string
+	NoTaints              bool
+	OperatingSystem       string
+	Spot                  bool
+	SpotvCPUs             int
+	SpotMemory            int
+	Taints                []Taint
+	VolumeIOPS            int
+	VolumeSize            int
+	VolumeType            string
 
 	UpdateDesired int
 	UpdateMin     int
@@ -108,6 +112,13 @@ func NewOptions() (options *NodegroupOptions, createFlags, updateFlags cmd.Flags
 				},
 			},
 			Option: &options.MinSize,
+		},
+		&cmd.StringFlag{
+			CommandFlag: cmd.CommandFlag{
+				Name:        "capacity-reservation-id",
+				Description: "capacity reservation ID for ODCR or ML Capacity Blocks",
+			},
+			Option: &options.CapacityReservationID,
 		},
 		&cmd.IntFlag{
 			CommandFlag: cmd.CommandFlag{
@@ -314,6 +325,21 @@ func (o *NodegroupOptions) PreCreate() error {
 		}
 
 		o.AMI = awssdk.ToString(param.Value)
+	}
+
+	if len(o.CapacityReservationID) > 0 {
+		reservationsResponse, err := aws.NewEC2Client().DescribeCapacityReservations(context.TODO(), &ec2.DescribeCapacityReservationsInput{
+			CapacityReservationIds: []string{o.CapacityReservationID},
+		})
+		if err != nil {
+			return fmt.Errorf("failed to lookup capacity reservation id %s: %w", o.CapacityReservationID, err)
+		}
+		if len(reservationsResponse.CapacityReservations) == 0 {
+			return fmt.Errorf("could not find capacity reservation id %s", o.CapacityReservationID)
+		}
+		if reservationsResponse.CapacityReservations[0].ReservationType == types.CapacityReservationTypeCapacityBlock {
+			o.IsCapacityBlockforML = true
+		}
 	}
 
 	return nil

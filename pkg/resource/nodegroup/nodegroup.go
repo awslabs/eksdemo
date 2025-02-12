@@ -58,6 +58,15 @@ managedNodeGroups:
 {{- end }}
   minSize: {{ .MinSize }}
   maxSize: {{ .MaxSize }}
+{{- if .CapacityReservationID }}
+  capacityReservation:
+    capacityReservationTarget:
+      capacityReservationID: {{ .CapacityReservationID }}
+{{- if .IsCapacityBlockforML }}
+  instanceMarketOptions:
+    marketType: capacity-block
+{{- end }}
+{{- end }}
   volumeSize: {{ .VolumeSize }}
   volumeType: {{ .VolumeType }}
 {{- if gt .VolumeIOPS 0 }}
