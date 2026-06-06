@@ -45,7 +45,7 @@ func DeleteEC2NodeClass(client dynamic.Interface, kubeContext string) error {
 		return fmt.Errorf("failed creating restMapper: %w", err)
 	}
 
-	gvk := "EC2NodeClass.v1beta1.karpenter.k8s.aws"
+	gvk := "EC2NodeClass.v1.karpenter.k8s.aws"
 	fullySpecifiedGVK, _ := schema.ParseKindArg(gvk)
 
 	_, err = restMapper.RESTMapping(fullySpecifiedGVK.GroupKind(), fullySpecifiedGVK.Version)
@@ -88,7 +88,7 @@ func DeleteEC2NodeClass(client dynamic.Interface, kubeContext string) error {
 func DeleteNodePool(client dynamic.Interface) error {
 	nodePools := schema.GroupVersionResource{
 		Group:    "karpenter.sh",
-		Version:  "v1beta1",
+		Version:  "v1",
 		Resource: "nodepools",
 	}
 
